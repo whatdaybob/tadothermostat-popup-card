@@ -50,12 +50,9 @@
     "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-typescript2": "^0.24.3",
     "rollup-plugin-uglify": "^6.0.3",
+    "rollup-watch": "^4.3.1",
     "ts-loader": "^8.0.4",
-    "typescript": "3.9.5",
-    "typescript-plugin-css-modules": "^2.7.0",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "typescript": "3.9.5"
   },
   "scripts": {
     "start": "rollup -c --watch",
