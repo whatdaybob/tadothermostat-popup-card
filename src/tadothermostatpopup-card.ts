@@ -1,7 +1,7 @@
-import { LitElement, html, svg, TemplateResult } from 'lit-element';
+import { LitElement, html, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { closePopUp } from 'card-tools/src/popup';
-import { mainStyles } from './tadothermostatpopup-card-styles';
+import { mainStyles } from './popup_styles';
 
 // import { computeRTLDirection } from 'custom-card-helpers';
 // import { computeStateDisplay, computeStateName } from 'custom-card-helpers';
@@ -15,6 +15,7 @@ class TadoPopupCard extends LitElement {
   shadowRoot: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _setTemp: any;
+  _setTrack: string | undefined;
   tempselection: boolean;
   dragging: any;
 
@@ -64,6 +65,7 @@ class TadoPopupCard extends LitElement {
   protected render(): TemplateResult | void {
     const entity = this.config.entity;
     const stateObj = this.hass.states[entity];
+    const currentTemp = stateObj.attributes.current_temperature;
     // console.log(stateObj);
     // const icon = this.config.icon
     //   ? this.config.icon
@@ -72,7 +74,7 @@ class TadoPopupCard extends LitElement {
     //   : 'mdi:lightbulb';
 
     // REAL DATA
-    const name = this.config.name || stateObj.attributes.friendly_name;
+    // const name = this.config.name || stateObj.attributes.friendly_name;
     const targetTemp =
       stateObj.attributes.temperature !== null && stateObj.attributes.temperature
         ? stateObj.attributes.temperature
@@ -81,31 +83,36 @@ class TadoPopupCard extends LitElement {
     // const min_temp = stateObj.attributes.min_temp;
     // const preset_mode = stateObj.attributes.preset_mode;
     // const preset_modes = stateObj.attributes.preset_modes;
-    const currentTemp = stateObj.attributes.current_temperature;
+
     const currentHum = parseInt(stateObj.attributes.current_humidity);
     // const hvac_action = stateObj.attributes.hvac_action;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let mode: any = '';
     mode = stateObj.state in this.modeIcons ? stateObj.state : 'unknown-mode';
     let thermostat__body: string;
+    let thermostat__target: number;
     let thermostat__header: string;
 
     if (stateObj.attributes.hvac_action == 'off') {
       mode = 'off';
       thermostat__header = 'Frost Protection';
+      thermostat__target = 0;
       thermostat__body = 'OFF';
     } else if (stateObj.attributes.hvac_action == 'heating') {
       mode = 'heat';
       thermostat__header = 'Set to';
       thermostat__body = targetTemp.toString() + '°';
+      thermostat__target = targetTemp;
     } else if (stateObj.attributes.hvac_action == 'idle') {
       mode = 'idle';
       thermostat__header = 'Set to';
       thermostat__body = targetTemp.toString() + '°';
+      thermostat__target = targetTemp;
     } else {
       mode = stateObj.state in this.modeIcons ? stateObj.state : 'unknown-mode';
       thermostat__header = 'No remote access';
       thermostat__body = 'replace with svg';
+      thermostat__target = 0;
     }
     let thermostat__class: string;
     if (stateObj.state in this.modeIcons) {
@@ -118,21 +125,21 @@ class TadoPopupCard extends LitElement {
       thermostat__class = 'disconnected';
     }
 
-    const _handleSize = 15;
-    const _stepSize = this.config.stepSize
-      ? this.config.stepSize
-      : stateObj.attributes.target_temp_step
-      ? stateObj.attributes.target_temp_step
-      : 1;
-    const gradient = true;
-    const gradientPoints = [
-      { point: 0, color: '#4fdae4' },
-      { point: 10, color: '#2da9d8' },
-      { point: 25, color: '#56b557' },
-      { point: 50, color: '#f4c807' },
-      { point: 70, color: '#faaa00' },
-      { point: 100, color: '#f86618' },
-    ];
+    // const _handleSize = 15;
+    // const _stepSize = this.config.stepSize
+    //   ? this.config.stepSize
+    //   : stateObj.attributes.target_temp_step
+    //   ? stateObj.attributes.target_temp_step
+    //   : 1;
+    // const gradient = true;
+    // const gradientPoints = [
+    //   { point: 0, color: '#4fdae4' },
+    //   { point: 10, color: '#2da9d8' },
+    //   { point: 25, color: '#56b557' },
+    //   { point: 50, color: '#f4c807' },
+    //   { point: 70, color: '#faaa00' },
+    //   { point: 100, color: '#f86618' },
+    // ];
     const fullscreen = 'fullscreen' in this.config ? this.config.fullscreen : true;
     this.settings = 'settings' in this.config ? true : false;
     this.settingsCustomCard = 'settingsCard' in this.config ? true : false;
@@ -154,24 +161,6 @@ class TadoPopupCard extends LitElement {
       }
     }
 
-    // let clicked = false;
-
-    // $(document).on('mousedown', '.fa-arrows', function() {
-    //   $(this)
-    //     .removeClass('fa-arrows')
-    //     .addClass('fa-random');
-    //   clicked = true;
-    // });
-
-    // $(document).on('mouseup', function() {
-    //   if (clicked) {
-    //     clicked = false;
-    //     $('.fa-random')
-    //       .removeClass('fa-random')
-    //       .addClass('fa-arrows');
-    //   }
-    // });
-
     // console.log(this.active);
     return html`
       <div class="${fullscreen === true ? 'popup-wrapper' : ''}">
@@ -179,6 +168,7 @@ class TadoPopupCard extends LitElement {
           <div id="popup" class="popup-inner ${thermostat__class}" @click="${e => this._close(e)}">
             ${this.tempselection
               ? html`
+                  <!-- Tado set temp START -->
                   <div class="tado-card--slider">
                     <div class="temperature-slider--header " style="">
                       <div class="temperature-slider--toolbar">
@@ -218,13 +208,18 @@ class TadoPopupCard extends LitElement {
                       <div class="value-label">
                         <div class="app-temperature-display"></div>
                         <div class="">
-                          <div class="b-temperature">18°</div>
+                          <div id="target_temp_track" class="b-temperature">${thermostat__body}</div>
                         </div>
                       </div>
                     </div>
                     <div class="room-thermostat-area--slider" tabindex="0">
                       <div class="app-temperature-slider" style="width: 300px; height: 400px; opacity: 1;">
-                        <div id="track" class="track" style="height: 0%;"></div>
+                        <div
+                          id="track"
+                          class="track"
+                          style="height: ${((100 / 21) * (thermostat__target - 4)).toString() + '%'};"
+                        ></div>
+
                         <input
                           type="range"
                           min="4"
@@ -237,7 +232,7 @@ class TadoPopupCard extends LitElement {
                       </div>
                     </div>
                   </div>
-                  <!-- </div> -->
+                  <!-- Tado set temp END -->
                 `
               : html`
                   <!-- Tado Thermostat START -->
@@ -304,87 +299,6 @@ class TadoPopupCard extends LitElement {
                   <!-- Tado Sensors END -->
                 `}
 
-            <!-- <div id="controls">
-              <div id="slider">
-                <custom-round-slider
-                  .value=${targetTemp}
-                  .low=${stateObj.attributes.target_temp_low}
-                  .high=${stateObj.attributes.target_temp_high}
-                  .min=${stateObj.attributes.min_temp}
-                  .max=${stateObj.attributes.max_temp}
-                  .step=${_stepSize}
-                  .handleSize=${_handleSize}
-                  .gradient=${gradient}
-                  .gradientPoints=${gradientPoints}
-                  @value-changing=${this._dragEvent}
-                  @value-changed=${this._setTemperature}
-                ></custom-round-slider>
-
-                <div id="slider-center">
-                  <div class="values">
-                    <div class="action">
-                      ${stateObj.attributes.hvac_action
-              ? this.hass!.localize(`state_attributes.climate.hvac_action.${stateObj.attributes.hvac_action}`)
-              : this.hass!.localize(`state.climate.${stateObj.state}`)}
-                      ${stateObj.attributes.preset_mode && stateObj.attributes.preset_mode !== 'none'
-              ? html`
-                  -
-                  ${this.hass!.localize(`state_attributes.climate.preset_mode.${stateObj.attributes.preset_mode}`) ||
-                    stateObj.attributes.preset_mode}
-                `
-              : ''}
-                    </div>
-                    <div class="value">
-                      ${!this._setTemp
-              ? ''
-              : Array.isArray(this._setTemp)
-              ? _stepSize === 1
-                ? svg`
-                                ${this._setTemp[0].toFixed()}&#176; -
-                                ${this._setTemp[1].toFixed()}&#176;
-                                `
-                : svg`
-                                ${this._setTemp[0].toFixed(1)}&#176; -
-                                ${this._setTemp[1].toFixed(1)}&#176;
-                                `
-              : _stepSize === 1
-              ? svg`
-                                ${this._setTemp.toFixed()}&#176;
-                                `
-              : svg`
-                                ${this._setTemp.toFixed(1)}&#176;
-                                `}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
-            <!-- <div id="modes">
-              ${(stateObj.attributes.hvac_modes || [])
-              .concat()
-              .sort(this._compareClimateHvacModes)
-              .map(modeItem => this._renderIcon(modeItem, mode))}
-            </div> -->
-
-            <!-- <div class="temp ${mode}">
-              ${currentTemp}&#176;
-            </div> -->
-            <!-- <div class="right">
-              <div class="name">${name}</div>
-              <div class="action">
-                ${stateObj.attributes.hvac_action
-              ? this.hass!.localize(`state_attributes.climate.hvac_action.${stateObj.attributes.hvac_action}`)
-              : this.hass!.localize(`state.climate.${stateObj.state}`)}
-                ${stateObj.attributes.preset_mode && stateObj.attributes.preset_mode !== 'none'
-              ? html`
-                  -
-                  ${this.hass!.localize(`state_attributes.climate.preset_mode.${stateObj.attributes.preset_mode}`) ||
-                    stateObj.attributes.preset_mode}
-                `
-              : ''}
-                ${targetTemp}&#176;
-              </div>
-            </div> -->
             <div>
               ${this.settings
                 ? html`
@@ -440,10 +354,15 @@ class TadoPopupCard extends LitElement {
   }
 
   private _thermostat_mouseclick(): void {
+    const thermostat = this.shadowRoot;
     if (this.tempselection) {
       this.tempselection = false;
+      thermostat.getElementById('popup').classList.remove('settemp');
+      thermostat.getElementById('popup').classList.add('backed');
     } else {
       this.tempselection = true;
+      thermostat.getElementById('popup').classList.add('settemp');
+      thermostat.getElementById('popup').classList.remove('backed');
     }
   }
 
@@ -520,8 +439,10 @@ class TadoPopupCard extends LitElement {
         .getElementById('popup')
         .className.replace(/temp.*/g, '');
       this.shadowRoot.getElementById('popup').classList.add('temp-' + e.srcElement.value.toString());
+      // this.shadowRoot.getElementById('target_temp_track').textContent(e.srcElement.value.toString() + '%');
     } else {
       this.shadowRoot.getElementById('popup').classList.add('temp-off');
+      // this.shadowRoot.getElementById('target_temp_track').textContent('OFF');
     }
 
     // } else {

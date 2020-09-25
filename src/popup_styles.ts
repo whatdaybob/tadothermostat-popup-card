@@ -1,6 +1,24 @@
 import { css } from 'lit-element';
 
 export const mainStyles = css`
+  @keyframes popup_grow {
+    0% {
+      height: 540px;
+    }
+    100% {
+      height: 600px;
+    }
+  }
+  @keyframes tempstart {
+    0% {
+      height: 300px;
+      top: -80px;
+    }
+    100% {
+      height: 400px;
+      top: 0px;
+    }
+  }
   :host {
     /* --heat-color: #ee7600;
     --manual-color: #44739e;
@@ -23,12 +41,17 @@ export const mainStyles = css`
     bottom: 0;
   } */
   .popup-inner {
-    height: 100%;
+    /* height: 100%; */
+    max-width: 400px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    overflow: hidden;
+  }
+  .popup-inner.settemp {
+    animation: 0.5s ease-out 0s 1 popup_grow;
   }
   .popup-inner.off {
     display: none;
@@ -74,6 +97,7 @@ export const mainStyles = css`
     display: flex;
     flex-direction: row;
     margin-bottom: 40px;
+    height: 100px;
   }
   .info .temp {
     background-color: #67cd67;
@@ -427,8 +451,8 @@ export const mainStyles = css`
     flex: 0 1 400px;
     background-color: hsla(0, 0%, 100%, 0.2);
     box-shadow: 0 0 30px hsla(0, 0%, 39.2%, 0.2);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, flex-basis 0.3s ease-out;
-    will-change: transform;
+    /* transition: transform 0.15s ease, box-shadow 0.15s ease, flex-basis 0.3s ease-out; */
+    /* will-change: transform; */
     width: 100%;
     /* max-height: 120px; */
     overflow: hidden;
@@ -479,13 +503,14 @@ export const mainStyles = css`
     overflow: hidden;
   }
   .app-temperature-slider {
-    width: 300px;
-    height: 400px;
+    /* width: 300px;
+    height: 400px; */
     position: relative;
     top: 0;
     opacity: 1;
     left: 50%;
     transform: translateX(-50%);
+    animation: 0.5s ease-out 0s 1 tempstart;
   }
   [_nghost-uxt-c62] {
     display: block;
