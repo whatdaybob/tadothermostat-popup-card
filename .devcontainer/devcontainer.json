@@ -12,6 +12,9 @@
     "-v",
     "${env:HOME}${env:USERPROFILE}/.ssh:/tmp/.ssh" // This is added so you can push from inside the container
   ],
+  "mounts": [
+    "source=tadothermostat_popup_node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ],
   "extensions": [
     "github.vscode-pull-request-github",
     "eamodio.gitlens",
@@ -21,7 +24,8 @@
     "runem.lit-plugin",
     "auchenberg.vscode-browser-preview",
     "davidanson.vscode-markdownlint",
-    "redhat.vscode-yaml"
+    "redhat.vscode-yaml",
+    "mutantdino.resourcemonitor"
   ],
   "settings": {
     "files.eol": "\n",
