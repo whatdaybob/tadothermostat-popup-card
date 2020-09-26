@@ -1,7 +1,10 @@
 import { LitElement, html, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { closePopUp } from 'card-tools/src/popup';
-import { mainStyles } from './popup_styles';
+import { animation_styling } from './css/popup_animations';
+import { shared_styling } from './css/popup_shared_styles';
+import { slider_styling } from './css/popup_slider_styles';
+import { thermostat_styling } from './css/popup_thermostat_styles';
 
 // import { computeRTLDirection } from 'custom-card-helpers';
 // import { computeStateDisplay, computeStateName } from 'custom-card-helpers';
@@ -16,7 +19,12 @@ class TadoPopupCard extends LitElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _setTemp: any;
   _setTrack: string | undefined;
-  tempselection: boolean;
+  temp_selection: boolean;
+  temp_overlay: boolean;
+  temp_class: string;
+  temp_wanted: number;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dragging: any;
 
   hvacModeOrdering = {
@@ -51,18 +59,26 @@ class TadoPopupCard extends LitElement {
       hass: {},
       config: {},
       active: {},
-      tempselection: { type: Boolean },
+      temp_selection: { type: Boolean },
+      temp_overlay: { type: Boolean, reflect: true },
+      temp_class: { type: String },
+      temp_wanted: { type: Number, reflect: true },
       dragging: { type: Boolean, reflect: true },
     };
   }
 
   constructor() {
     super();
-    this.tempselection = false;
+    this.temp_wanted = 0;
+    this.temp_class = 'temp-off';
+    this.temp_selection = false;
+    this.temp_overlay = false;
     this.dragging = false;
   }
 
   protected render(): TemplateResult | void {
+    this.temp_wanted = 0;
+
     const entity = this.config.entity;
     const stateObj = this.hass.states[entity];
     const currentTemp = stateObj.attributes.current_temperature;
@@ -79,6 +95,7 @@ class TadoPopupCard extends LitElement {
       stateObj.attributes.temperature !== null && stateObj.attributes.temperature
         ? stateObj.attributes.temperature
         : stateObj.attributes.min_temp;
+
     // const max_temp = stateObj.attributes.max_temp;
     // const min_temp = stateObj.attributes.min_temp;
     // const preset_mode = stateObj.attributes.preset_mode;
@@ -114,32 +131,19 @@ class TadoPopupCard extends LitElement {
       thermostat__body = 'replace with svg';
       thermostat__target = 0;
     }
-    let thermostat__class: string;
+    // let thermostat__class: string;
     if (stateObj.state in this.modeIcons) {
       if (stateObj.attributes.hvac_action == 'off') {
-        thermostat__class = 'temp-off';
+        this.temp_class = 'temp-off';
       } else {
-        thermostat__class = 'temp-' + parseInt(targetTemp).toString();
+        this.temp_class = 'temp-' + parseInt(targetTemp).toString();
       }
     } else {
-      thermostat__class = 'disconnected';
+      this.temp_class = 'disconnected';
     }
 
-    // const _handleSize = 15;
-    // const _stepSize = this.config.stepSize
-    //   ? this.config.stepSize
-    //   : stateObj.attributes.target_temp_step
-    //   ? stateObj.attributes.target_temp_step
-    //   : 1;
-    // const gradient = true;
-    // const gradientPoints = [
-    //   { point: 0, color: '#4fdae4' },
-    //   { point: 10, color: '#2da9d8' },
-    //   { point: 25, color: '#56b557' },
-    //   { point: 50, color: '#f4c807' },
-    //   { point: 70, color: '#faaa00' },
-    //   { point: 100, color: '#f86618' },
-    // ];
+    const track_height = ((100 / 21) * (thermostat__target - 4)).toString() + '%';
+
     const fullscreen = 'fullscreen' in this.config ? this.config.fullscreen : true;
     this.settings = 'settings' in this.config ? true : false;
     this.settingsCustomCard = 'settingsCard' in this.config ? true : false;
@@ -165,45 +169,50 @@ class TadoPopupCard extends LitElement {
     return html`
       <div class="${fullscreen === true ? 'popup-wrapper' : ''}">
         <div class="${classMap({ [mode]: true })}" style="display:flex;width:100%;height:100%;">
-          <div id="popup" class="popup-inner ${thermostat__class}" @click="${e => this._close(e)}">
-            ${this.tempselection
+          <!-- <div id="popup" class="popup-inner ${this.temp_class}" @click="${e => this._close(e)}"> -->
+          <div id="popup" class="popup-inner ${this.temp_class}">
+            ${this.temp_selection
               ? html`
                   <!-- Tado set temp START -->
                   <div class="tado-card--slider">
                     <div class="temperature-slider--header " style="">
                       <div class="temperature-slider--toolbar">
-                        <div @click="${() => this._thermostat_mouseclick()}">
-                          <svg class="panel-btn" tabindex="2" id="back-button" viewBox="0 0 28 28">
-                            <path
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
-                              d="M0 14C0 21.732 6.26801 28 14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14ZM26.7272 14C26.7272 21.0291 21.029 26.7273 14 26.7273C6.97089 26.7273 1.27269 21.0291 1.27269 14C1.27269 6.97091 6.97089 1.27272 14 1.27272C21.029 1.27272 26.7272 6.97091 26.7272 14Z"
-                              fill="#007AFF"
-                            ></path>
+                        <div>
+                          <div class="btn-back" @click="${e => this._thermostat_mouseclick(e)}">
+                            <svg class="panel-btn" tabindex="2" id="back-button" viewBox="0 0 28 28">
+                              <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M0 14C0 21.732 6.26801 28 14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14ZM26.7272 14C26.7272 21.0291 21.029 26.7273 14 26.7273C6.97089 26.7273 1.27269 21.0291 1.27269 14C1.27269 6.97091 6.97089 1.27272 14 1.27272C21.029 1.27272 26.7272 6.97091 26.7272 14Z"
+                                fill="#007AFF"
+                              ></path>
+                              <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M14 0C6.26734 0 0 6.26734 0 14C0 21.7315 6.26734 28 14 28C21.7315 28 28 21.7315 28 14C28 6.26734 21.7315 0 14 0Z"
+                              ></path>
+                              <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M11.9318 14.1273C11.806 13.9964 11.8079 13.7891 11.9362 13.6606L17.0778 8.50739C17.4034 8.18102 17.4023 7.653 17.0753 7.32802L16.9897 7.24301C16.6627 6.91802 16.1337 6.91914 15.808 7.24551L9.43074 13.6372C9.30248 13.7657 9.30054 13.973 9.42636 14.1039L15.8075 20.7433C16.1269 21.0757 16.6559 21.0867 16.989 20.7679L17.0761 20.6845C17.4091 20.3657 17.4201 19.8378 17.1007 19.5054L11.9318 14.1273Z"
+                                fill="white"
+                              ></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="btn-confirm" @click="${e => this._thermostat_mouseclick(e)}">
+                          <svg class="panel-btn" tabindex="2" id="confirm-button" viewBox="0 0 28 28">
                             <path
                               fill-rule="evenodd"
                               clip-rule="evenodd"
                               d="M14 0C6.26734 0 0 6.26734 0 14C0 21.7315 6.26734 28 14 28C21.7315 28 28 21.7315 28 14C28 6.26734 21.7315 0 14 0Z"
                             ></path>
                             <path
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
-                              d="M11.9318 14.1273C11.806 13.9964 11.8079 13.7891 11.9362 13.6606L17.0778 8.50739C17.4034 8.18102 17.4023 7.653 17.0753 7.32802L16.9897 7.24301C16.6627 6.91802 16.1337 6.91914 15.808 7.24551L9.43074 13.6372C9.30248 13.7657 9.30054 13.973 9.42636 14.1039L15.8075 20.7433C16.1269 21.0757 16.6559 21.0867 16.989 20.7679L17.0761 20.6845C17.4091 20.3657 17.4201 19.8378 17.1007 19.5054L11.9318 14.1273Z"
+                              d="M12.2465 18.0302L19.8067 8.95796C20.0929 8.61449 20.6033 8.56809 20.9468 8.85431C21.2902 9.14052 21.3367 9.65098 21.0504 9.99444L12.9552 19.7087C12.6625 20.0599 12.1372 20.0992 11.7955 19.7955L6.93839 15.4781C6.60423 15.181 6.57413 14.6693 6.87116 14.3352C7.16819 14.001 7.67986 13.9709 8.01402 14.268L12.2465 18.0302Z"
                               fill="white"
                             ></path>
                           </svg>
                         </div>
-                        <svg class="panel-btn " tabindex="2" id="confirm-button" viewBox="0 0 28 28">
-                          <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M14 0C6.26734 0 0 6.26734 0 14C0 21.7315 6.26734 28 14 28C21.7315 28 28 21.7315 28 14C28 6.26734 21.7315 0 14 0Z"
-                          ></path>
-                          <path
-                            d="M12.2465 18.0302L19.8067 8.95796C20.0929 8.61449 20.6033 8.56809 20.9468 8.85431C21.2902 9.14052 21.3367 9.65098 21.0504 9.99444L12.9552 19.7087C12.6625 20.0599 12.1372 20.0992 11.7955 19.7955L6.93839 15.4781C6.60423 15.181 6.57413 14.6693 6.87116 14.3352C7.16819 14.001 7.67986 13.9709 8.01402 14.268L12.2465 18.0302Z"
-                            fill="white"
-                          ></path>
-                        </svg>
                       </div>
                       <div class="value-label">
                         <div class="app-temperature-display"></div>
@@ -214,13 +223,10 @@ class TadoPopupCard extends LitElement {
                     </div>
                     <div class="room-thermostat-area--slider" tabindex="0">
                       <div class="app-temperature-slider" style="width: 300px; height: 400px; opacity: 1;">
-                        <div
-                          id="track"
-                          class="track"
-                          style="height: ${((100 / 21) * (thermostat__target - 4)).toString() + '%'};"
-                        ></div>
+                        <div id="track" class="track" style="height: ${track_height};"></div>
 
                         <input
+                          id="tempvaluerange"
                           type="range"
                           min="4"
                           max="25"
@@ -240,7 +246,7 @@ class TadoPopupCard extends LitElement {
                     class="tado-card"
                     @mousedown="${() => this._thermostat_mousedown()}"
                     @mouseup="${() => this._thermostat_mouseup()}"
-                    @click="${() => this._thermostat_mouseclick()}"
+                    @click="${e => this._thermostat_mouseclick(e)}"
                   >
                     <div id="thermostat" class="room-thermostat-area" tabindex="0">
                       <div class="thermostat">
@@ -270,11 +276,17 @@ class TadoPopupCard extends LitElement {
                               </svg>
                             </div>
                           </div>
+                          ${this.temp_overlay
+                            ? html`
+                                <div class="thermostat__footer">
+                                  <div class="thermostat__footer_termination_content_text">Manual Override Active</div>
+                                  <button class="btn btn--cancel">Cancel</button>
+                                </div>
+                              `
+                            : html`
+                                <div class="thermostat__footer" style="max-height: 0%; opacity: 0"></div>
+                              `}
                         </div>
-                        <div
-                          class="thermostat__footer  ng-trigger ng-trigger-closeFooter"
-                          style="max-height: 0%; opacity: 0"
-                        ></div>
                       </div>
                     </div>
                   </div>
@@ -298,72 +310,75 @@ class TadoPopupCard extends LitElement {
                   </div>
                   <!-- Tado Sensors END -->
                 `}
-
-            <div>
-              ${this.settings
-                ? html`
-                    <button
-                      class="settings-btn ${this.settingsPosition}${fullscreen === true ? ' fullscreen' : ''}"
-                      @click="${() => this._openSettings()}"
-                    >
-                      ${this.config.settings.openButton ? this.config.settings.openButton : 'Settings'}
-                    </button>
-                  `
-                : html``}
-            </div>
-            ${this.settings
-              ? html`
-                  <div id="settings" class="settings-inner" @click="${e => this._close(e)}">
-                    ${this.settingsCustomCard
-                      ? html`
-                          <card-maker
-                            nohass
-                            data-card="${this.config.settingsCard.type}"
-                            data-options="${JSON.stringify(this.config.settingsCard.cardOptions)}"
-                            data-style="${this.config.settingsCard.cardStyle ? this.config.settingsCard.cardStyle : ''}"
-                          >
-                          </card-maker>
-                        `
-                      : html`
-                          <more-info-controls
-                            .dialogElement=${null}
-                            .canConfigure=${false}
-                            .hass=${this.hass}
-                            .stateObj=${stateObj}
-                            style="--paper-slider-knob-color: white !important;
-                  --paper-slider-knob-start-color: white !important;
-                  --paper-slider-pin-color: white !important;
-                  --paper-slider-active-color: white !important;
-                  color: white !important;
-                  --primary-text-color: white !important;"
-                          ></more-info-controls>
-                        `}
-                    <button
-                      class="settings-btn ${this.settingsPosition}${fullscreen === true ? ' fullscreen' : ''}"
-                      @click="${() => this._closeSettings()}"
-                    >
-                      ${this.config.settings.closeButton ? this.config.settings.closeButton : 'Close'}
-                    </button>
-                  </div>
-                `
-              : html``}
           </div>
         </div>
       </div>
     `;
   }
 
-  private _thermostat_mouseclick(): void {
+  _thermostat_mouseclick(e: MouseEvent | null = null): void {
+    if (e !== null && this._isCancelOverrideButton(e.target as HTMLButtonElement)) {
+      console.log('cancel');
+      this._handleModeClick();
+      return;
+    }
+    if (e !== null && this._isBackButton(e.target as HTMLDivElement)) {
+      console.log('back');
+      this.shadowRoot.getElementById('popup').className = this.shadowRoot
+        .getElementById('popup')
+        .className.replace(/temp.*/g, '');
+      this.shadowRoot.getElementById('popup').classList.add(this.temp_class);
+    }
+    if (e !== null && this._isConfirmButton(e.target as HTMLDivElement)) {
+      console.log('confirm');
+
+      this._setTemperature(this.temp_wanted);
+      this.shadowRoot.getElementById('popup').className = this.shadowRoot
+        .getElementById('popup')
+        .className.replace(/temp.*/g, '');
+      this.shadowRoot.getElementById('popup').classList.add(this.temp_class);
+    }
+    // if (event.target.classList.contains('btn-confirm')) {
+    //   console.log('set heat');
+    //   this._setTemperature(this.temp_wanted);
+    // }
+
+    // if (event.target.classList.contains('btn-back')) {
+    //   this.shadowRoot.getElementById('popup').className = this.shadowRoot
+    //     .getElementById('popup')
+    //     .className.replace(/temp.*/g, '');
+    //   this.shadowRoot.getElementById('popup').classList.add(this.temp_class);
+    // }
+    console.log(e);
     const thermostat = this.shadowRoot;
-    if (this.tempselection) {
-      this.tempselection = false;
+    if (this.temp_selection) {
+      this.temp_selection = false;
       thermostat.getElementById('popup').classList.remove('settemp');
       thermostat.getElementById('popup').classList.add('backed');
     } else {
-      this.tempselection = true;
+      this.temp_selection = true;
       thermostat.getElementById('popup').classList.add('settemp');
       thermostat.getElementById('popup').classList.remove('backed');
     }
+  }
+
+  private _isCancelOverrideButton(target: HTMLButtonElement): boolean {
+    console.log({ target });
+    const cancelOverrideClass = 'btn--cancel';
+    const exists = target.classList.contains(cancelOverrideClass);
+    return exists;
+  }
+  private _isBackButton(target: HTMLDivElement): boolean {
+    console.log({ target });
+    const BackBtnClass = 'btn-back';
+    const exists = target.classList.contains(BackBtnClass);
+    return exists;
+  }
+  private _isConfirmButton(target: HTMLDivElement): boolean {
+    console.log({ target });
+    const confirmBtnClass = 'btn-confirm';
+    const exists = target.classList.contains(confirmBtnClass);
+    return exists;
   }
 
   firstUpdated() {
@@ -402,153 +417,114 @@ class TadoPopupCard extends LitElement {
     }
   }
 
-  updated() {
+  updated(): void {
     this._setTemp = this._getSetTemp(this.hass!.states[this.config!.entity]);
+    this.temp_overlay = this._getOverlayState(this.hass!.states[this.config!.overlay]);
   }
 
-  _openSettings() {
+  _openSettings(): void {
     this.shadowRoot.getElementById('popup').classList.add('off');
     this.shadowRoot.getElementById('settings').classList.add('on');
   }
-  _closeSettings() {
+  _closeSettings(): void {
     this.shadowRoot.getElementById('settings').classList.remove('on');
     this.shadowRoot.getElementById('popup').classList.remove('off');
   }
-  _thermostat_mousedown() {
-    // console.log(this);
+  _thermostat_mousedown(): void {
     this.shadowRoot.getElementById('thermostat').classList.add('mousedown');
   }
-  _thermostat_mouseup() {
-    // console.log(this);
+  _thermostat_mouseup(): void {
     this.shadowRoot.getElementById('thermostat').classList.remove('mousedown');
   }
 
-  _change_track(e) {
-    // if (e.type == 'change') {
-    // console.log(e.srcElement.value);
-    // } else if (e.type == 'input') {
-    // console.log(e);
+  _change_track(e): void {
     this.shadowRoot.getElementById('track').style.height = ((100 / 21) * (e.srcElement.value - 4)).toString() + '%';
-    //   $('#div')[0].className =
-    //   $('#div')[0].className.replace(/\bel.*?\b/g, '');
-    // el_down.innerHTML =
-    //   "Every class starting with 'el' is removed from the element.";
-
+    const temp_string = e.srcElement.value.toString();
+    const temp_string_deg = e.srcElement.value.toString() + '&#176;';
     if (e.srcElement.value - 4 > 0) {
       this.shadowRoot.getElementById('popup').className = this.shadowRoot
         .getElementById('popup')
         .className.replace(/temp.*/g, '');
-      this.shadowRoot.getElementById('popup').classList.add('temp-' + e.srcElement.value.toString());
-      // this.shadowRoot.getElementById('target_temp_track').textContent(e.srcElement.value.toString() + '%');
+      this.shadowRoot.getElementById('popup').classList.add('temp-' + temp_string);
+      this.shadowRoot.getElementById('target_temp_track').innerHTML = temp_string_deg;
     } else {
+      this.shadowRoot.getElementById('popup').className = this.shadowRoot
+        .getElementById('popup')
+        .className.replace(/temp.*/g, '');
       this.shadowRoot.getElementById('popup').classList.add('temp-off');
-      // this.shadowRoot.getElementById('target_temp_track').textContent('OFF');
+      this.shadowRoot.getElementById('target_temp_track').innerHTML = 'OFF';
     }
-
-    // } else {
-    // console.log(e);
-    // }
-    // console.log(e);
-  }
-
-  _renderIcon(mode: string, currentMode: string) {
-    if (!this.modeIcons[mode]) {
-      return html``;
-    }
-    return html`
-      <ha-icon-button
-        class="${classMap({ 'selected-icon': currentMode === mode })}"
-        .mode="${mode}"
-        .icon="${this.modeIcons[mode]}"
-        @click="${this._handleModeClick}"
-        tabindex="0"
-      ></ha-icon-button>
-    `;
-  }
-
-  _handleModeClick(e: MouseEvent): void {
-    this.hass!.callService('climate', 'set_hvac_mode', {
-      entity_id: this.config!.entity,
-      hvac_mode: (e.currentTarget as any).mode,
-    });
+    console.log(e.srcElement.value);
+    this.temp_wanted = e.srcElement.value;
   }
 
   _getSetTemp(stateObj) {
     if (stateObj.state === 'unavailable') {
       return this.hass!.localize('state.default.unavailable');
     }
-
     if (stateObj.attributes.target_temp_low && stateObj.attributes.target_temp_high) {
       return [stateObj.attributes.target_temp_low, stateObj.attributes.target_temp_high];
     }
-
     return stateObj.attributes.temperature;
   }
 
-  _close(event) {
-    if (
-      event &&
-      (event.target.className.includes('popup-inner') || event.target.className.includes('settings-inner'))
-    ) {
-      closePopUp();
+  _getOverlayState(stateObj) {
+    const overlay = stateObj.state;
+    if (overlay === 'unavailable') {
+      return this.hass!.localize('state.default.unavailable');
+    }
+    const isTrueSet = overlay === 'True';
+    return isTrueSet;
+  }
+
+  _close(event): void {
+    if (event && event.target.classList.length > 0) {
+      if (event.target.classList.contains('popup-inner') || event.target.classList.contains('settings-inner')) {
+        closePopUp();
+      }
     }
   }
 
-  _dragEvent(e): void {
-    const stateObj = this.hass!.states[this.config!.entity];
-
-    if (e.detail.low) {
-      this._setTemp = [e.detail.low, stateObj.attributes.target_temp_high];
-    } else if (e.detail.high) {
-      this._setTemp = [stateObj.attributes.target_temp_low, e.detail.high];
-    } else {
-      this._setTemp = e.detail.value;
-    }
+  _setTemperature(temperature: number): void {
+    console.log(temperature);
+    this.hass!.callService('climate', 'set_temperature', {
+      entity_id: this.config!.entity,
+      temperature: temperature,
+    });
   }
-
-  _setTemperature(e): void {
-    const stateObj = this.hass!.states[this.config!.entity];
-
-    if (e.detail.low) {
-      this.hass!.callService('climate', 'set_temperature', {
-        entity_id: this.config!.entity,
-        target_temp_low: e.detail.low,
-        target_temp_high: stateObj.attributes.target_temp_high,
-      });
-    } else if (e.detail.high) {
-      this.hass!.callService('climate', 'set_temperature', {
-        entity_id: this.config!.entity,
-        target_temp_low: stateObj.attributes.target_temp_low,
-        target_temp_high: e.detail.high,
-      });
-    } else {
-      this.hass!.callService('climate', 'set_temperature', {
-        entity_id: this.config!.entity,
-        temperature: e.detail.value,
-      });
-    }
+  _handleModeClick(): void {
+    this.hass!.callService('climate', 'set_hvac_mode', {
+      entity_id: this.config!.entity,
+      hvac_mode: 'auto',
+    });
   }
+  // _compareClimateHvacModes = (mode1, mode2) => this.hvacModeOrdering[mode1] - this.hvacModeOrdering[mode2];
 
-  _compareClimateHvacModes = (mode1, mode2) => this.hvacModeOrdering[mode1] - this.hvacModeOrdering[mode2];
-
-  setConfig(config) {
+  setConfig(config: { entity: string; heating: string; overlay: string; title: string }): void {
     if (!config.entity) {
       throw new Error('You need to define a climate entity');
     }
     if (!config.heating) {
       throw new Error('You need to define a heating entity');
     }
+    if (!config.title) {
+      throw new Error('You need to give this a title via title: <title>');
+    }
+    if (!config.overlay) {
+      throw new Error('You need to give this a title via title: <title>');
+    }
 
     this.config = config;
   }
 
-  getCardSize(): number {
-    return 1;
-  }
+  // getCardSize(): number {
+  //   return 1;
+  // }
 
   // Import Styling Externally
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   static get styles() {
-    return [mainStyles];
+    return [animation_styling, shared_styling, thermostat_styling, slider_styling];
   }
 }
 
