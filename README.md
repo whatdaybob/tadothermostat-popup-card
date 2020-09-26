@@ -4,7 +4,7 @@
 
 A custom popup lovelace card for use with my other card, the [Tado Thermostat Card](https://github.com/whatdaybob/tadothermostat-card).
 
-Depends on having [@thomasloven]'s [browser_mod](https://github.com/thomasloven/hass-browser_mod) installed.
+Depends on having [@thomasloven's](https://github.com/thomasloven) [browser_mod](https://github.com/thomasloven/hass-browser_mod) installed.
 
 <!-- markdownlint-disable MD033 -->
 
@@ -61,8 +61,10 @@ popup_cards:
 
 **FYI: browser_mod replaces any more-info for the climate entity globally**
 
-![Screenshot of popup](https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/main_page.png)
-![Screenshot of popup in off state](https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/main_off_page.png)
-![Screenshot of popup setting temperature](https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/tempset_page.png)
-![Screenshot of popup dynamic temperature background](https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/tempset-high_page.png)
-![Screenshot of popup with manual override](https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/tempset-high_page.png)
+<!-- markdownlint-disable MD033 -->
+<a href="https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/main_page.png" target="_blank"><img src="https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/main_page.png" alt="Screenshot of popup" style="max-width: 100% !important;height: 500px !important;" ></a>
+<a href="https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/main_off_page.png" target="_blank"><img src="https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/main_off_page.png" alt="Screenshot of popup in off state" style="max-width: 100% !important;height: 500px !important;" ></a>
+<a href="https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/tempset_page.png" target="_blank"><img src="https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/tempset_page.png" alt="Screenshot of popup setting temperature" style="max-width: 100% !important;height: 500px !important;" ></a>
+<a href="https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/tempset-high_page.png" target="_blank"><img src="https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/tempset-high_page.png" alt="Screenshot of popup dynamic temperature background" style="max-width: 100% !important;height: 500px !important;" ></a>
+<a href="https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/tempset-high_page.png" target="_blank"><img src="https://github.com/whatdaybob/tadothermostat-popup-card/blob/master/media/screenshots/tempset-high_page.png" alt="Screenshot of popup with manual override" style="max-width: 100% !important;height: 500px !important;" ></a>
+<!-- markdownlint-enable MD033 -->
