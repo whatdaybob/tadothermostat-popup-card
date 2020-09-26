@@ -9,21 +9,21 @@ jobs:
     name: Prepare release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: "12.x"
-      - name: Install dependencies
-        run: npm ci
+      - uses: actions/checkout@v1
 
+      # Build
+      - name: Build the file
+        run: |
+          cd /home/runner/work/tadothermostat-popup-card/tadothermostat-popup-card
+          npm install
+          npm run build
       # Upload build file to the releas as an asset.
       - name: Upload zip to release
         uses: svenstaro/upload-release-action@v1-release
 
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: /home/runner/work/tadothermostat-card/tadothermostatpopup-card/dist/tadothermostatpopup-card.js
-          asset_name: tadothermostat-card.js
+          file: /home/runner/work/tadothermostat-popup-card/tadothermostat-popup-card/dist/tadothermostat-popup-card.js
+          asset_name: tadothermostat-popup-card.js
           tag: ${{ github.ref }}
           overwrite: true
