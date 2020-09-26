@@ -1,47 +1,20 @@
 import { css } from 'lit-element';
 
-export const mainStyles = css`
-  @keyframes popup_grow {
-    0% {
-      height: 540px;
-    }
-    100% {
-      height: 600px;
-    }
-  }
-  @keyframes tempstart {
-    0% {
-      height: 300px;
-      top: -80px;
-    }
-    100% {
-      height: 400px;
-      top: 0px;
-    }
-  }
-  :host {
-    /* --heat-color: #ee7600;
+export const thermostat_styling = css`
+  /* :host {
+    --heat-color: #ee7600;
     --manual-color: #44739e;
     --off-color: lightgrey;
     --fan_only-color: #8a8a8a;
     --dry-color: #efbd07;
     --idle-color: #00cc66;
-    --unknown-color: #bac; */
-  }
+    --unknown-color: #bac;
+  } */
   :host *:focus {
     outline: -webkit-focus-ring-color auto 0px;
   }
 
-  /* .popup-wrapper {
-    margin-top: 64px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  } */
   .popup-inner {
-    /* height: 100%; */
     max-width: 400px;
     width: 100%;
     display: flex;
@@ -53,6 +26,10 @@ export const mainStyles = css`
   .popup-inner.settemp {
     animation: 0.5s ease-out 0s 1 popup_grow;
   }
+  .popup-inner.backed {
+    animation: 0.5s ease-out 0s 1 popup_shrink;
+  }
+
   .popup-inner.off {
     display: none;
   }
@@ -198,7 +175,7 @@ export const mainStyles = css`
     /* width: 500px; */
     width: 100%;
   }
-  #slider {
+  /* #slider {
     height: 100%;
     width: 100%;
     position: relative;
@@ -221,9 +198,9 @@ export const mainStyles = css`
     text-align: center;
     overflow-wrap: break-word;
     pointer-events: none;
-  }
+  } */
 
-  .values {
+  /* .values {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -249,7 +226,7 @@ export const mainStyles = css`
   }
   #modes .selected-icon {
     --iron-icon-fill-color: var(--mode-color);
-  }
+  } */
   text {
     color: var(--primary-text-color);
   }
@@ -406,6 +383,8 @@ export const mainStyles = css`
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: absolute;
+    width: 100%;
   }
   .thermostat__header_and_body {
     display: flex;
@@ -423,6 +402,11 @@ export const mainStyles = css`
     opacity: 0.6;
     transition: height 0.3s ease-in-out, top 0.3s ease-in-out, padding-top 0.3s ease-in-out;
   }
+
+  :host([temp_overlay]) .thermostat__body {
+    font-size: 5.5em;
+  }
+
   .thermostat__body {
     position: relative;
     font-size: 6em;
@@ -436,6 +420,54 @@ export const mainStyles = css`
     transition-duration: 1s; /* Transition will last 1 second */
     transition-timing-function: linear; /* Timing function to specify a linear transition type */
     transition-delay: 0s; /* Transition starts after 1 second */
+  }
+  :host([temp_overlay]) .thermostat__footer {
+    display: block;
+    flex: 0 0 35%;
+  }
+  .thermostat__footer {
+    display: none;
+    background-color: #fff;
+    color: #213953;
+  }
+  .thermostat__footercontent {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-flow: column;
+    height: 100%;
+    padding: 1em;
+  }
+  .thermostat__footer_termination_content_text {
+    text-align: center;
+    padding: 10px;
+  }
+
+  .btn {
+    display: inline-block;
+    color: #fff;
+    font-size: 0.9em;
+    text-decoration: none;
+    text-align: left;
+    line-height: 2.5;
+    padding: 0 1.5em;
+    border-radius: 1.25em;
+    border: none;
+    transition: background-color 0.1s ease, box-shadow 0.15s ease;
+  }
+
+  .btn--cancel {
+    color: #213953;
+    border: 1px solid #213953;
+    text-align: center;
+    background-color: #fff;
+    min-width: 144px;
+    margin-bottom: 10px;
+  }
+
+  :host([temp_overlay]) .app-heat-request-indicator {
+    bottom: 20px;
   }
   .app-heat-request-indicator {
     position: absolute;
@@ -510,25 +542,7 @@ export const mainStyles = css`
     opacity: 1;
     left: 50%;
     transform: translateX(-50%);
-    animation: 0.5s ease-out 0s 1 tempstart;
-  }
-  [_nghost-uxt-c62] {
-    display: block;
-    position: relative;
-    overflow: hidden;
-  }
-  .track {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    /* background-image: url(temperature-slider-bg.4cef948….svg); */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="450" height="472" viewBox="0 0 450 472" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M199 22L0 22L3.93402e-05 472L450 472L450 22H251C251 36.3594 239.359 48 225 48C210.641 48 199 36.3594 199 22Z"    fill="white"  /><path fill-rule="evenodd" clip-rule="evenodd" d="M203 22C203 9.84974 212.85 0 225 0C237.15 0 247 9.84974 247 22C247 34.1503 237.15 44 225 44C212.85 44 203 34.1503 203 22ZM220 12L218.5 10.5L225 4L231.5 10.5L230 12L225 7L220 12ZM231.5 33.5L230 32L225 37L220 32L218.5 33.5L225 40L231.5 33.5Z"    fill="white"  /></svg>');
-    background-position: center 0;
-    background-repeat: no-repeat;
-    background-clip: padding-box;
-    padding: 22px 0 0;
-    box-sizing: content-box;
+    animation: 0.5s ease-out 0s 1 temp_slider_start;
   }
   input[type='range'] {
     background-color: transparent;
