@@ -1,9 +1,18 @@
 resources:
-  - url: http://127.0.0.1:5000/tadothermostat-card.js
+  - url: http://127.0.0.1:5000/tadothermostatpopup-card.js
     type: module
+
+popup_cards:
+  climate.master_bedroom:
+    card:
+      type: custom:tado-popup-card
+      entity: climate.master_bedroom
+      heating: sensor.master_bedroom_heating
+      overlay: sensor.master_bedroom_overlay
+      title: Master Bedroom
+
 views:
   - cards:
       - type: custom:tadothermostat-card
-        name: Tadothermostat Card Development
-        entity: climate.hallway
-        test_gui: true
+        name: Tado Thermostat Card Development
+        entity: climate.master_bedroom

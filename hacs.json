@@ -1,5 +1,5 @@
 {
-    "name": "Tadothermostat Card",
+    "name": "Tado Thermostat Popup Card",
     "render_readme": true,
-    "filename": "tadothermostat-card.js"
+    "filename": "tadothermostatpopup-card.js"
 }
