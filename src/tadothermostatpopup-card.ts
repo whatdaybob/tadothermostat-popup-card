@@ -318,19 +318,19 @@ class TadoPopupCard extends LitElement {
 
   _thermostat_mouseclick(e: MouseEvent | null = null): void {
     if (e !== null && this._isCancelOverrideButton(e.target as HTMLButtonElement)) {
-      console.log('cancel');
+      // console.log('cancel');
       this._handleModeClick();
       return;
     }
     if (e !== null && this._isBackButton(e.target as HTMLDivElement)) {
-      console.log('back');
+      // console.log('back');
       this.shadowRoot.getElementById('popup').className = this.shadowRoot
         .getElementById('popup')
         .className.replace(/temp.*/g, '');
       this.shadowRoot.getElementById('popup').classList.add(this.temp_class);
     }
     if (e !== null && this._isConfirmButton(e.target as HTMLDivElement)) {
-      console.log('confirm');
+      // console.log('confirm');
 
       this._setTemperature(this.temp_wanted);
       this.shadowRoot.getElementById('popup').className = this.shadowRoot
@@ -349,7 +349,7 @@ class TadoPopupCard extends LitElement {
     //     .className.replace(/temp.*/g, '');
     //   this.shadowRoot.getElementById('popup').classList.add(this.temp_class);
     // }
-    console.log(e);
+    // console.log(e);
     const thermostat = this.shadowRoot;
     if (this.temp_selection) {
       this.temp_selection = false;
@@ -363,19 +363,19 @@ class TadoPopupCard extends LitElement {
   }
 
   private _isCancelOverrideButton(target: HTMLButtonElement): boolean {
-    console.log({ target });
+    // console.log({ target });
     const cancelOverrideClass = 'btn--cancel';
     const exists = target.classList.contains(cancelOverrideClass);
     return exists;
   }
   private _isBackButton(target: HTMLDivElement): boolean {
-    console.log({ target });
+    // console.log({ target });
     const BackBtnClass = 'btn-back';
     const exists = target.classList.contains(BackBtnClass);
     return exists;
   }
   private _isConfirmButton(target: HTMLDivElement): boolean {
-    console.log({ target });
+    // console.log({ target });
     const confirmBtnClass = 'btn-confirm';
     const exists = target.classList.contains(confirmBtnClass);
     return exists;
@@ -454,7 +454,7 @@ class TadoPopupCard extends LitElement {
       this.shadowRoot.getElementById('popup').classList.add('temp-off');
       this.shadowRoot.getElementById('target_temp_track').innerHTML = 'OFF';
     }
-    console.log(e.srcElement.value);
+    // console.log(e.srcElement.value);
     this.temp_wanted = e.srcElement.value;
   }
 
@@ -486,7 +486,7 @@ class TadoPopupCard extends LitElement {
   }
 
   _setTemperature(temperature: number): void {
-    console.log(temperature);
+    // console.log(temperature);
     this.hass!.callService('climate', 'set_temperature', {
       entity_id: this.config!.entity,
       temperature: temperature,

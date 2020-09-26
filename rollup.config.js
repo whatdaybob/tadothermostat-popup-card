@@ -1,7 +1,7 @@
 import typescript from 'rollup-plugin-typescript2';
-import commonjs from 'rollup-plugin-commonjs';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import commonjs from '@rollup/plugin-commonjs';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 import serve from 'rollup-plugin-serve';
 import json from '@rollup/plugin-json';
@@ -19,19 +19,25 @@ const serveopts = {
 };
 
 const plugins = [
-  nodeResolve({}),
+  nodeResolve(),
   commonjs(),
-  typescript(),
+  typescript({ clean: true }),
   json(),
-  babel({
-    exclude: 'node_modules/**',
-  }),
+  // babel({
+  //   exclude: 'node_modules/**',
+  // }),
+  babel({ babelHelpers: 'bundled' }),
   dev && serve(serveopts),
   !dev && terser(),
 ];
 
 export default [
   {
+    watch: {
+      chokidar: {
+        usePolling: true,
+      },
+    },
     input: 'src/tadothermostatpopup-card.ts',
     output: {
       dir: 'dist',
