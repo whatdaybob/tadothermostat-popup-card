@@ -40,6 +40,7 @@ export const animation_styling = css`
       transform: translate(0%, 0%);
     }
   }
+
   @keyframes track_fadein {
     0% {
       opacity: 0;

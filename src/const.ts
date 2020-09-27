@@ -1,1 +1,1 @@
-export const POPUP_CARD_VERSION = '0.4';
+export const CARD_VERSION = '0.0.1';

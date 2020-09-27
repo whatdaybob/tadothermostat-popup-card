@@ -1,3 +1,25 @@
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+function __decorate(decorators, target, key, desc) {
+  var c = arguments.length,
+      r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+      d;
+  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+  return c > 3 && r && Object.defineProperty(target, key, r), r;
+}
+
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -463,52 +485,6 @@ function insertNodeIntoTemplate(template, node, refNode = null) {
  * http://polymer.github.io/PATENTS.txt
  */
 const directives = new WeakMap();
-/**
- * Brands a function as a directive factory function so that lit-html will call
- * the function during template rendering, rather than passing as a value.
- *
- * A _directive_ is a function that takes a Part as an argument. It has the
- * signature: `(part: Part) => void`.
- *
- * A directive _factory_ is a function that takes arguments for data and
- * configuration and returns a directive. Users of directive usually refer to
- * the directive factory as the directive. For example, "The repeat directive".
- *
- * Usually a template author will invoke a directive factory in their template
- * with relevant arguments, which will then return a directive function.
- *
- * Here's an example of using the `repeat()` directive factory that takes an
- * array and a function to render an item:
- *
- * ```js
- * html`<ul><${repeat(items, (item) => html`<li>${item}</li>`)}</ul>`
- * ```
- *
- * When `repeat` is invoked, it returns a directive function that closes over
- * `items` and the template function. When the outer template is rendered, the
- * return directive function is called with the Part for the expression.
- * `repeat` then performs it's custom logic to render multiple items.
- *
- * @param f The directive factory function. Must be a function that returns a
- * function of the signature `(part: Part) => void`. The returned function will
- * be called with the part object.
- *
- * @example
- *
- * import {directive, html} from 'lit-html';
- *
- * const immutable = directive((v) => (part) => {
- *   if (part.value !== v) {
- *     part.setValue(v)
- *   }
- * });
- */
-
-const directive = f => (...args) => {
-  const d = f(...args);
-  directives.set(d, true);
-  return d;
-};
 const isDirective = o => {
   return typeof o === 'function' && directives.has(o);
 };
@@ -2584,6 +2560,136 @@ _a = finalized;
 UpdatingElement[_a] = true;
 
 /**
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+const legacyCustomElement = (tagName, clazz) => {
+  window.customElements.define(tagName, clazz); // Cast as any because TS doesn't recognize the return type as being a
+  // subtype of the decorated class when clazz is typed as
+  // `Constructor<HTMLElement>` for some reason.
+  // `Constructor<HTMLElement>` is helpful to make sure the decorator is
+  // applied to elements however.
+  // tslint:disable-next-line:no-any
+
+  return clazz;
+};
+
+const standardCustomElement = (tagName, descriptor) => {
+  const {
+    kind,
+    elements
+  } = descriptor;
+  return {
+    kind,
+    elements,
+
+    // This callback is called once the class is otherwise fully defined
+    finisher(clazz) {
+      window.customElements.define(tagName, clazz);
+    }
+
+  };
+};
+/**
+ * Class decorator factory that defines the decorated class as a custom element.
+ *
+ * ```
+ * @customElement('my-element')
+ * class MyElement {
+ *   render() {
+ *     return html``;
+ *   }
+ * }
+ * ```
+ * @category Decorator
+ * @param tagName The name of the custom element to define.
+ */
+
+
+const customElement = tagName => classOrDescriptor => typeof classOrDescriptor === 'function' ? legacyCustomElement(tagName, classOrDescriptor) : standardCustomElement(tagName, classOrDescriptor);
+
+const standardProperty = (options, element) => {
+  // When decorating an accessor, pass it through and add property metadata.
+  // Note, the `hasOwnProperty` check in `createProperty` ensures we don't
+  // stomp over the user's accessor.
+  if (element.kind === 'method' && element.descriptor && !('value' in element.descriptor)) {
+    return Object.assign(Object.assign({}, element), {
+      finisher(clazz) {
+        clazz.createProperty(element.key, options);
+      }
+
+    });
+  } else {
+    // createProperty() takes care of defining the property, but we still
+    // must return some kind of descriptor, so return a descriptor for an
+    // unused prototype field. The finisher calls createProperty().
+    return {
+      kind: 'field',
+      key: Symbol(),
+      placement: 'own',
+      descriptor: {},
+
+      // When @babel/plugin-proposal-decorators implements initializers,
+      // do this instead of the initializer below. See:
+      // https://github.com/babel/babel/issues/9260 extras: [
+      //   {
+      //     kind: 'initializer',
+      //     placement: 'own',
+      //     initializer: descriptor.initializer,
+      //   }
+      // ],
+      initializer() {
+        if (typeof element.initializer === 'function') {
+          this[element.key] = element.initializer.call(this);
+        }
+      },
+
+      finisher(clazz) {
+        clazz.createProperty(element.key, options);
+      }
+
+    };
+  }
+};
+
+const legacyProperty = (options, proto, name) => {
+  proto.constructor.createProperty(name, options);
+};
+/**
+ * A property decorator which creates a LitElement property which reflects a
+ * corresponding attribute value. A [[`PropertyDeclaration`]] may optionally be
+ * supplied to configure property features.
+ *
+ * This decorator should only be used for public fields. Private or protected
+ * fields should use the [[`internalProperty`]] decorator.
+ *
+ * @example
+ * ```ts
+ * class MyElement {
+ *   @property({ type: Boolean })
+ *   clicked = false;
+ * }
+ * ```
+ * @category Decorator
+ * @ExportDecoratedItems
+ */
+
+
+function property(options) {
+  // tslint:disable-next-line:no-any decorator
+  return (protoOrDescriptor, name) => name !== undefined ? legacyProperty(options, protoOrDescriptor, name) : standardProperty(options, protoOrDescriptor);
+}
+
+/**
 @license
 Copyright (c) 2019 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at
@@ -2917,267 +3023,549 @@ LitElement['finalized'] = true;
 
 LitElement.render = render$1;
 
-/**
- * @license
- * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
+var token = /d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|Z|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g;
+var twoDigitsOptional = "[1-9]\\d?";
+var twoDigits = "\\d\\d";
+var threeDigits = "\\d{3}";
+var fourDigits = "\\d{4}";
+var word = "[^\\s]+";
+var literal = /\[([^]*?)\]/gm;
 
-class ClassList {
-  constructor(element) {
-    this.classes = new Set();
-    this.changed = false;
-    this.element = element;
-    const classList = (element.getAttribute('class') || '').split(/\s+/);
+function shorten(arr, sLen) {
+  var newArr = [];
 
-    for (const cls of classList) {
-      this.classes.add(cls);
-    }
+  for (var i = 0, len = arr.length; i < len; i++) {
+    newArr.push(arr[i].substr(0, sLen));
   }
 
-  add(cls) {
-    this.classes.add(cls);
-    this.changed = true;
-  }
-
-  remove(cls) {
-    this.classes.delete(cls);
-    this.changed = true;
-  }
-
-  commit() {
-    if (this.changed) {
-      let classString = '';
-      this.classes.forEach(cls => classString += cls + ' ');
-      this.element.setAttribute('class', classString);
-    }
-  }
-
+  return newArr;
 }
-/**
- * Stores the ClassInfo object applied to a given AttributePart.
- * Used to unset existing values when a new ClassInfo object is applied.
- */
 
-
-const previousClassesCache = new WeakMap();
-/**
- * A directive that applies CSS classes. This must be used in the `class`
- * attribute and must be the only part used in the attribute. It takes each
- * property in the `classInfo` argument and adds the property name to the
- * element's `class` if the property value is truthy; if the property value is
- * falsey, the property name is removed from the element's `class`. For example
- * `{foo: bar}` applies the class `foo` if the value of `bar` is truthy.
- * @param classInfo {ClassInfo}
- */
-
-const classMap = directive(classInfo => part => {
-  if (!(part instanceof AttributePart) || part instanceof PropertyPart || part.committer.name !== 'class' || part.committer.parts.length > 1) {
-    throw new Error('The `classMap` directive must be used in the `class` attribute ' + 'and must be the only part in the attribute.');
-  }
-
-  const {
-    committer
-  } = part;
-  const {
-    element
-  } = committer;
-  let previousClasses = previousClassesCache.get(part);
-
-  if (previousClasses === undefined) {
-    // Write static classes once
-    // Use setAttribute() because className isn't a string on SVG elements
-    element.setAttribute('class', committer.strings.join(' '));
-    previousClassesCache.set(part, previousClasses = new Set());
-  }
-
-  const classList = element.classList || new ClassList(element); // Remove old classes that no longer apply
-  // We use forEach() instead of for-of so that re don't require down-level
-  // iteration.
-
-  previousClasses.forEach(name => {
-    if (!(name in classInfo)) {
-      classList.remove(name);
-      previousClasses.delete(name);
-    }
-  }); // Add or remove classes based on their classMap value
-
-  for (const name in classInfo) {
-    const value = classInfo[name];
-
-    if (value != previousClasses.has(name)) {
-      // We explicitly want a loose truthy check of `value` because it seems
-      // more convenient that '' and 0 are skipped.
-      if (value) {
-        classList.add(name);
-        previousClasses.add(name);
-      } else {
-        classList.remove(name);
-        previousClasses.delete(name);
-      }
-    }
-  }
-
-  if (typeof classList.commit === 'function') {
-    classList.commit();
-  }
-});
-
-function hass() {
-  if (document.querySelector('hc-main')) return document.querySelector('hc-main').hass;
-  if (document.querySelector('home-assistant')) return document.querySelector('home-assistant').hass;
-  return undefined;
-}
-function lovelace_view() {
-  var root = document.querySelector("hc-main");
-
-  if (root) {
-    root = root && root.shadowRoot;
-    root = root && root.querySelector("hc-lovelace");
-    root = root && root.shadowRoot;
-    root = root && root.querySelector("hui-view") || root.querySelector("hui-panel-view");
-    return root;
-  }
-
-  root = document.querySelector("home-assistant");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("home-assistant-main");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("app-drawer-layout partial-panel-resolver");
-  root = root && root.shadowRoot || root;
-  root = root && root.querySelector("ha-panel-lovelace");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("hui-root");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("ha-app-layout");
-  root = root && root.querySelector("#view");
-  root = root && root.firstElementChild;
-  return root;
-}
-async function load_lovelace() {
-  if (customElements.get("hui-view")) return true;
-  await customElements.whenDefined("partial-panel-resolver");
-  const ppr = document.createElement("partial-panel-resolver");
-  ppr.hass = {
-    panels: [{
-      url_path: "tmp",
-      "component_name": "lovelace"
-    }]
-  };
-
-  ppr._updateRoutes();
-
-  await ppr.routerOptions.routes.tmp.load();
-  if (!customElements.get("ha-panel-lovelace")) return false;
-  const p = document.createElement("ha-panel-lovelace");
-  p.hass = hass();
-
-  if (p.hass === undefined) {
-    await new Promise(resolve => {
-      window.addEventListener('connection-status', ev => {
-        console.log(ev);
-        resolve();
-      }, {
-        once: true
-      });
+var monthUpdate = function (arrName) {
+  return function (v, i18n) {
+    var lowerCaseArr = i18n[arrName].map(function (v) {
+      return v.toLowerCase();
     });
-    p.hass = hass();
-  }
+    var index = lowerCaseArr.indexOf(v.toLowerCase());
 
-  p.panel = {
-    config: {
-      mode: null
+    if (index > -1) {
+      return index;
     }
-  };
 
-  p._fetchConfig();
-
-  return true;
-}
-
-async function _selectTree(root, path, all = false) {
-  let el = root;
-
-  if (typeof path === "string") {
-    path = path.split(/(\$| )/);
-  }
-
-  for (const [i, p] of path.entries()) {
-    if (!p.trim().length) continue;
-    if (!el) return null;
-    if (el.localName && el.localName.includes("-")) await customElements.whenDefined(el.localName);
-    if (el.updateComplete) await el.updateComplete;
-    if (p === "$") {
-      if (all && i == path.length - 1) el = [el.shadowRoot];else el = el.shadowRoot;
-    } else if (all && i == path.length - 1) el = el.querySelectorAll(p);else el = el.querySelector(p);
-  }
-
-  return el;
-}
-
-async function selectTree(root, path, all = false, timeout = 10000) {
-  return Promise.race([_selectTree(root, path, all), new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout))]).catch(err => {
-    if (!err.message || err.message !== "timeout") throw err;
     return null;
-  });
-}
-
-function fireEvent(ev, detail, entity = null) {
-  ev = new Event(ev, {
-    bubbles: true,
-    cancelable: false,
-    composed: true
-  });
-  ev.detail = detail || {};
-
-  if (entity) {
-    entity.dispatchEvent(ev);
-  } else {
-    var root = lovelace_view();
-    if (root) root.dispatchEvent(ev);
-  }
-}
-
-let helpers = window.cardHelpers;
-const helperPromise = new Promise(async (resolve, reject) => {
-  if (helpers) resolve();
-
-  const updateHelpers = async () => {
-    helpers = await window.loadCardHelpers();
-    window.cardHelpers = helpers;
-    resolve();
   };
+};
 
-  if (window.loadCardHelpers) {
-    updateHelpers();
-  } else {
-    // If loadCardHelpers didn't exist, force load lovelace and try once more.
-    window.addEventListener("load", async () => {
-      load_lovelace();
+function assign(origObj) {
+  var args = [];
 
-      if (window.loadCardHelpers) {
-        updateHelpers();
-      }
-    });
+  for (var _i = 1; _i < arguments.length; _i++) {
+    args[_i - 1] = arguments[_i];
   }
-});
 
-async function closePopUp() {
-  const root = document.querySelector("home-assistant") || document.querySelector("hc-root");
-  fireEvent("hass-more-info", {
-    entityId: "."
-  }, root);
-  const el = await selectTree(root, "$ card-tools-popup");
-  if (el) el.closeDialog();
+  for (var _a = 0, args_1 = args; _a < args_1.length; _a++) {
+    var obj = args_1[_a];
+
+    for (var key in obj) {
+      // @ts-ignore ex
+      origObj[key] = obj[key];
+    }
+  }
+
+  return origObj;
 }
+
+var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var monthNamesShort = shorten(monthNames, 3);
+var dayNamesShort = shorten(dayNames, 3);
+var defaultI18n = {
+  dayNamesShort: dayNamesShort,
+  dayNames: dayNames,
+  monthNamesShort: monthNamesShort,
+  monthNames: monthNames,
+  amPm: ["am", "pm"],
+  DoFn: function (dayOfMonth) {
+    return dayOfMonth + ["th", "st", "nd", "rd"][dayOfMonth % 10 > 3 ? 0 : (dayOfMonth - dayOfMonth % 10 !== 10 ? 1 : 0) * dayOfMonth % 10];
+  }
+};
+var globalI18n = assign({}, defaultI18n);
+
+var setGlobalDateI18n = function (i18n) {
+  return globalI18n = assign(globalI18n, i18n);
+};
+
+var regexEscape = function (str) {
+  return str.replace(/[|\\{()[^$+*?.-]/g, "\\$&");
+};
+
+var pad = function (val, len) {
+  if (len === void 0) {
+    len = 2;
+  }
+
+  val = String(val);
+
+  while (val.length < len) {
+    val = "0" + val;
+  }
+
+  return val;
+};
+
+var formatFlags = {
+  D: function (dateObj) {
+    return String(dateObj.getDate());
+  },
+  DD: function (dateObj) {
+    return pad(dateObj.getDate());
+  },
+  Do: function (dateObj, i18n) {
+    return i18n.DoFn(dateObj.getDate());
+  },
+  d: function (dateObj) {
+    return String(dateObj.getDay());
+  },
+  dd: function (dateObj) {
+    return pad(dateObj.getDay());
+  },
+  ddd: function (dateObj, i18n) {
+    return i18n.dayNamesShort[dateObj.getDay()];
+  },
+  dddd: function (dateObj, i18n) {
+    return i18n.dayNames[dateObj.getDay()];
+  },
+  M: function (dateObj) {
+    return String(dateObj.getMonth() + 1);
+  },
+  MM: function (dateObj) {
+    return pad(dateObj.getMonth() + 1);
+  },
+  MMM: function (dateObj, i18n) {
+    return i18n.monthNamesShort[dateObj.getMonth()];
+  },
+  MMMM: function (dateObj, i18n) {
+    return i18n.monthNames[dateObj.getMonth()];
+  },
+  YY: function (dateObj) {
+    return pad(String(dateObj.getFullYear()), 4).substr(2);
+  },
+  YYYY: function (dateObj) {
+    return pad(dateObj.getFullYear(), 4);
+  },
+  h: function (dateObj) {
+    return String(dateObj.getHours() % 12 || 12);
+  },
+  hh: function (dateObj) {
+    return pad(dateObj.getHours() % 12 || 12);
+  },
+  H: function (dateObj) {
+    return String(dateObj.getHours());
+  },
+  HH: function (dateObj) {
+    return pad(dateObj.getHours());
+  },
+  m: function (dateObj) {
+    return String(dateObj.getMinutes());
+  },
+  mm: function (dateObj) {
+    return pad(dateObj.getMinutes());
+  },
+  s: function (dateObj) {
+    return String(dateObj.getSeconds());
+  },
+  ss: function (dateObj) {
+    return pad(dateObj.getSeconds());
+  },
+  S: function (dateObj) {
+    return String(Math.round(dateObj.getMilliseconds() / 100));
+  },
+  SS: function (dateObj) {
+    return pad(Math.round(dateObj.getMilliseconds() / 10), 2);
+  },
+  SSS: function (dateObj) {
+    return pad(dateObj.getMilliseconds(), 3);
+  },
+  a: function (dateObj, i18n) {
+    return dateObj.getHours() < 12 ? i18n.amPm[0] : i18n.amPm[1];
+  },
+  A: function (dateObj, i18n) {
+    return dateObj.getHours() < 12 ? i18n.amPm[0].toUpperCase() : i18n.amPm[1].toUpperCase();
+  },
+  ZZ: function (dateObj) {
+    var offset = dateObj.getTimezoneOffset();
+    return (offset > 0 ? "-" : "+") + pad(Math.floor(Math.abs(offset) / 60) * 100 + Math.abs(offset) % 60, 4);
+  },
+  Z: function (dateObj) {
+    var offset = dateObj.getTimezoneOffset();
+    return (offset > 0 ? "-" : "+") + pad(Math.floor(Math.abs(offset) / 60), 2) + ":" + pad(Math.abs(offset) % 60, 2);
+  }
+};
+
+var monthParse = function (v) {
+  return +v - 1;
+};
+
+var emptyDigits = [null, twoDigitsOptional];
+var emptyWord = [null, word];
+var amPm = ["isPm", word, function (v, i18n) {
+  var val = v.toLowerCase();
+
+  if (val === i18n.amPm[0]) {
+    return 0;
+  } else if (val === i18n.amPm[1]) {
+    return 1;
+  }
+
+  return null;
+}];
+var timezoneOffset = ["timezoneOffset", "[^\\s]*?[\\+\\-]\\d\\d:?\\d\\d|[^\\s]*?Z?", function (v) {
+  var parts = (v + "").match(/([+-]|\d\d)/gi);
+
+  if (parts) {
+    var minutes = +parts[1] * 60 + parseInt(parts[2], 10);
+    return parts[0] === "+" ? minutes : -minutes;
+  }
+
+  return 0;
+}];
+var parseFlags = {
+  D: ["day", twoDigitsOptional],
+  DD: ["day", twoDigits],
+  Do: ["day", twoDigitsOptional + word, function (v) {
+    return parseInt(v, 10);
+  }],
+  M: ["month", twoDigitsOptional, monthParse],
+  MM: ["month", twoDigits, monthParse],
+  YY: ["year", twoDigits, function (v) {
+    var now = new Date();
+    var cent = +("" + now.getFullYear()).substr(0, 2);
+    return +("" + (+v > 68 ? cent - 1 : cent) + v);
+  }],
+  h: ["hour", twoDigitsOptional, undefined, "isPm"],
+  hh: ["hour", twoDigits, undefined, "isPm"],
+  H: ["hour", twoDigitsOptional],
+  HH: ["hour", twoDigits],
+  m: ["minute", twoDigitsOptional],
+  mm: ["minute", twoDigits],
+  s: ["second", twoDigitsOptional],
+  ss: ["second", twoDigits],
+  YYYY: ["year", fourDigits],
+  S: ["millisecond", "\\d", function (v) {
+    return +v * 100;
+  }],
+  SS: ["millisecond", twoDigits, function (v) {
+    return +v * 10;
+  }],
+  SSS: ["millisecond", threeDigits],
+  d: emptyDigits,
+  dd: emptyDigits,
+  ddd: emptyWord,
+  dddd: emptyWord,
+  MMM: ["month", word, monthUpdate("monthNamesShort")],
+  MMMM: ["month", word, monthUpdate("monthNames")],
+  a: amPm,
+  A: amPm,
+  ZZ: timezoneOffset,
+  Z: timezoneOffset
+}; // Some common format strings
+
+var globalMasks = {
+  default: "ddd MMM DD YYYY HH:mm:ss",
+  shortDate: "M/D/YY",
+  mediumDate: "MMM D, YYYY",
+  longDate: "MMMM D, YYYY",
+  fullDate: "dddd, MMMM D, YYYY",
+  isoDate: "YYYY-MM-DD",
+  isoDateTime: "YYYY-MM-DDTHH:mm:ssZ",
+  shortTime: "HH:mm",
+  mediumTime: "HH:mm:ss",
+  longTime: "HH:mm:ss.SSS"
+};
+
+var setGlobalDateMasks = function (masks) {
+  return assign(globalMasks, masks);
+};
+/***
+ * Format a date
+ * @method format
+ * @param {Date|number} dateObj
+ * @param {string} mask Format of the date, i.e. 'mm-dd-yy' or 'shortDate'
+ * @returns {string} Formatted date string
+ */
+
+
+var format = function (dateObj, mask, i18n) {
+  if (mask === void 0) {
+    mask = globalMasks["default"];
+  }
+
+  if (i18n === void 0) {
+    i18n = {};
+  }
+
+  if (typeof dateObj === "number") {
+    dateObj = new Date(dateObj);
+  }
+
+  if (Object.prototype.toString.call(dateObj) !== "[object Date]" || isNaN(dateObj.getTime())) {
+    throw new Error("Invalid Date pass to format");
+  }
+
+  mask = globalMasks[mask] || mask;
+  var literals = []; // Make literals inactive by replacing them with @@@
+
+  mask = mask.replace(literal, function ($0, $1) {
+    literals.push($1);
+    return "@@@";
+  });
+  var combinedI18nSettings = assign(assign({}, globalI18n), i18n); // Apply formatting rules
+
+  mask = mask.replace(token, function ($0) {
+    return formatFlags[$0](dateObj, combinedI18nSettings);
+  }); // Inline literal values back into the formatted value
+
+  return mask.replace(/@@@/g, function () {
+    return literals.shift();
+  });
+};
+/**
+ * Parse a date string into a Javascript Date object /
+ * @method parse
+ * @param {string} dateStr Date string
+ * @param {string} format Date parse format
+ * @param {i18n} I18nSettingsOptional Full or subset of I18N settings
+ * @returns {Date|null} Returns Date object. Returns null what date string is invalid or doesn't match format
+ */
+
+
+function parse(dateStr, format, i18n) {
+  if (i18n === void 0) {
+    i18n = {};
+  }
+
+  if (typeof format !== "string") {
+    throw new Error("Invalid format in fecha parse");
+  } // Check to see if the format is actually a mask
+
+
+  format = globalMasks[format] || format; // Avoid regular expression denial of service, fail early for really long strings
+  // https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS
+
+  if (dateStr.length > 1000) {
+    return null;
+  } // Default to the beginning of the year.
+
+
+  var today = new Date();
+  var dateInfo = {
+    year: today.getFullYear(),
+    month: 0,
+    day: 1,
+    hour: 0,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+    isPm: null,
+    timezoneOffset: null
+  };
+  var parseInfo = [];
+  var literals = []; // Replace all the literals with @@@. Hopefully a string that won't exist in the format
+
+  var newFormat = format.replace(literal, function ($0, $1) {
+    literals.push(regexEscape($1));
+    return "@@@";
+  });
+  var specifiedFields = {};
+  var requiredFields = {}; // Change every token that we find into the correct regex
+
+  newFormat = regexEscape(newFormat).replace(token, function ($0) {
+    var info = parseFlags[$0];
+    var field = info[0],
+        regex = info[1],
+        requiredField = info[3]; // Check if the person has specified the same field twice. This will lead to confusing results.
+
+    if (specifiedFields[field]) {
+      throw new Error("Invalid format. " + field + " specified twice in format");
+    }
+
+    specifiedFields[field] = true; // Check if there are any required fields. For instance, 12 hour time requires AM/PM specified
+
+    if (requiredField) {
+      requiredFields[requiredField] = true;
+    }
+
+    parseInfo.push(info);
+    return "(" + regex + ")";
+  }); // Check all the required fields are present
+
+  Object.keys(requiredFields).forEach(function (field) {
+    if (!specifiedFields[field]) {
+      throw new Error("Invalid format. " + field + " is required in specified format");
+    }
+  }); // Add back all the literals after
+
+  newFormat = newFormat.replace(/@@@/g, function () {
+    return literals.shift();
+  }); // Check if the date string matches the format. If it doesn't return null
+
+  var matches = dateStr.match(new RegExp(newFormat, "i"));
+
+  if (!matches) {
+    return null;
+  }
+
+  var combinedI18nSettings = assign(assign({}, globalI18n), i18n); // For each match, call the parser function for that date part
+
+  for (var i = 1; i < matches.length; i++) {
+    var _a = parseInfo[i - 1],
+        field = _a[0],
+        parser = _a[2];
+    var value = parser ? parser(matches[i], combinedI18nSettings) : +matches[i]; // If the parser can't make sense of the value, return null
+
+    if (value == null) {
+      return null;
+    }
+
+    dateInfo[field] = value;
+  }
+
+  if (dateInfo.isPm === 1 && dateInfo.hour != null && +dateInfo.hour !== 12) {
+    dateInfo.hour = +dateInfo.hour + 12;
+  } else if (dateInfo.isPm === 0 && +dateInfo.hour === 12) {
+    dateInfo.hour = 0;
+  }
+
+  var dateWithoutTZ = new Date(dateInfo.year, dateInfo.month, dateInfo.day, dateInfo.hour, dateInfo.minute, dateInfo.second, dateInfo.millisecond);
+  var validateFields = [["month", "getMonth"], ["day", "getDate"], ["hour", "getHours"], ["minute", "getMinutes"], ["second", "getSeconds"]];
+
+  for (var i = 0, len = validateFields.length; i < len; i++) {
+    // Check to make sure the date field is within the allowed range. Javascript dates allows values
+    // outside the allowed range. If the values don't match the value was invalid
+    if (specifiedFields[validateFields[i][0]] && dateInfo[validateFields[i][0]] !== dateWithoutTZ[validateFields[i][1]]()) {
+      return null;
+    }
+  }
+
+  if (dateInfo.timezoneOffset == null) {
+    return dateWithoutTZ;
+  }
+
+  return new Date(Date.UTC(dateInfo.year, dateInfo.month, dateInfo.day, dateInfo.hour, dateInfo.minute - dateInfo.timezoneOffset, dateInfo.second, dateInfo.millisecond));
+}
+
+var fecha = {
+  format: format,
+  parse: parse,
+  defaultI18n: defaultI18n,
+  setGlobalDateI18n: setGlobalDateI18n,
+  setGlobalDateMasks: setGlobalDateMasks
+};
+
+var a = function () {
+  try {
+    new Date().toLocaleDateString("i");
+  } catch (e) {
+    return "RangeError" === e.name;
+  }
+
+  return !1;
+}() ? function (e, t) {
+  return e.toLocaleDateString(t, {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+} : function (t) {
+  return fecha.format(t, "mediumDate");
+},
+    r = function () {
+  try {
+    new Date().toLocaleString("i");
+  } catch (e) {
+    return "RangeError" === e.name;
+  }
+
+  return !1;
+}() ? function (e, t) {
+  return e.toLocaleString(t, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+} : function (t) {
+  return fecha.format(t, "haDateTime");
+},
+    n = function () {
+  try {
+    new Date().toLocaleTimeString("i");
+  } catch (e) {
+    return "RangeError" === e.name;
+  }
+
+  return !1;
+}() ? function (e, t) {
+  return e.toLocaleTimeString(t, {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+} : function (t) {
+  return fecha.format(t, "shortTime");
+};
+
+function d(e) {
+  return e.substr(0, e.indexOf("."));
+}
+
+const back_btn = html `
+  <svg class="panel-btn" tabindex="2" id="back-button" viewBox="0 0 28 28">
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M0 14C0 21.732 6.26801 28 14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14ZM26.7272 14C26.7272 21.0291 21.029 26.7273 14 26.7273C6.97089 26.7273 1.27269 21.0291 1.27269 14C1.27269 6.97091 6.97089 1.27272 14 1.27272C21.029 1.27272 26.7272 6.97091 26.7272 14Z"
+      fill="#007AFF"
+    ></path>
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M14 0C6.26734 0 0 6.26734 0 14C0 21.7315 6.26734 28 14 28C21.7315 28 28 21.7315 28 14C28 6.26734 21.7315 0 14 0Z"
+    ></path>
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M11.9318 14.1273C11.806 13.9964 11.8079 13.7891 11.9362 13.6606L17.0778 8.50739C17.4034 8.18102 17.4023 7.653 17.0753 7.32802L16.9897 7.24301C16.6627 6.91802 16.1337 6.91914 15.808 7.24551L9.43074 13.6372C9.30248 13.7657 9.30054 13.973 9.42636 14.1039L15.8075 20.7433C16.1269 21.0757 16.6559 21.0867 16.989 20.7679L17.0761 20.6845C17.4091 20.3657 17.4201 19.8378 17.1007 19.5054L11.9318 14.1273Z"
+      fill="white"
+    ></path>
+  </svg>
+`;
+const confirm_btn = html `
+  <svg class="panel-btn" tabindex="2" id="confirm-button" viewBox="0 0 28 28">
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M14 0C6.26734 0 0 6.26734 0 14C0 21.7315 6.26734 28 14 28C21.7315 28 28 21.7315 28 14C28 6.26734 21.7315 0 14 0Z"
+    ></path>
+    <path
+      d="M12.2465 18.0302L19.8067 8.95796C20.0929 8.61449 20.6033 8.56809 20.9468 8.85431C21.2902 9.14052 21.3367 9.65098 21.0504 9.99444L12.9552 19.7087C12.6625 20.0599 12.1372 20.0992 11.7955 19.7955L6.93839 15.4781C6.60423 15.181 6.57413 14.6693 6.87116 14.3352C7.16819 14.001 7.67986 13.9709 8.01402 14.268L12.2465 18.0302Z"
+      fill="white"
+    ></path>
+  </svg>
+`;
+const heat_request = html `
+  <svg class="heatreq_svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="24" height="24">
+    <path
+      d="M1.87697 2.77194C1.39922 2.16421 1.50209 1.28228 2.10674 0.802095C2.71138 0.321909 3.58884 0.425306 4.06658 1.03304C6.82192 4.53804 6.82192 8.44325 4.12153 12.3907C2.12537 15.3087 2.36258 18.1189 4.92785 21.197C5.42268 21.7907 5.34493 22.6753 4.75418 23.1726C4.16344 23.67 3.2834 23.5918 2.78857 22.9981C-0.555716 18.9852 -0.909462 14.7944 1.82202 10.8015C3.84928 7.83808 3.84928 5.28087 1.87697 2.77194Z"
+    ></path>
+    <path
+      d="M10.8069 2.77194C10.3292 2.16421 10.432 1.28228 11.0367 0.802095C11.6413 0.321909 12.5188 0.425306 12.9965 1.03304C15.7519 4.53804 15.7519 8.44325 13.0515 12.3907C11.0553 15.3087 11.2925 18.1189 13.8578 21.197C14.3526 21.7907 14.2749 22.6753 13.6841 23.1726C13.0934 23.67 12.2133 23.5918 11.7185 22.9981C8.37422 18.9852 8.02047 14.7944 10.752 10.8015C12.7792 7.83808 12.7792 5.28087 10.8069 2.77194Z"
+    ></path>
+    <path
+      d="M19.7371 2.77194C19.2593 2.16421 19.3622 1.28228 19.9668 0.802095C20.5715 0.321909 21.4489 0.425306 21.9267 1.03304C24.682 4.53804 24.682 8.44325 21.9816 12.3907C19.9855 15.3087 20.2227 18.1189 22.788 21.197C23.2828 21.7907 23.205 22.6753 22.6143 23.1726C22.0235 23.67 21.1435 23.5918 20.6487 22.9981C17.3044 18.9852 16.9506 14.7944 19.6821 10.8015C21.7094 7.83808 21.7094 5.28087 19.7371 2.77194Z"
+    ></path>
+  </svg>
+`;
 
 const animation_styling = css `
   @keyframes popup_grow {
@@ -3219,6 +3607,7 @@ const animation_styling = css `
       transform: translate(0%, 0%);
     }
   }
+
   @keyframes track_fadein {
     0% {
       opacity: 0;
@@ -3243,7 +3632,238 @@ const animation_styling = css `
   }
 `;
 
-const shared_styling = css ``;
+const shared_styling = css `
+  .tado-card-middle {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 450px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+  }
+  :host([temp_selection]) .tado-card-middle {
+    flex: 1 1 525px;
+  }
+
+  /* Main Thermostat Start */
+  .thermostat_part_top {
+    display: flex;
+    flex: 1 1 120px;
+    width: 100%;
+  }
+  .thermostat_part_top_toolbar {
+    padding: 18px;
+    position: absolute;
+    width: calc(100% - 36px);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .thermostat_part_middle {
+    box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
+    transition: transform 0.15s ease 0s, box-shadow 0.15s ease 0s, flex-basis 0.3s ease-out 0s;
+    will-change: transform;
+    flex: 0 1 300px;
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+    /* margin-top: 30px; */
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 75px;
+    overflow: hidden;
+  }
+  .thermostat:hover,
+  .thermostat_part_middle:hover {
+    transform: scale(1.03);
+  }
+  .thermostat.mousedown {
+    transform: scale(0.95);
+  }
+  .tado-card-top {
+    flex: 1 1 0px;
+    /* display: inline-flex; */
+  }
+  :host([temp_selection]) .thermostat {
+    box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
+    will-change: transform;
+    max-width: 300px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 75px;
+    overflow: hidden;
+    flex: 1 1 400px;
+    margin: 35px 50px;
+  }
+  :host([temp_selection]) .tado-card-top {
+    flex: 1 1 75px;
+    display: inline-flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  :host([temp_selection]) .btn-confirm,
+  :host([temp_selection]) .btn-back {
+    margin: 20px;
+    width: 28px;
+    height: 28px;
+  }
+  /* Main Thermostat End */
+  .thermostat {
+    width: 300px;
+    height: 300px;
+    margin-top: 110px;
+  }
+
+  .thermostat_part_middle {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+  :host([temp_selection]) .thermostat_part_middle {
+    flex: 0 1 400px;
+    background-color: hsla(0, 0%, 100%, 0.2);
+    box-shadow: 0 0 30px hsla(0, 0%, 39.2%, 0.2);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, flex-basis 0.3s ease-out;
+    will-change: transform;
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    /* height: 300px; */
+    /* margin-top: 30px; */
+    margin: 30px auto 60px auto;
+    border-radius: 75px;
+    overflow: hidden;
+  }
+  :host([temp_selection]) .thermostat__header {
+    margin: 0px;
+    flex: 1 1 0px;
+  }
+
+  .thermostat__header {
+    line-height: 50px;
+    flex: 1 1 50px;
+    text-align: center;
+  }
+  .thermostat__body {
+    overflow: hidden;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    font-size: 6rem;
+    flex-basis: 100%;
+  }
+
+  :host([temp_overlay]) .thermostat__body {
+    font-size: 5.5em;
+  }
+
+  :host([temp_selection]) .thermostat__body {
+    width: 300px;
+    flex: 1 1 400px;
+    /* animation: 0.5s ease-out 0s 1 temp_slider_start; */
+  }
+
+  .body_temperature {
+    flex: 1 1 150px;
+    line-height: 190px;
+    font-weight: 700;
+    font-size: 5.5rem;
+    text-align: center;
+  }
+  :host([temp_overlay]) .body_heatreq {
+    bottom: 20px;
+  }
+  .body_heatreq {
+    flex: 1 1 100px;
+  }
+  .body_heatreq_inner {
+    width: 24px;
+    margin: 0 auto;
+  }
+  .body_heatreq svg path {
+    opacity: 0.38;
+    fill: #fff;
+  }
+
+  /* FOOTER START */
+
+  .thermostat__footer {
+    flex: 0 0 0%;
+    background-color: #fff;
+    color: #213953;
+  }
+  :host([temp_overlay]) .thermostat__footer {
+    flex: 0 0 35%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .thermostat__footercontent {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-flow: column;
+    height: 100%;
+    padding: 1em;
+  }
+  .thermostat__footer_termination_content_text {
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+  }
+
+  /* FOOTER END */
+
+  /* INFO START */
+  :host([temp_selection]) .info {
+    display: none;
+  }
+  .info {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 150px;
+  }
+  .info .temp {
+    background-color: #67cd67;
+    height: 60px;
+    width: 60px;
+    text-align: center;
+    line-height: 60px;
+    border-radius: 100%;
+    color: #fff;
+    font-size: 18px;
+  }
+
+  /* INFO END */
+
+  /* INFO SENSORS START */
+
+  .info_sensor_container {
+    display: flex;
+    align-items: center;
+  }
+  .info_sensor {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100px;
+  }
+  .info_sensor_label {
+    font-size: 1rem;
+    line-height: 3rem;
+    font-weight: 300;
+  }
+  .info_sensor_value {
+    font-size: 1.8rem;
+    line-height: 1.8rem;
+    font-weight: 700;
+  }
+
+  /* INFO SENSORS END */
+`;
 
 const slider_styling = css `
   .track {
@@ -3257,11 +3877,11 @@ const slider_styling = css `
     background-clip: padding-box;
     padding: 22px 0 0;
     box-sizing: content-box;
-    animation: 1s ease-out 0s 1 track_fadein;
+    /* animation: 1s ease-out 0s 1 track_fadein; */
   }
   /* Animation upon exiting the thermostat */
-  .popup-inner.backed #thermostat {
-    animation: 0.5s ease-in 0s 1 tempend;
+  .popup-inner.temp-backed #thermostat {
+    /* animation: 0.5s ease-in 0s 1 tempend; */
   }
   /* Make sure svg is not passed into mouseclick events */
   .btn-confirm svg,
@@ -3294,254 +3914,18 @@ const thermostat_styling = css `
     overflow: hidden;
   }
   .popup-inner.settemp {
-    animation: 0.5s ease-out 0s 1 popup_grow;
+    /* animation: 0.5s ease-out 0s 1 popup_grow; */
   }
   .popup-inner.backed {
-    animation: 0.5s ease-out 0s 1 popup_shrink;
+    /* animation: 0.5s ease-out 0s 1 popup_shrink; */
   }
 
-  .popup-inner.off {
-    display: none;
-  }
-  #settings {
-    display: none;
-  }
-  .settings-inner {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-  #settings.on {
-    display: flex;
-  }
-  .settings-btn {
-    position: absolute;
-    right: 30px;
-    background-color: #7f8082;
-    color: #fff;
-    border: 0;
-    padding: 5px 20px;
-    border-radius: 10px;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  .settings-btn.bottom {
-    bottom: 15px;
-  }
-  .settings-btn.top {
-    top: 25px;
-  }
-  .settings-btn.bottom.fullscreen {
-    margin: 0;
-  }
-  .fullscreen {
-    margin-top: -64px;
-  }
-  .info {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 40px;
-    height: 100px;
-  }
-  .info .temp {
-    background-color: #67cd67;
-    height: 60px;
-    width: 60px;
-    text-align: center;
-    line-height: 60px;
-    border-radius: 100%;
-    color: #fff;
-    font-size: 18px;
-  }
-
-  .info .temp.heat_cool {
-    background-color: var(--auto-color);
-  }
-  .info .temp.cool {
-    background-color: var(--cool-color);
-  }
-  .info .temp.heat {
-    background-color: var(--heat-color);
-  }
-  .info .temp.manual {
-    background-color: var(--manual-color);
-  }
-  .info .temp.off {
-    background-color: var(--off-color);
-  }
-  .info .temp.fan_only {
-    background-color: var(--fan_only-color);
-  }
-  .info .temp.eco {
-    background-color: var(--eco-color);
-  }
-  .info .temp.dry {
-    background-color: var(--dry-color);
-  }
-  .info .temp.idle {
-    background-color: var(--idle-color);
-  }
-  .info .temp.unknown-mode {
-    background-color: var(--unknown-color);
-  }
-
-  .info .right {
-    display: flex;
-    flex-direction: column;
-    margin-left: 15px;
-    height: 60px;
-    align-items: center;
-    justify-content: center;
-  }
-  .info .right .name {
-    color: #fff;
-    font-size: 24px;
-  }
-  .info .right .action {
-    color: #8b8a8f;
-    font-size: 12px;
-  }
-
-  /* CONTROLS */
-
-  .heat_cool {
-    --mode-color: var(--auto-color);
-  }
-  .cool {
-    --mode-color: var(--cool-color);
-  }
-  .heat {
-    --mode-color: var(--heat-color);
-  }
-  .manual {
-    --mode-color: var(--manual-color);
-  }
-  .off {
-    --mode-color: var(--off-color);
-  }
-  .fan_only {
-    --mode-color: var(--fan_only-color);
-  }
-  .eco {
-    --mode-color: var(--eco-color);
-  }
-  .dry {
-    --mode-color: var(--dry-color);
-  }
-  .idle {
-    --mode-color: var(--idle-color);
-  }
-  .unknown-mode {
-    --mode-color: var(--unknown-color);
-  }
-  #controls {
-    display: flex;
-    justify-content: center;
-    /* padding: 16px; */
-    position: relative;
-    /* width: 500px; */
-    width: 100%;
-  }
-  /* #slider {
-    height: 100%;
-    width: 100%;
-    position: relative;
-    max-width: 300px;
-    min-width: 250px;
-  }
-  round-slider {
-    --round-slider-path-color: var(--disabled-text-color);
-    --round-slider-bar-color: var(--mode-color);
-    padding-bottom: 10%;
-  }
-  #slider-center {
-    position: absolute;
-    width: calc(100% - 120px);
-    height: calc(100% - 120px);
-    box-sizing: border-box;
-    border-radius: 100%;
-    left: 60px;
-    top: 60px;
-    text-align: center;
-    overflow-wrap: break-word;
-    pointer-events: none;
-  } */
-
-  /* .values {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-  }
-  .values .action {
-    color: #f4b941;
-    font-size: 10px;
-    text-transform: uppercase;
-  }
-  .values .value {
-    color: #fff;
-    font-size: 60px;
-    line-height: 60px;
-  }
-
-  #modes > * {
-    color: var(--disabled-text-color);
-    cursor: pointer;
-    display: inline-block;
-  }
-  #modes .selected-icon {
-    --iron-icon-fill-color: var(--mode-color);
-  } */
-  text {
-    color: var(--primary-text-color);
-  }
-  /* Bottom Card Sensors Panel */
-  .sensors-container {
-    min-height: 64px;
-    display: flex;
-    flex: 1 1 120px;
-    align-items: center;
-    overflow: hidden;
-  }
-  .sensors {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    width: 100%;
-  }
-  .sensor {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    width: 100px;
-  }
-  .sensor__label {
-    font-size: 0.85em;
-    opacity: 0.6;
-    text-transform: uppercase;
-    height: 2em;
-    display: flex;
-    text-align: center;
-    align-items: center;
-  }
-  .sensor__value .b-temperature,
-  .sensor__value .b-humidity {
-    font-size: 2rem;
-    line-height: 2rem;
-    font-weight: 700;
-  }
   /* Main Popup Top */
-  .thermostat__body .b-temperature {
-    font-weight: 700;
-  }
 
   .popup-inner {
     color: white;
+    display: flex;
+    flex-direction: column;
   }
   /* Thermostat Colors START */
   .popup-inner.temp-off {
@@ -3611,44 +3995,7 @@ const thermostat_styling = css `
     background: linear-gradient(rgb(255, 140, 0), rgb(255, 85, 0));
   }
   /* Thermostat Colors END */
-  .tado-card {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 400px;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    width: 100%;
-  }
 
-  .room-thermostat-area:hover,
-  .room-thermostat-area--slider:hover {
-    transform: scale(1.03);
-  }
-  .room-thermostat-area.mousedown {
-    transform: scale(0.95);
-  }
-  .room-thermostat-area {
-    background-color: hsla(0, 0%, 100%, 0.2);
-    box-shadow: 0 0 30px hsla(0, 0%, 39.2%, 0.2);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, flex-basis 0.3s ease-out;
-    will-change: transform;
-    flex: 0 1 300px;
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    height: 300px;
-    margin-top: 30px;
-    background-color: hsla(0, 0%, 100%, 0.1);
-    border-radius: 75px;
-    overflow: hidden;
-  }
-  .thermostat {
-    height: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-    text-align: center;
-  }
   .thermostat__header_and_body {
     display: flex;
     flex-direction: column;
@@ -3663,55 +4010,6 @@ const thermostat_styling = css `
   }
   .thermostat__header_and_body[role='button'] {
     cursor: pointer;
-  }
-  .thermostat__header {
-    flex-basis: 0;
-    height: 0;
-    position: relative;
-    top: 14px;
-    opacity: 0.6;
-    transition: height 0.3s ease-in-out, top 0.3s ease-in-out, padding-top 0.3s ease-in-out;
-  }
-
-  :host([temp_overlay]) .thermostat__body {
-    font-size: 5.5em;
-  }
-
-  .thermostat__body {
-    position: relative;
-    font-size: 6em;
-    overflow: hidden;
-    flex-basis: 100%;
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    transition-property: width; /* Apply transition effect on the width */
-    transition-duration: 1s; /* Transition will last 1 second */
-    transition-timing-function: linear; /* Timing function to specify a linear transition type */
-    transition-delay: 0s; /* Transition starts after 1 second */
-  }
-  :host([temp_overlay]) .thermostat__footer {
-    display: block;
-    flex: 0 0 35%;
-  }
-  .thermostat__footer {
-    display: none;
-    background-color: #fff;
-    color: #213953;
-  }
-  .thermostat__footercontent {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-flow: column;
-    height: 100%;
-    padding: 1em;
-  }
-  .thermostat__footer_termination_content_text {
-    text-align: center;
-    padding: 10px;
   }
 
   .btn {
@@ -3728,92 +4026,30 @@ const thermostat_styling = css `
   }
 
   .btn--cancel {
-    color: #213953;
-    border: 1px solid #213953;
+    color: rgb(33, 57, 83);
+    border: 1px solid rgb(33, 57, 83);
     text-align: center;
-    background-color: #fff;
-    min-width: 144px;
-    margin-bottom: 10px;
+    background-color: rgb(255, 255, 255);
+    width: 40%;
+    margin: 0px auto;
   }
 
-  :host([temp_overlay]) .app-heat-request-indicator {
-    bottom: 20px;
-  }
-  .app-heat-request-indicator {
-    position: absolute;
-    display: inline-flex;
-    bottom: 33px;
-  }
-  .app-heat-request-indicator svg path {
-    opacity: 0.38;
-    fill: #fff;
-  }
   /* Temperature Slider */
-  .tado-card--slider {
-    flex: 0 1 400px;
-    background-color: hsla(0, 0%, 100%, 0.2);
-    box-shadow: 0 0 30px hsla(0, 0%, 39.2%, 0.2);
-    /* transition: transform 0.15s ease, box-shadow 0.15s ease, flex-basis 0.3s ease-out; */
-    /* will-change: transform; */
-    width: 100%;
-    /* max-height: 120px; */
-    overflow: hidden;
-    min-height: 600px;
-  }
 
-  .temperature-slider--header {
-    /* position: absolute; */
-    /* left: 0; */
-    /* right: 0; */
-    /* top: 0; */
-    height: 120px;
-    display: flex;
-  }
-  .temperature-slider--toolbar {
-    padding: 18px;
-    position: absolute;
-    width: calc(100% - 36px);
-    display: flex;
-    justify-content: space-between;
-  }
   .panel-btn {
     width: 2em;
     height: 2em;
     border-radius: 2em;
     fill: hsla(0, 0%, 100%, 0.2);
   }
-  .temperature-slider--header .value-label {
-    font-size: 55px;
+  .temperature_text {
+    font-size: 48px;
     align-self: center;
-    flex: 1 1 auto;
     text-align: center;
     text-transform: uppercase;
+    font-weight: 700;
   }
-  .room-thermostat-area--slider {
-    flex: 0 1 400px;
-    background-color: hsla(0, 0%, 100%, 0.2);
-    box-shadow: 0 0 30px hsla(0, 0%, 39.2%, 0.2);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, flex-basis 0.3s ease-out;
-    will-change: transform;
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    /* height: 300px; */
-    /* margin-top: 30px; */
-    margin: 30px auto 60px auto;
-    border-radius: 75px;
-    overflow: hidden;
-  }
-  .app-temperature-slider {
-    /* width: 300px;
-    height: 400px; */
-    position: relative;
-    top: 0;
-    opacity: 1;
-    left: 50%;
-    transform: translateX(-50%);
-    animation: 0.5s ease-out 0s 1 temp_slider_start;
-  }
+
   input[type='range'] {
     background-color: transparent;
     -webkit-appearance: none;
@@ -3867,274 +4103,206 @@ const thermostat_styling = css `
   /* Main Popup Top */
 `;
 
-// import { computeRTLDirection } from 'custom-card-helpers';
-// import { computeStateDisplay, computeStateName } from 'custom-card-helpers';
-class TadoPopupCard extends LitElement {
+const CARD_VERSION = '0.0.1';
+
+// log information of card to the console
+console.info(`%c  TADOTHERMOSTATPOPUP-CARD  \n%c  Version ${CARD_VERSION}    `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+window.customCards = window.customCards || [];
+window.customCards.push({
+    type: 'tadothermostatpopup-card',
+    name: 'Tado Thermostat Popup',
+    description: 'A popup card to replace tado climate entities more-info page.',
+});
+let TadoPopupCard = class TadoPopupCard extends LitElement {
     constructor() {
         super();
-        this.hvacModeOrdering = {
-            // 0: "off",
-            // 1: "auto",
-            // 2: "heat"
-            auto: 1,
-            heat: 2,
-            off: 3,
-        };
-        this.modeIcons = {
-            auto: 'hass:calendar-repeat',
-            // auto: 'mdi:repeat',
-            // heat_cool: 'hass:autorenew',
-            heat: 'hass:fire',
-            // cool: 'hass:snowflake',
-            off: 'hass:power',
-        };
-        this.settings = false;
-        this.settingsCustomCard = false;
-        this.settingsPosition = 'bottom';
+        // this._setTemp = '';
         this.temp_wanted = 0;
         this.temp_class = 'temp-off';
         this.temp_selection = false;
         this.temp_overlay = false;
-        this.dragging = false;
+        // this.dragging = false;
     }
+    get entity() {
+        return this.hass.states[this.config.entity];
+    }
+    // modeIcons = {
+    //   auto: 'hass:calendar-repeat',
+    //   heat: 'hass:fire',
+    //   off: 'hass:power',
+    // };
+    // settings = false;
+    // settingsCustomCard = false;
+    // settingsPosition = 'bottom';
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     static get properties() {
         return {
-            hass: {},
-            config: {},
+            // hass: {},
+            // config: {},
             active: {},
-            temp_selection: { type: Boolean },
+            temp_selection: { type: Boolean, reflect: true },
             temp_overlay: { type: Boolean, reflect: true },
             temp_class: { type: String },
-            temp_wanted: { type: Number, reflect: true },
-            dragging: { type: Boolean, reflect: true },
+            temp_wanted: { type: Number },
         };
     }
     render() {
-        this.temp_wanted = 0;
-        const entity = this.config.entity;
-        const stateObj = this.hass.states[entity];
-        const currentTemp = stateObj.attributes.current_temperature;
-        // console.log(stateObj);
-        // const icon = this.config.icon
-        //   ? this.config.icon
-        //   : stateObj.attributes.icon
-        //   ? stateObj.attributes.icon
-        //   : 'mdi:lightbulb';
-        // REAL DATA
-        // const name = this.config.name || stateObj.attributes.friendly_name;
-        const targetTemp = stateObj.attributes.temperature !== null && stateObj.attributes.temperature
-            ? stateObj.attributes.temperature
-            : stateObj.attributes.min_temp;
-        // const max_temp = stateObj.attributes.max_temp;
-        // const min_temp = stateObj.attributes.min_temp;
-        // const preset_mode = stateObj.attributes.preset_mode;
-        // const preset_modes = stateObj.attributes.preset_modes;
-        const currentHum = parseInt(stateObj.attributes.current_humidity);
-        // const hvac_action = stateObj.attributes.hvac_action;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let mode = '';
-        mode = stateObj.state in this.modeIcons ? stateObj.state : 'unknown-mode';
+        var _a;
+        if (!this.entity) {
+            throw new Error('Entity not found');
+        }
+        if (d(this.entity.entity_id) !== 'climate') {
+            throw new Error('You must set a climate entity');
+        }
+        // const { hour, minute } = this.entity!.attributes;
+        // this.temp_wanted = 0;
+        // const entity = this.config.entity;
+        const stateObj = (_a = this.entity) === null || _a === void 0 ? void 0 : _a.state;
+        // const currentTemp = this.entity?.attributes.current_temperature;
+        const { hvac_modes, min_temp, max_temp, target_temp_step, preset_modes, current_temperature, temperature, current_humidity, hvac_action, preset_mode, friendly_name, supported_features, } = this.entity.attributes;
+        // const targetTemp =
+        //   stateObj.attributes.temperature !== null && stateObj.attributes.temperature
+        //     ? stateObj.attributes.temperature
+        //     : stateObj.attributes.min_temp;
+        // const currentHum = parseInt(stateObj.attributes.current_humidity);
+        // const currentHum = parseInt(stateObj.attributes.current_humidity);
+        // let mode = '';
+        // mode = stateObj.state in this.modeIcons ? stateObj.state : 'unknown-mode';
         let thermostat__body;
         let thermostat__target;
         let thermostat__header;
-        if (stateObj.attributes.hvac_action == 'off') {
-            mode = 'off';
+        if (hvac_action == 'off') {
+            // mode = 'off';
             thermostat__header = 'Frost Protection';
             thermostat__target = 0;
             thermostat__body = 'OFF';
         }
-        else if (stateObj.attributes.hvac_action == 'heating') {
-            mode = 'heat';
+        else if (hvac_action == 'heating') {
+            // mode = 'heat';
             thermostat__header = 'Set to';
-            thermostat__body = targetTemp.toString() + '°';
-            thermostat__target = targetTemp;
+            thermostat__body = temperature.toString() + '°';
+            thermostat__target = temperature;
         }
-        else if (stateObj.attributes.hvac_action == 'idle') {
-            mode = 'idle';
+        else if (hvac_action == 'idle') {
+            // mode = 'idle';
             thermostat__header = 'Set to';
-            thermostat__body = targetTemp.toString() + '°';
-            thermostat__target = targetTemp;
+            thermostat__body = temperature.toString() + '°';
+            thermostat__target = temperature;
         }
         else {
-            mode = stateObj.state in this.modeIcons ? stateObj.state : 'unknown-mode';
+            // mode = stateObj.state in this.modeIcons ? stateObj.state : 'unknown-mode';
             thermostat__header = 'No remote access';
             thermostat__body = 'replace with svg';
             thermostat__target = 0;
         }
-        // let thermostat__class: string;
-        if (stateObj.state in this.modeIcons) {
-            if (stateObj.attributes.hvac_action == 'off') {
+        // if (stateObj in hvac_modes) {
+        if (hvac_modes.indexOf(stateObj) > -1) {
+            if (hvac_action == 'off') {
                 this.temp_class = 'temp-off';
             }
             else {
-                this.temp_class = 'temp-' + parseInt(targetTemp).toString();
+                this.temp_class = 'temp-' + parseInt(temperature).toString();
             }
         }
         else {
             this.temp_class = 'disconnected';
         }
         const track_height = ((100 / 21) * (thermostat__target - 4)).toString() + '%';
-        const fullscreen = 'fullscreen' in this.config ? this.config.fullscreen : true;
-        this.settings = 'settings' in this.config ? true : false;
-        this.settingsCustomCard = 'settingsCard' in this.config ? true : false;
-        this.settingsPosition = 'settingsPosition' in this.config ? this.config.settingsPosition : 'bottom';
-        if (this.settingsCustomCard && this.config.settingsCard.cardOptions) {
-            if (this.config.settingsCard.cardOptions.entity && this.config.settingsCard.cardOptions.entity == 'this') {
-                this.config.settingsCard.cardOptions.entity = entity;
-            }
-            else if (this.config.settingsCard.cardOptions.entity_id &&
-                this.config.settingsCard.cardOptions.entity_id == 'this') {
-                this.config.settingsCard.cardOptions.entity_id = entity;
-            }
-            else if (this.config.settingsCard.cardOptions.entities) {
-                for (const key in this.config.settingsCard.cardOptions.entities) {
-                    if (this.config.settingsCard.cardOptions.entities[key] == 'this') {
-                        this.config.settingsCard.cardOptions.entities[key] = entity;
-                    }
-                }
-            }
-        }
-        // console.log(this.active);
         return html `
-      <div class="${fullscreen === true ? 'popup-wrapper' : ''}">
-        <div class="${classMap({ [mode]: true })}" style="display:flex;width:100%;height:100%;">
-          <!-- <div id="popup" class="popup-inner ${this.temp_class}" @click="${e => this._close(e)}"> -->
+      <div class="popup-wrapper">
+        <div style="display:flex;width:100%;height:100%;">
           <div id="popup" class="popup-inner ${this.temp_class}">
             ${this.temp_selection
             ? html `
                   <!-- Tado set temp START -->
-                  <div class="tado-card--slider">
-                    <div class="temperature-slider--header " style="">
-                      <div class="temperature-slider--toolbar">
-                        <div>
-                          <div class="btn-back" @click="${e => this._thermostat_mouseclick(e)}">
-                            <svg class="panel-btn" tabindex="2" id="back-button" viewBox="0 0 28 28">
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M0 14C0 21.732 6.26801 28 14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14ZM26.7272 14C26.7272 21.0291 21.029 26.7273 14 26.7273C6.97089 26.7273 1.27269 21.0291 1.27269 14C1.27269 6.97091 6.97089 1.27272 14 1.27272C21.029 1.27272 26.7272 6.97091 26.7272 14Z"
-                                fill="#007AFF"
-                              ></path>
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M14 0C6.26734 0 0 6.26734 0 14C0 21.7315 6.26734 28 14 28C21.7315 28 28 21.7315 28 14C28 6.26734 21.7315 0 14 0Z"
-                              ></path>
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M11.9318 14.1273C11.806 13.9964 11.8079 13.7891 11.9362 13.6606L17.0778 8.50739C17.4034 8.18102 17.4023 7.653 17.0753 7.32802L16.9897 7.24301C16.6627 6.91802 16.1337 6.91914 15.808 7.24551L9.43074 13.6372C9.30248 13.7657 9.30054 13.973 9.42636 14.1039L15.8075 20.7433C16.1269 21.0757 16.6559 21.0867 16.989 20.7679L17.0761 20.6845C17.4091 20.3657 17.4201 19.8378 17.1007 19.5054L11.9318 14.1273Z"
-                                fill="white"
-                              ></path>
-                            </svg>
-                          </div>
-                        </div>
-                        <div class="btn-confirm" @click="${e => this._thermostat_mouseclick(e)}">
-                          <svg class="panel-btn" tabindex="2" id="confirm-button" viewBox="0 0 28 28">
-                            <path
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
-                              d="M14 0C6.26734 0 0 6.26734 0 14C0 21.7315 6.26734 28 14 28C21.7315 28 28 21.7315 28 14C28 6.26734 21.7315 0 14 0Z"
-                            ></path>
-                            <path
-                              d="M12.2465 18.0302L19.8067 8.95796C20.0929 8.61449 20.6033 8.56809 20.9468 8.85431C21.2902 9.14052 21.3367 9.65098 21.0504 9.99444L12.9552 19.7087C12.6625 20.0599 12.1372 20.0992 11.7955 19.7955L6.93839 15.4781C6.60423 15.181 6.57413 14.6693 6.87116 14.3352C7.16819 14.001 7.67986 13.9709 8.01402 14.268L12.2465 18.0302Z"
-                              fill="white"
-                            ></path>
-                          </svg>
-                        </div>
-                      </div>
-                      <div class="value-label">
-                        <div class="app-temperature-display"></div>
-                        <div class="">
-                          <div id="target_temp_track" class="b-temperature">${thermostat__body}</div>
-                        </div>
-                      </div>
+                  <div class="tado-card-top">
+                    <div
+                      class="btn-back"
+                      @click="${(e) => this._thermostat_mouseclick(e)}"
+                    >
+                      ${back_btn}
                     </div>
-                    <div class="room-thermostat-area--slider" tabindex="0">
-                      <div class="app-temperature-slider" style="width: 300px; height: 400px; opacity: 1;">
-                        <div id="track" class="track" style="height: ${track_height};"></div>
+                    <div id="target_temp_track" class="temperature_text">${thermostat__body}</div>
+                    <div
+                      class="btn-confirm"
+                      @click="${(e) => this._thermostat_mouseclick(e)}"
+                    >
+                      ${confirm_btn}
+                    </div>
+                  </div>
+                  <div class="tado-card-middle">
+                    <div class="thermostat">
+                      <div class="thermostat_top"></div>
+                      <div class="thermostat_middle" tabindex="0">
+                        <div class="thermostat__header "></div>
 
-                        <input
-                          id="tempvaluerange"
-                          type="range"
-                          min="4"
-                          max="25"
-                          step="1"
-                          style="width: 444px; height: 300px; transform-origin: 222px 222px;"
-                          @change="${e => this._change_track(e)}"
-                          @input="${e => this._change_track(e)}"
-                        />
+                        <div class="thermostat__body">
+                          <div id="track" class="track" style="height: ${track_height};"></div>
+
+                          <input
+                            id="tempvaluerange"
+                            type="range"
+                            min="${min_temp - 1}"
+                            max="${max_temp}"
+                            step="1"
+                            style="width: 444px; height: 300px; transform-origin: 222px 222px;"
+                            @change="${(e) => this._change_track(e)}"
+                            @input="${(e) => this._change_track(e)}"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
+                  <div class="info"></div>
                   <!-- Tado set temp END -->
                 `
             : html `
                   <!-- Tado Thermostat START -->
+                  <div class="tado-card-top"></div>
                   <div
-                    class="tado-card"
+                    class="tado-card-middle"
                     @mousedown="${() => this._thermostat_mousedown()}"
                     @mouseup="${() => this._thermostat_mouseup()}"
-                    @click="${e => this._thermostat_mouseclick(e)}"
+                    @click="${(e) => this._thermostat_mouseclick(e)}"
                   >
-                    <div id="thermostat" class="room-thermostat-area" tabindex="0">
-                      <div class="thermostat">
-                        <div role="button" class="thermostat__header_and_body ">
-                          <div class="thermostat__header ">
-                            <span>${thermostat__header}</span>
-                          </div>
-                          <div class="thermostat__body">
-                            <span class="b-temperature  " style="text-transform: uppercase">${thermostat__body}</span>
-                            <div class="app-heat-request-indicator">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                width="24"
-                                height="24"
-                              >
-                                <path
-                                  d="M1.87697 2.77194C1.39922 2.16421 1.50209 1.28228 2.10674 0.802095C2.71138 0.321909 3.58884 0.425306 4.06658 1.03304C6.82192 4.53804 6.82192 8.44325 4.12153 12.3907C2.12537 15.3087 2.36258 18.1189 4.92785 21.197C5.42268 21.7907 5.34493 22.6753 4.75418 23.1726C4.16344 23.67 3.2834 23.5918 2.78857 22.9981C-0.555716 18.9852 -0.909462 14.7944 1.82202 10.8015C3.84928 7.83808 3.84928 5.28087 1.87697 2.77194Z"
-                                ></path>
-                                <path
-                                  d="M10.8069 2.77194C10.3292 2.16421 10.432 1.28228 11.0367 0.802095C11.6413 0.321909 12.5188 0.425306 12.9965 1.03304C15.7519 4.53804 15.7519 8.44325 13.0515 12.3907C11.0553 15.3087 11.2925 18.1189 13.8578 21.197C14.3526 21.7907 14.2749 22.6753 13.6841 23.1726C13.0934 23.67 12.2133 23.5918 11.7185 22.9981C8.37422 18.9852 8.02047 14.7944 10.752 10.8015C12.7792 7.83808 12.7792 5.28087 10.8069 2.77194Z"
-                                ></path>
-                                <path
-                                  d="M19.7371 2.77194C19.2593 2.16421 19.3622 1.28228 19.9668 0.802095C20.5715 0.321909 21.4489 0.425306 21.9267 1.03304C24.682 4.53804 24.682 8.44325 21.9816 12.3907C19.9855 15.3087 20.2227 18.1189 22.788 21.197C23.2828 21.7907 23.205 22.6753 22.6143 23.1726C22.0235 23.67 21.1435 23.5918 20.6487 22.9981C17.3044 18.9852 16.9506 14.7944 19.6821 10.8015C21.7094 7.83808 21.7094 5.28087 19.7371 2.77194Z"
-                                ></path>
-                              </svg>
+                    <!-- <div  class="room-thermostat-area" tabindex="0"></div> -->
+                    <div id="thermostat" class="thermostat">
+                      <div class="thermostat_part_top"></div>
+                      <div class="thermostat_part_middle">
+                        <div class="thermostat__header ">
+                          <span>${thermostat__header}</span>
+                        </div>
+                        <div class="thermostat__body">
+                          <div class="body_temperature">${thermostat__body}</div>
+                          <div class="body_heatreq">
+                            <div class="body_heatreq_inner">
+                              ${heat_request}
                             </div>
                           </div>
-                          ${this.temp_overlay
-                ? html `
-                                <div class="thermostat__footer">
-                                  <div class="thermostat__footer_termination_content_text">Manual Override Active</div>
-                                  <button class="btn btn--cancel">Cancel</button>
-                                </div>
-                              `
-                : html `
-                                <div class="thermostat__footer" style="max-height: 0%; opacity: 0"></div>
-                              `}
                         </div>
+                        ${this.temp_overlay
+                ? html `
+                              <div class="thermostat__footer">
+                                <div class="thermostat__footer_termination_content_text">Manual Override Active</div>
+                                <button class="btn btn--cancel">Cancel</button>
+                              </div>
+                            `
+                : html `
+                              <div class="thermostat__footer"></div>
+                            `}
                       </div>
+                      <div class="thermostat_part_bottom"></div>
                     </div>
                   </div>
-                  <!-- Tado Thermostat END -->
-                  <!-- Tado Sensors START -->
                   <div class="info">
-                    <div class="sensors-container">
-                      <div class="sensor">
-                        <div class="temperature sensor__label">Inside now</div>
-                        <div class="temperature sensor__value">
-                          <div class="b-temperature">${currentTemp}&#176;</div>
-                        </div>
+                    <div class="info_sensor_container">
+                      <div class="info_sensor">
+                        <div class="info_sensor_label">Inside now</div>
+                        <div class="info_sensor_value">${current_temperature}&#176;</div>
                       </div>
-                      <div class="sensor">
-                        <div class="sensor__label">Humidity</div>
-                        <div class="sensor__value">
-                          <div class="b-humidity">${currentHum}%</div>
-                        </div>
+                      <div class="info_sensor">
+                        <div class="info_sensor_label">Humidity</div>
+                        <div class="info_sensor_value">${parseInt(current_humidity)}%</div>
                       </div>
                     </div>
                   </div>
@@ -4146,120 +4314,145 @@ class TadoPopupCard extends LitElement {
     `;
     }
     _thermostat_mouseclick(e = null) {
+        /**
+         * Main mouse event handler for thermostat popup
+         */
+        // Handle Cancel Button on main popup when overlay active
+        const thermostat = this.shadowRoot;
         if (e !== null && this._isCancelOverrideButton(e.target)) {
-            // console.log('cancel');
             this._handleModeClick();
-            return;
+            thermostat.getElementById('popup').classList.add('temp-backed');
+            return; // Dont toggle view
         }
+        // Handle Back Button when setting temperature
         if (e !== null && this._isBackButton(e.target)) {
-            // console.log('back');
             this.shadowRoot.getElementById('popup').className = this.shadowRoot
                 .getElementById('popup')
                 .className.replace(/temp.*/g, '');
-            this.shadowRoot.getElementById('popup').classList.add(this.temp_class);
+            thermostat.getElementById('popup').classList.add('temp-backed');
+            thermostat.getElementById('popup').classList.add(this.temp_class);
         }
+        // Handle Confirmation Button when setting temperature
         if (e !== null && this._isConfirmButton(e.target)) {
-            // console.log('confirm');
             this._setTemperature(this.temp_wanted);
             this.shadowRoot.getElementById('popup').className = this.shadowRoot
                 .getElementById('popup')
                 .className.replace(/temp.*/g, '');
-            this.shadowRoot.getElementById('popup').classList.add(this.temp_class);
+            thermostat.getElementById('popup').classList.add('temp-backed');
+            thermostat.getElementById('popup').classList.add('temp-' + this.temp_wanted.toString());
         }
-        // if (event.target.classList.contains('btn-confirm')) {
-        //   console.log('set heat');
-        //   this._setTemperature(this.temp_wanted);
-        // }
-        // if (event.target.classList.contains('btn-back')) {
-        //   this.shadowRoot.getElementById('popup').className = this.shadowRoot
-        //     .getElementById('popup')
-        //     .className.replace(/temp.*/g, '');
-        //   this.shadowRoot.getElementById('popup').classList.add(this.temp_class);
-        // }
-        // console.log(e);
-        const thermostat = this.shadowRoot;
+        // toggle thermostat view
+        const oldVal = this.temp_selection;
         if (this.temp_selection) {
             this.temp_selection = false;
             thermostat.getElementById('popup').classList.remove('settemp');
-            thermostat.getElementById('popup').classList.add('backed');
+            thermostat.getElementById('popup').classList.add('temp-backed');
+            this.requestUpdate('temp_selection', oldVal);
         }
         else {
             this.temp_selection = true;
             thermostat.getElementById('popup').classList.add('settemp');
-            thermostat.getElementById('popup').classList.remove('backed');
+            thermostat.getElementById('popup').classList.remove('temp-backed');
+            this.requestUpdate('temp_selection', oldVal);
         }
     }
     _isCancelOverrideButton(target) {
-        // console.log({ target });
+        /**
+         * Temperature Override Cancel button check
+         */
         const cancelOverrideClass = 'btn--cancel';
         const exists = target.classList.contains(cancelOverrideClass);
         return exists;
     }
     _isBackButton(target) {
-        // console.log({ target });
+        /**
+         * Temperature Slider Back button check
+         */
         const BackBtnClass = 'btn-back';
         const exists = target.classList.contains(BackBtnClass);
         return exists;
     }
     _isConfirmButton(target) {
-        // console.log({ target });
+        /**
+         * Temperature Slider Confirmation button check
+         */
         const confirmBtnClass = 'btn-confirm';
         const exists = target.classList.contains(confirmBtnClass);
         return exists;
     }
     firstUpdated() {
-        if (this.settings && !this.settingsCustomCard) {
-            const mic = this.shadowRoot.querySelector('more-info-controls').shadowRoot;
-            mic.removeChild(mic.querySelector('app-toolbar'));
-        }
-        else if (this.settings && this.settingsCustomCard) {
-            this.shadowRoot.querySelectorAll('card-maker').forEach(customCard => {
-                let card = {
-                    type: customCard.dataset.card,
-                };
-                card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
-                customCard.config = card;
-                let style = '';
-                if (customCard.dataset.style) {
-                    style = customCard.dataset.style;
-                }
-                if (style != '') {
-                    let itterations = 0;
-                    const interval = setInterval(function () {
-                        const el = customCard.children[0];
-                        if (el) {
-                            window.clearInterval(interval);
-                            const styleElement = document.createElement('style');
-                            styleElement.innerHTML = style;
-                            el.shadowRoot.appendChild(styleElement);
-                        }
-                        else if (++itterations === 10) {
-                            window.clearInterval(interval);
-                        }
-                    }, 100);
-                }
-            });
-        }
+        /**
+         * First Update Handler.
+         */
+        // if (this.settings && !this.settingsCustomCard) {
+        //   const mic = this.shadowRoot.querySelector('more-info-controls').shadowRoot;
+        //   mic.removeChild(mic.querySelector('app-toolbar'));
+        // } else if (this.settings && this.settingsCustomCard) {
+        //   this.shadowRoot.querySelectorAll('card-maker').forEach(customCard => {
+        //     let card = {
+        //       type: customCard.dataset.card,
+        //     };
+        //     card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
+        //     customCard.config = card;
+        //     let style = '';
+        //     if (customCard.dataset.style) {
+        //       style = customCard.dataset.style;
+        //     }
+        //     if (style != '') {
+        //       let itterations = 0;
+        //       const interval = setInterval(function() {
+        //         const el = customCard.children[0];
+        //         if (el) {
+        //           window.clearInterval(interval);
+        //           const styleElement = document.createElement('style');
+        //           styleElement.innerHTML = style;
+        //           el.shadowRoot.appendChild(styleElement);
+        //         } else if (++itterations === 10) {
+        //           window.clearInterval(interval);
+        //         }
+        //       }, 100);
+        //     }
+        //   });
+        // }
     }
     updated() {
-        this._setTemp = this._getSetTemp(this.hass.states[this.config.entity]);
+        /**
+         * Main updater handler.
+         */
+        // this._setTemp = this._getSetTemp(this.entity?.state);
+        // this._setTemp = this._getSetTemp(this.hass.states[this.config.entity]);
         this.temp_overlay = this._getOverlayState(this.hass.states[this.config.overlay]);
     }
-    _openSettings() {
-        this.shadowRoot.getElementById('popup').classList.add('off');
-        this.shadowRoot.getElementById('settings').classList.add('on');
-    }
-    _closeSettings() {
-        this.shadowRoot.getElementById('settings').classList.remove('on');
-        this.shadowRoot.getElementById('popup').classList.remove('off');
-    }
+    // _openSettings(): void {
+    //   /**
+    //    * Handles classes on opening settings popup.
+    //    */
+    //   this.shadowRoot.getElementById('popup').classList.add('off');
+    //   this.shadowRoot.getElementById('settings').classList.add('on');
+    // }
+    // _closeSettings(): void {
+    //   /**
+    //    * Handles classes on closing settings popup.
+    //    */
+    //   this.shadowRoot.getElementById('settings').classList.remove('on');
+    //   this.shadowRoot.getElementById('popup').classList.remove('off');
+    // }
     _thermostat_mousedown() {
+        /**
+         * Mouse Down Animation helper.
+         */
         this.shadowRoot.getElementById('thermostat').classList.add('mousedown');
     }
     _thermostat_mouseup() {
+        /**
+         * Mouse Up animation helper.
+         */
         this.shadowRoot.getElementById('thermostat').classList.remove('mousedown');
     }
     _change_track(e) {
+        /**
+         * Sets the SVG track on the temperature picker.
+         */
         this.shadowRoot.getElementById('track').style.height = ((100 / 21) * (e.srcElement.value - 4)).toString() + '%';
         const temp_string = e.srcElement.value.toString();
         const temp_string_deg = e.srcElement.value.toString() + '&#176;';
@@ -4269,6 +4462,7 @@ class TadoPopupCard extends LitElement {
                 .className.replace(/temp.*/g, '');
             this.shadowRoot.getElementById('popup').classList.add('temp-' + temp_string);
             this.shadowRoot.getElementById('target_temp_track').innerHTML = temp_string_deg;
+            this.temp_wanted = e.srcElement.value;
         }
         else {
             this.shadowRoot.getElementById('popup').className = this.shadowRoot
@@ -4276,49 +4470,66 @@ class TadoPopupCard extends LitElement {
                 .className.replace(/temp.*/g, '');
             this.shadowRoot.getElementById('popup').classList.add('temp-off');
             this.shadowRoot.getElementById('target_temp_track').innerHTML = 'OFF';
+            this.temp_wanted = e.srcElement.value;
         }
-        // console.log(e.srcElement.value);
-        this.temp_wanted = e.srcElement.value;
     }
-    _getSetTemp(stateObj) {
-        if (stateObj.state === 'unavailable') {
-            return this.hass.localize('state.default.unavailable');
-        }
-        if (stateObj.attributes.target_temp_low && stateObj.attributes.target_temp_high) {
-            return [stateObj.attributes.target_temp_low, stateObj.attributes.target_temp_high];
-        }
-        return stateObj.attributes.temperature;
-    }
-    _getOverlayState(stateObj) {
-        const overlay = stateObj.state;
-        if (overlay === 'unavailable') {
-            return this.hass.localize('state.default.unavailable');
-        }
-        const isTrueSet = overlay === 'True';
+    // _getSetTemp(stateObj): string {
+    //   /**
+    //    * Gets the climates current temperature
+    //    */
+    //   if (stateObj.state === 'unavailable') {
+    //     return this.hass.localize('state.default.unavailable');
+    //   }
+    //   return stateObj.attributes.temperature;
+    // }
+    _getOverlayState(overlayObj) {
+        /**
+         * Correctly sets the Overlay boolean as it reads it as a string
+         */
+        const isTrueSet = overlayObj.state === 'True';
         return isTrueSet;
     }
-    _close(event) {
-        if (event && event.target.classList.length > 0) {
-            if (event.target.classList.contains('popup-inner') || event.target.classList.contains('settings-inner')) {
-                closePopUp();
-            }
-        }
-    }
+    // _close(event): void {
+    //   /**
+    //    * Closes the browser_mod popup.
+    //    */
+    //   if (event && event.target.classList.length > 0) {
+    //     if (event.target.classList.contains('popup-inner') || event.target.classList.contains('settings-inner')) {
+    //       closePopUp();
+    //     }
+    //   }
+    // }
     _setTemperature(temperature) {
-        // console.log(temperature);
-        this.hass.callService('climate', 'set_temperature', {
+        /**
+         * Calls the Home Assistant set_temperature service.
+         */
+        if (!this.hass) {
+            throw new Error('Unable to update temperature');
+        }
+        return this.hass.callService('climate', 'set_temperature', {
             entity_id: this.config.entity,
             temperature: temperature,
         });
     }
     _handleModeClick() {
-        this.hass.callService('climate', 'set_hvac_mode', {
+        /**
+         * Sets the Tado thermostat back to auto mode.
+         */
+        if (!this.hass) {
+            throw new Error('Unable to update climate mode');
+        }
+        return this.hass.callService('climate', 'set_hvac_mode', {
             entity_id: this.config.entity,
             hvac_mode: 'auto',
         });
     }
-    // _compareClimateHvacModes = (mode1, mode2) => this.hvacModeOrdering[mode1] - this.hvacModeOrdering[mode2];
     setConfig(config) {
+        /**
+         * Imports and sets up configuration
+         */
+        if (!config) {
+            throw new Error('Invalid configuration');
+        }
         if (!config.entity) {
             throw new Error('You need to define a climate entity');
         }
@@ -4333,13 +4544,24 @@ class TadoPopupCard extends LitElement {
         }
         this.config = config;
     }
-    // getCardSize(): number {
-    //   return 1;
-    // }
+    getCardSize() {
+        return 1;
+    }
     // Import Styling Externally
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     static get styles() {
         return [animation_styling, shared_styling, thermostat_styling, slider_styling];
     }
-}
-customElements.define('tado-popup-card', TadoPopupCard);
+};
+__decorate([
+    property({ type: Object })
+], TadoPopupCard.prototype, "hass", void 0);
+__decorate([
+    property({ type: Object })
+], TadoPopupCard.prototype, "config", void 0);
+TadoPopupCard = __decorate([
+    customElement('tadothermostatpopup-card')
+], TadoPopupCard);
+// customElements.define('tadothermostatpopup-card', TadoPopupCard);
+
+export { TadoPopupCard };

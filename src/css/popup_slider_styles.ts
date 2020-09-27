@@ -12,11 +12,11 @@ export const slider_styling = css`
     background-clip: padding-box;
     padding: 22px 0 0;
     box-sizing: content-box;
-    animation: 1s ease-out 0s 1 track_fadein;
+    /* animation: 1s ease-out 0s 1 track_fadein; */
   }
   /* Animation upon exiting the thermostat */
-  .popup-inner.backed #thermostat {
-    animation: 0.5s ease-in 0s 1 tempend;
+  .popup-inner.temp-backed #thermostat {
+    /* animation: 0.5s ease-in 0s 1 tempend; */
   }
   /* Make sure svg is not passed into mouseclick events */
   .btn-confirm svg,
