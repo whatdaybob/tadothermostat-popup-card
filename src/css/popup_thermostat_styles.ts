@@ -167,7 +167,7 @@ export const thermostat_styling = css`
     -ms-writing-mode: bt-lr;
     writing-mode: bt-lr;
     position: absolute;
-    top: -22px;
+    top: 0px;
   }
   input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;

@@ -5,7 +5,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { HomeAssistant, LovelaceCard, computeDomain } from 'custom-card-helpers';
 import { CustomCardConfig } from './types';
 import { back_btn, confirm_btn, heat_request } from './components/html_svg';
-import { closePopUp } from 'card-tools/src/popup';
+// import { closePopUp } from 'card-tools/src/popup';
 import { animation_styling } from './css/popup_animations';
 import { shared_styling } from './css/popup_shared_styles';
 import { slider_styling } from './css/popup_slider_styles';
@@ -184,71 +184,60 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
                       ${confirm_btn}
                     </div>
                   </div>
-                  <div class="tado-card-middle">
-                    <div class="thermostat">
-                      <div class="thermostat_top"></div>
-                      <div class="thermostat_middle" tabindex="0">
-                        <div class="thermostat__header "></div>
+                  <div class="tado-card-middle thermostat">
+                    <div class="thermostat_part_top"></div>
+                    <div class="thermostat_part_middle">
+                      <div id="track" class="track" style="height: ${track_height};"></div>
 
-                        <div class="thermostat__body">
-                          <div id="track" class="track" style="height: ${track_height};"></div>
-
-                          <input
-                            id="tempvaluerange"
-                            type="range"
-                            min="${min_temp - 1}"
-                            max="${max_temp}"
-                            step="1"
-                            style="width: 444px; height: 300px; transform-origin: 222px 222px;"
-                            @change="${(e: MouseEvent | null | undefined): void => this._change_track(e)}"
-                            @input="${(e: MouseEvent | null | undefined): void => this._change_track(e)}"
-                          />
-                        </div>
-                      </div>
+                      <input
+                        id="tempvaluerange"
+                        type="range"
+                        min="${min_temp - 1}"
+                        max="${max_temp}"
+                        step="1"
+                        style="width: 444px; height: 300px; transform-origin: 222px 222px;"
+                        @change="${(e: MouseEvent | null | undefined): void => this._change_track(e)}"
+                        @input="${(e: MouseEvent | null | undefined): void => this._change_track(e)}"
+                      />
                     </div>
+                    <div class="thermostat_part_bottom"></div>
                   </div>
-                  <div class="info"></div>
+                  <div class="tado-card-bottom"></div>
                   <!-- Tado set temp END -->
                 `
               : html`
                   <!-- Tado Thermostat START -->
                   <div class="tado-card-top"></div>
                   <div
-                    class="tado-card-middle"
+                    id="thermostat"
+                    class="tado-card-middle thermostat"
                     @mousedown="${(): void => this._thermostat_mousedown()}"
                     @mouseup="${(): void => this._thermostat_mouseup()}"
                     @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
                   >
                     <!-- <div  class="room-thermostat-area" tabindex="0"></div> -->
-                    <div id="thermostat" class="thermostat">
-                      <div class="thermostat_part_top"></div>
-                      <div class="thermostat_part_middle">
-                        <div class="thermostat__header ">
-                          <span>${thermostat__header}</span>
-                        </div>
-                        <div class="thermostat__body">
-                          <div class="body_temperature">${thermostat__body}</div>
-                          <div class="body_heatreq">
-                            <div class="body_heatreq_inner">
-                              ${heat_request}
+
+                    <div class="thermostat_part_top">
+                      <span>${thermostat__header}</span>
+                    </div>
+                    <div class="thermostat_part_middle">
+                      ${thermostat__body}
+                      ${this.temp_overlay
+                        ? html`
+                            <div class="thermostat__footer">
+                              <div class="thermostat__footer_termination_content_text">Manual Override Active</div>
+                              <button class="btn btn--cancel">Cancel</button>
                             </div>
-                          </div>
-                        </div>
-                        ${this.temp_overlay
-                          ? html`
-                              <div class="thermostat__footer">
-                                <div class="thermostat__footer_termination_content_text">Manual Override Active</div>
-                                <button class="btn btn--cancel">Cancel</button>
-                              </div>
-                            `
-                          : html`
-                              <div class="thermostat__footer"></div>
-                            `}
+                          `
+                        : html``}
+                    </div>
+                    <div class="thermostat_part_bottom">
+                      <div class="body_heatreq_inner">
+                        ${heat_request}
                       </div>
-                      <div class="thermostat_part_bottom"></div>
                     </div>
                   </div>
-                  <div class="info">
+                  <div class="tado-card-bottom">
                     <div class="info_sensor_container">
                       <div class="info_sensor">
                         <div class="info_sensor_label">Inside now</div>

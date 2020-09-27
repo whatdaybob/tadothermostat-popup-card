@@ -3633,34 +3633,7 @@ const animation_styling = css `
 `;
 
 const shared_styling = css `
-  .tado-card-middle {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 450px;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    width: 100%;
-  }
-  :host([temp_selection]) .tado-card-middle {
-    flex: 1 1 525px;
-  }
-
-  /* Main Thermostat Start */
-  .thermostat_part_top {
-    display: flex;
-    flex: 1 1 120px;
-    width: 100%;
-  }
-  .thermostat_part_top_toolbar {
-    padding: 18px;
-    position: absolute;
-    width: calc(100% - 36px);
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .thermostat_part_middle {
+  #thermostat {
     box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
     transition: transform 0.15s ease 0s, box-shadow 0.15s ease 0s, flex-basis 0.3s ease-out 0s;
     will-change: transform;
@@ -3674,6 +3647,59 @@ const shared_styling = css `
     border-radius: 75px;
     overflow: hidden;
   }
+
+  .tado-card-middle {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 450px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .thermostat_part_bottom {
+    flex: 1 1 100px;
+    width: 100%;
+  }
+
+  :host([temp_selection]) .tado-card-middle {
+    flex: 1 1 525px;
+  }
+  :host([temp_selection]) .thermostat_part_top {
+    display: none;
+  }
+  :host([temp_selection]) .thermostat_part_bottom {
+    display: none;
+  }
+  /* Main Thermostat Start */
+  .thermostat_part_top {
+    line-height: 50px;
+    flex: 1 1 50px;
+    text-align: center;
+    width: 100%;
+  }
+  .thermostat_part_top_toolbar {
+    padding: 18px;
+    position: absolute;
+    width: calc(100% - 36px);
+    display: flex;
+    justify-content: space-between;
+  }
+  /* .thermostat_part_middle {
+    box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
+    transition: transform 0.15s ease 0s, box-shadow 0.15s ease 0s, flex-basis 0.3s ease-out 0s;
+    will-change: transform;
+    flex: 0 1 300px;
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 75px;
+    overflow: hidden;
+  } */
   .thermostat:hover,
   .thermostat_part_middle:hover {
     transform: scale(1.03);
@@ -3682,7 +3708,7 @@ const shared_styling = css `
     transform: scale(0.95);
   }
   .tado-card-top {
-    flex: 1 1 0px;
+    flex: 1 1 100px;
     /* display: inline-flex; */
   }
   :host([temp_selection]) .thermostat {
@@ -3692,8 +3718,8 @@ const shared_styling = css `
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 75px;
     overflow: hidden;
-    flex: 1 1 400px;
-    margin: 35px 50px;
+    flex: 1 1 444px;
+    margin: 31px 0px 50px 0;
   }
   :host([temp_selection]) .tado-card-top {
     flex: 1 1 75px;
@@ -3709,19 +3735,23 @@ const shared_styling = css `
     height: 28px;
   }
   /* Main Thermostat End */
-  .thermostat {
+  /* .thermostat {
     width: 300px;
     height: 300px;
     margin-top: 110px;
-  }
+  } */
 
   .thermostat_part_middle {
-    display: flex;
-    flex-direction: column;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    display: flex;
+    font-size: 6rem;
+    text-align: center;
+    justify-content: center;
+    flex-flow: column;
   }
-  :host([temp_selection]) .thermostat_part_middle {
+  /* :host([temp_selection]) .thermostat_part_middle {
     flex: 0 1 400px;
     background-color: hsla(0, 0%, 100%, 0.2);
     box-shadow: 0 0 30px hsla(0, 0%, 39.2%, 0.2);
@@ -3730,12 +3760,12 @@ const shared_styling = css `
     position: relative;
     width: 100%;
     max-width: 300px;
-    /* height: 300px; */
-    /* margin-top: 30px; */
+    height: 300px;
+    margin-top: 30px;
     margin: 30px auto 60px auto;
     border-radius: 75px;
     overflow: hidden;
-  }
+  } */
   :host([temp_selection]) .thermostat__header {
     margin: 0px;
     flex: 1 1 0px;
@@ -3746,20 +3776,12 @@ const shared_styling = css `
     flex: 1 1 50px;
     text-align: center;
   }
-  .thermostat__body {
-    overflow: hidden;
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    font-size: 6rem;
-    flex-basis: 100%;
-  }
 
   :host([temp_overlay]) .thermostat__body {
     font-size: 5.5em;
   }
 
-  :host([temp_selection]) .thermostat__body {
+  :host([temp_selection]) .thermostat_part_middle {
     width: 300px;
     flex: 1 1 400px;
     /* animation: 0.5s ease-out 0s 1 temp_slider_start; */
@@ -3775,14 +3797,12 @@ const shared_styling = css `
   :host([temp_overlay]) .body_heatreq {
     bottom: 20px;
   }
-  .body_heatreq {
-    flex: 1 1 100px;
-  }
+
   .body_heatreq_inner {
     width: 24px;
     margin: 0 auto;
   }
-  .body_heatreq svg path {
+  .body_heatreq_inner svg path {
     opacity: 0.38;
     fill: #fff;
   }
@@ -3818,15 +3838,15 @@ const shared_styling = css `
   /* FOOTER END */
 
   /* INFO START */
-  :host([temp_selection]) .info {
+  :host([temp_selection]) .tado-card-bottom {
     display: none;
   }
-  .info {
+  .tado-card-bottom {
     display: flex;
     flex-direction: row;
-    flex: 1 1 150px;
+    flex: 1 1 200px;
   }
-  .info .temp {
+  .tado-card-bottom .temp {
     background-color: #67cd67;
     height: 60px;
     width: 60px;
@@ -4057,7 +4077,7 @@ const thermostat_styling = css `
     -ms-writing-mode: bt-lr;
     writing-mode: bt-lr;
     position: absolute;
-    top: -22px;
+    top: 0px;
   }
   input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -4230,71 +4250,60 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                       ${confirm_btn}
                     </div>
                   </div>
-                  <div class="tado-card-middle">
-                    <div class="thermostat">
-                      <div class="thermostat_top"></div>
-                      <div class="thermostat_middle" tabindex="0">
-                        <div class="thermostat__header "></div>
+                  <div class="tado-card-middle thermostat">
+                    <div class="thermostat_part_top"></div>
+                    <div class="thermostat_part_middle">
+                      <div id="track" class="track" style="height: ${track_height};"></div>
 
-                        <div class="thermostat__body">
-                          <div id="track" class="track" style="height: ${track_height};"></div>
-
-                          <input
-                            id="tempvaluerange"
-                            type="range"
-                            min="${min_temp - 1}"
-                            max="${max_temp}"
-                            step="1"
-                            style="width: 444px; height: 300px; transform-origin: 222px 222px;"
-                            @change="${(e) => this._change_track(e)}"
-                            @input="${(e) => this._change_track(e)}"
-                          />
-                        </div>
-                      </div>
+                      <input
+                        id="tempvaluerange"
+                        type="range"
+                        min="${min_temp - 1}"
+                        max="${max_temp}"
+                        step="1"
+                        style="width: 444px; height: 300px; transform-origin: 222px 222px;"
+                        @change="${(e) => this._change_track(e)}"
+                        @input="${(e) => this._change_track(e)}"
+                      />
                     </div>
+                    <div class="thermostat_part_bottom"></div>
                   </div>
-                  <div class="info"></div>
+                  <div class="tado-card-bottom"></div>
                   <!-- Tado set temp END -->
                 `
             : html `
                   <!-- Tado Thermostat START -->
                   <div class="tado-card-top"></div>
                   <div
-                    class="tado-card-middle"
+                    id="thermostat"
+                    class="tado-card-middle thermostat"
                     @mousedown="${() => this._thermostat_mousedown()}"
                     @mouseup="${() => this._thermostat_mouseup()}"
                     @click="${(e) => this._thermostat_mouseclick(e)}"
                   >
                     <!-- <div  class="room-thermostat-area" tabindex="0"></div> -->
-                    <div id="thermostat" class="thermostat">
-                      <div class="thermostat_part_top"></div>
-                      <div class="thermostat_part_middle">
-                        <div class="thermostat__header ">
-                          <span>${thermostat__header}</span>
-                        </div>
-                        <div class="thermostat__body">
-                          <div class="body_temperature">${thermostat__body}</div>
-                          <div class="body_heatreq">
-                            <div class="body_heatreq_inner">
-                              ${heat_request}
-                            </div>
-                          </div>
-                        </div>
-                        ${this.temp_overlay
+
+                    <div class="thermostat_part_top">
+                      <span>${thermostat__header}</span>
+                    </div>
+                    <div class="thermostat_part_middle">
+                      ${thermostat__body}
+                      ${this.temp_overlay
                 ? html `
-                              <div class="thermostat__footer">
-                                <div class="thermostat__footer_termination_content_text">Manual Override Active</div>
-                                <button class="btn btn--cancel">Cancel</button>
-                              </div>
-                            `
-                : html `
-                              <div class="thermostat__footer"></div>
-                            `}
+                            <div class="thermostat__footer">
+                              <div class="thermostat__footer_termination_content_text">Manual Override Active</div>
+                              <button class="btn btn--cancel">Cancel</button>
+                            </div>
+                          `
+                : html ``}
+                    </div>
+                    <div class="thermostat_part_bottom">
+                      <div class="body_heatreq_inner">
+                        ${heat_request}
                       </div>
-                      <div class="thermostat_part_bottom"></div>
                     </div>
                   </div>
-                  <div class="info">
+                  <div class="tado-card-bottom">
                     <div class="info_sensor_container">
                       <div class="info_sensor">
                         <div class="info_sensor_label">Inside now</div>
