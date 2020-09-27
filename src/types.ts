@@ -1,5 +1,3 @@
-import { LovelaceCardConfig } from 'custom-card-helpers';
-
 export type CustomCardConfig = {
   type: string;
   title?: string;
