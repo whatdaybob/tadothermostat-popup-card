@@ -13,6 +13,7 @@ module.exports = {
   rules: {
     '@typescript-eslint/camelcase': 0,
     '@typescript-eslint/no-non-null-assertion': 0,
+    '@typescript-eslint/no-unused-vars': ['error', { args: 'none', varsIgnorePattern: '^__' }],
   },
   globals: {
     Window: 'writable',

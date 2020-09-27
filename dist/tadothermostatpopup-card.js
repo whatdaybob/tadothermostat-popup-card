@@ -3700,15 +3700,14 @@ const shared_styling = css `
     border-radius: 75px;
     overflow: hidden;
   } */
-  .thermostat:hover,
-  .thermostat_part_middle:hover {
+  .thermostat:hover {
     transform: scale(1.03);
   }
   .thermostat.mousedown {
     transform: scale(0.95);
   }
   .tado-card-top {
-    flex: 1 1 100px;
+    flex: 0 0 100px;
     /* display: inline-flex; */
   }
   :host([temp_selection]) .thermostat {
@@ -3777,10 +3776,6 @@ const shared_styling = css `
     text-align: center;
   }
 
-  :host([temp_overlay]) .thermostat__body {
-    font-size: 5.5em;
-  }
-
   :host([temp_selection]) .thermostat_part_middle {
     width: 300px;
     flex: 1 1 400px;
@@ -3794,9 +3789,6 @@ const shared_styling = css `
     font-size: 5.5rem;
     text-align: center;
   }
-  :host([temp_overlay]) .body_heatreq {
-    bottom: 20px;
-  }
 
   .body_heatreq_inner {
     width: 24px;
@@ -3807,6 +3799,18 @@ const shared_styling = css `
     fill: #fff;
   }
 
+  :host([temp_heating~='heating_one']) .body_heatreq_inner svg path:nth-child(1) {
+    opacity: 1;
+  }
+  :host([temp_heating~='heating_two']) .body_heatreq_inner svg path:nth-child(1),
+  :host([temp_heating~='heating_two']) .body_heatreq_inner svg path:nth-child(2) {
+    opacity: 1;
+  }
+  :host([temp_heating~='heating_three']) .body_heatreq_inner svg path:nth-child(1),
+  :host([temp_heating~='heating_three']) .body_heatreq_inner svg path:nth-child(2),
+  :host([temp_heating~='heating_three']) .body_heatreq_inner svg path:nth-child(3) {
+    opacity: 1;
+  }
   /* FOOTER START */
 
   .thermostat__footer {
@@ -3814,11 +3818,32 @@ const shared_styling = css `
     background-color: #fff;
     color: #213953;
   }
-  :host([temp_overlay]) .thermostat__footer {
-    flex: 0 0 35%;
+
+  /* Temp Overlay Start */
+  :host([temp_overlay]) .thermostat_part_top {
+    flex: 0 0 50px;
+  }
+  :host([temp_overlay]) .thermostat_part_middle {
+    flex: 0 0 100px;
+    font-size: 5.5em;
+  }
+  :host([temp_overlay]) .thermostat_part_bottom {
+    flex: 0 0 150px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
+  :host([temp_overlay]) .body_heatreq_inner {
+    flex: 0 0 50px;
+    overflow: hidden;
+  }
+  :host([temp_overlay]) .thermostat__footer {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 0 0 100px;
+  }
+  /* Temp Overlay End */
 
   .thermostat__footercontent {
     position: relative;
@@ -3900,9 +3925,9 @@ const slider_styling = css `
     /* animation: 1s ease-out 0s 1 track_fadein; */
   }
   /* Animation upon exiting the thermostat */
-  .popup-inner.temp-backed #thermostat {
-    /* animation: 0.5s ease-in 0s 1 tempend; */
-  }
+  /* .popup-inner.temp-backed #thermostat {
+    animation: 0.5s ease-in 0s 1 tempend;
+  } */
   /* Make sure svg is not passed into mouseclick events */
   .btn-confirm svg,
   .btn-back svg {
@@ -4124,15 +4149,24 @@ const thermostat_styling = css `
 `;
 
 const CARD_VERSION = '0.0.1';
+const CARD_NAME = 'tadothermostatpopup-card';
+const CARD_FRIENDLY_NAME = 'Tado Thermostat Popup';
+const CARD_DESC = 'A popup card to replace tado climate entities more-info page.';
 
-// log information of card to the console
-console.info(`%c  TADOTHERMOSTATPOPUP-CARD  \n%c  Version ${CARD_VERSION}    `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
-window.customCards = window.customCards || [];
-window.customCards.push({
-    type: 'tadothermostatpopup-card',
-    name: 'Tado Thermostat Popup',
-    description: 'A popup card to replace tado climate entities more-info page.',
-});
+function infotoconsole() {
+    console.info(`%c  ${CARD_NAME.toUpperCase()}  \n%c  Version ${CARD_VERSION}    `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+}
+function cctoconsole() {
+    window.customCards = window.customCards || [];
+    window.customCards.push({
+        type: CARD_NAME,
+        name: CARD_FRIENDLY_NAME,
+        description: CARD_DESC,
+    });
+}
+
+infotoconsole();
+cctoconsole();
 let TadoPopupCard = class TadoPopupCard extends LitElement {
     constructor() {
         super();
@@ -4140,6 +4174,7 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         this.temp_wanted = 0;
         this.temp_class = 'temp-off';
         this.temp_selection = false;
+        this.temp_heating = 'heating_off';
         this.temp_overlay = false;
         // this.dragging = false;
     }
@@ -4162,6 +4197,7 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
             active: {},
             temp_selection: { type: Boolean, reflect: true },
             temp_overlay: { type: Boolean, reflect: true },
+            temp_heating: { type: String, reflect: true },
             temp_class: { type: String },
             temp_wanted: { type: Number },
         };
@@ -4179,43 +4215,30 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         // const entity = this.config.entity;
         const stateObj = (_a = this.entity) === null || _a === void 0 ? void 0 : _a.state;
         // const currentTemp = this.entity?.attributes.current_temperature;
-        const { hvac_modes, min_temp, max_temp, target_temp_step, preset_modes, current_temperature, temperature, current_humidity, hvac_action, preset_mode, friendly_name, supported_features, } = this.entity.attributes;
-        // const targetTemp =
-        //   stateObj.attributes.temperature !== null && stateObj.attributes.temperature
-        //     ? stateObj.attributes.temperature
-        //     : stateObj.attributes.min_temp;
-        // const currentHum = parseInt(stateObj.attributes.current_humidity);
-        // const currentHum = parseInt(stateObj.attributes.current_humidity);
-        // let mode = '';
-        // mode = stateObj.state in this.modeIcons ? stateObj.state : 'unknown-mode';
+        const { hvac_modes, min_temp, max_temp, __target_temp_step, __preset_modes, current_temperature, temperature, current_humidity, hvac_action, __preset_mode, __friendly_name, __supported_features, } = this.entity.attributes;
         let thermostat__body;
         let thermostat__target;
         let thermostat__header;
         if (hvac_action == 'off') {
-            // mode = 'off';
             thermostat__header = 'Frost Protection';
             thermostat__target = 0;
             thermostat__body = 'OFF';
         }
         else if (hvac_action == 'heating') {
-            // mode = 'heat';
-            thermostat__header = 'Set to';
+            thermostat__header = 'Heating to';
             thermostat__body = temperature.toString() + '°';
             thermostat__target = temperature;
         }
         else if (hvac_action == 'idle') {
-            // mode = 'idle';
             thermostat__header = 'Set to';
             thermostat__body = temperature.toString() + '°';
             thermostat__target = temperature;
         }
         else {
-            // mode = stateObj.state in this.modeIcons ? stateObj.state : 'unknown-mode';
             thermostat__header = 'No remote access';
             thermostat__body = 'replace with svg';
             thermostat__target = 0;
         }
-        // if (stateObj in hvac_modes) {
         if (hvac_modes.indexOf(stateObj) > -1) {
             if (hvac_action == 'off') {
                 this.temp_class = 'temp-off';
@@ -4288,6 +4311,11 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                     </div>
                     <div class="thermostat_part_middle">
                       ${thermostat__body}
+                    </div>
+                    <div class="thermostat_part_bottom">
+                      <div class="body_heatreq_inner">
+                        ${heat_request}
+                      </div>
                       ${this.temp_overlay
                 ? html `
                             <div class="thermostat__footer">
@@ -4296,11 +4324,6 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                             </div>
                           `
                 : html ``}
-                    </div>
-                    <div class="thermostat_part_bottom">
-                      <div class="body_heatreq_inner">
-                        ${heat_request}
-                      </div>
                     </div>
                   </div>
                   <div class="tado-card-bottom">
@@ -4431,6 +4454,7 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         // this._setTemp = this._getSetTemp(this.entity?.state);
         // this._setTemp = this._getSetTemp(this.hass.states[this.config.entity]);
         this.temp_overlay = this._getOverlayState(this.hass.states[this.config.overlay]);
+        this.temp_heating = this._getHeatingState(this.hass.states[this.config.heating]);
     }
     // _openSettings(): void {
     //   /**
@@ -4491,6 +4515,30 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
     //   }
     //   return stateObj.attributes.temperature;
     // }
+    _getHeatingState(heatingObj) {
+        // throw new Error('Method not implemented.');
+        const heat_percent = parseInt(heatingObj.state);
+        let heat_class = 'heating_off';
+        if (heat_percent == 0) {
+            return heat_class;
+        }
+        else if (heat_percent <= 33) {
+            heat_class = 'heating_one';
+            return heat_class;
+        }
+        else if (heat_percent <= 66) {
+            heat_class = 'heating_two';
+            return heat_class;
+        }
+        else if (heat_percent <= 100) {
+            heat_class = 'heating_three';
+            return heat_class;
+        }
+        else {
+            heat_class = 'heating_err';
+            return heat_class;
+        }
+    }
     _getOverlayState(overlayObj) {
         /**
          * Correctly sets the Overlay boolean as it reads it as a string

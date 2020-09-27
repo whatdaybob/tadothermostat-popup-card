@@ -68,15 +68,14 @@ export const shared_styling = css`
     border-radius: 75px;
     overflow: hidden;
   } */
-  .thermostat:hover,
-  .thermostat_part_middle:hover {
+  .thermostat:hover {
     transform: scale(1.03);
   }
   .thermostat.mousedown {
     transform: scale(0.95);
   }
   .tado-card-top {
-    flex: 1 1 100px;
+    flex: 0 0 100px;
     /* display: inline-flex; */
   }
   :host([temp_selection]) .thermostat {
@@ -145,10 +144,6 @@ export const shared_styling = css`
     text-align: center;
   }
 
-  :host([temp_overlay]) .thermostat__body {
-    font-size: 5.5em;
-  }
-
   :host([temp_selection]) .thermostat_part_middle {
     width: 300px;
     flex: 1 1 400px;
@@ -162,9 +157,6 @@ export const shared_styling = css`
     font-size: 5.5rem;
     text-align: center;
   }
-  :host([temp_overlay]) .body_heatreq {
-    bottom: 20px;
-  }
 
   .body_heatreq_inner {
     width: 24px;
@@ -175,6 +167,18 @@ export const shared_styling = css`
     fill: #fff;
   }
 
+  :host([temp_heating~='heating_one']) .body_heatreq_inner svg path:nth-child(1) {
+    opacity: 1;
+  }
+  :host([temp_heating~='heating_two']) .body_heatreq_inner svg path:nth-child(1),
+  :host([temp_heating~='heating_two']) .body_heatreq_inner svg path:nth-child(2) {
+    opacity: 1;
+  }
+  :host([temp_heating~='heating_three']) .body_heatreq_inner svg path:nth-child(1),
+  :host([temp_heating~='heating_three']) .body_heatreq_inner svg path:nth-child(2),
+  :host([temp_heating~='heating_three']) .body_heatreq_inner svg path:nth-child(3) {
+    opacity: 1;
+  }
   /* FOOTER START */
 
   .thermostat__footer {
@@ -182,11 +186,32 @@ export const shared_styling = css`
     background-color: #fff;
     color: #213953;
   }
-  :host([temp_overlay]) .thermostat__footer {
-    flex: 0 0 35%;
+
+  /* Temp Overlay Start */
+  :host([temp_overlay]) .thermostat_part_top {
+    flex: 0 0 50px;
+  }
+  :host([temp_overlay]) .thermostat_part_middle {
+    flex: 0 0 100px;
+    font-size: 5.5em;
+  }
+  :host([temp_overlay]) .thermostat_part_bottom {
+    flex: 0 0 150px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
+  :host([temp_overlay]) .body_heatreq_inner {
+    flex: 0 0 50px;
+    overflow: hidden;
+  }
+  :host([temp_overlay]) .thermostat__footer {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 0 0 100px;
+  }
+  /* Temp Overlay End */
 
   .thermostat__footercontent {
     position: relative;

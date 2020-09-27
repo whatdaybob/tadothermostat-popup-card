@@ -15,9 +15,9 @@ export const slider_styling = css`
     /* animation: 1s ease-out 0s 1 track_fadein; */
   }
   /* Animation upon exiting the thermostat */
-  .popup-inner.temp-backed #thermostat {
-    /* animation: 0.5s ease-in 0s 1 tempend; */
-  }
+  /* .popup-inner.temp-backed #thermostat {
+    animation: 0.5s ease-in 0s 1 tempend;
+  } */
   /* Make sure svg is not passed into mouseclick events */
   .btn-confirm svg,
   .btn-back svg {

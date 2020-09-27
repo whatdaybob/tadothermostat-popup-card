@@ -1,29 +1,16 @@
 import { LitElement, customElement, html, TemplateResult, property } from 'lit-element';
 import { HassEntity } from 'home-assistant-js-websocket';
-
-// import { classMap } from 'lit-html/directives/class-map';
 import { HomeAssistant, LovelaceCard, computeDomain } from 'custom-card-helpers';
 import { CustomCardConfig } from './types';
 import { back_btn, confirm_btn, heat_request } from './components/html_svg';
-// import { closePopUp } from 'card-tools/src/popup';
 import { animation_styling } from './css/popup_animations';
 import { shared_styling } from './css/popup_shared_styles';
 import { slider_styling } from './css/popup_slider_styles';
 import { thermostat_styling } from './css/popup_thermostat_styles';
-import { CARD_VERSION } from './const';
+import { infotoconsole, cctoconsole } from './modules/card_information';
 
-// log information of card to the console
-console.info(
-  `%c  TADOTHERMOSTATPOPUP-CARD  \n%c  Version ${CARD_VERSION}    `,
-  'color: orange; font-weight: bold; background: black',
-  'color: white; font-weight: bold; background: dimgray',
-);
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'tadothermostatpopup-card',
-  name: 'Tado Thermostat Popup',
-  description: 'A popup card to replace tado climate entities more-info page.',
-});
+infotoconsole();
+cctoconsole();
 
 @customElement('tadothermostatpopup-card')
 export class TadoPopupCard extends LitElement implements LovelaceCard {
@@ -39,6 +26,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
   // _setTrack: string | undefined;
   temp_selection: boolean;
   temp_overlay: boolean;
+  temp_heating: string;
   temp_class: string;
   temp_wanted: number;
 
@@ -59,6 +47,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
       active: {},
       temp_selection: { type: Boolean, reflect: true },
       temp_overlay: { type: Boolean, reflect: true },
+      temp_heating: { type: String, reflect: true },
       temp_class: { type: String },
       temp_wanted: { type: Number },
       // dragging: { type: Boolean, reflect: true },
@@ -71,6 +60,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
     this.temp_wanted = 0;
     this.temp_class = 'temp-off';
     this.temp_selection = false;
+    this.temp_heating = 'heating_off';
     this.temp_overlay = false;
     // this.dragging = false;
   }
@@ -93,63 +83,39 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
       hvac_modes,
       min_temp,
       max_temp,
-      target_temp_step,
-      preset_modes,
+      __target_temp_step,
+      __preset_modes,
       current_temperature,
       temperature,
       current_humidity,
       hvac_action,
-      preset_mode,
-      friendly_name,
-      supported_features,
+      __preset_mode,
+      __friendly_name,
+      __supported_features,
     } = this.entity!.attributes;
 
-    const unused = [
-      min_temp,
-      max_temp,
-      target_temp_step,
-      preset_modes,
-      current_temperature,
-      preset_mode,
-      friendly_name,
-      supported_features,
-    ];
-    // const targetTemp =
-    //   stateObj.attributes.temperature !== null && stateObj.attributes.temperature
-    //     ? stateObj.attributes.temperature
-    //     : stateObj.attributes.min_temp;
-
-    // const currentHum = parseInt(stateObj.attributes.current_humidity);
-    // const currentHum = parseInt(stateObj.attributes.current_humidity);
-    // let mode = '';
-    // mode = stateObj.state in this.modeIcons ? stateObj.state : 'unknown-mode';
     let thermostat__body: string;
     let thermostat__target: number;
     let thermostat__header: string;
 
     if (hvac_action == 'off') {
-      // mode = 'off';
       thermostat__header = 'Frost Protection';
       thermostat__target = 0;
       thermostat__body = 'OFF';
     } else if (hvac_action == 'heating') {
-      // mode = 'heat';
-      thermostat__header = 'Set to';
+      thermostat__header = 'Heating to';
       thermostat__body = temperature.toString() + '°';
       thermostat__target = temperature;
     } else if (hvac_action == 'idle') {
-      // mode = 'idle';
       thermostat__header = 'Set to';
       thermostat__body = temperature.toString() + '°';
       thermostat__target = temperature;
     } else {
-      // mode = stateObj.state in this.modeIcons ? stateObj.state : 'unknown-mode';
       thermostat__header = 'No remote access';
       thermostat__body = 'replace with svg';
       thermostat__target = 0;
     }
 
-    // if (stateObj in hvac_modes) {
     if (hvac_modes.indexOf(stateObj) > -1) {
       if (hvac_action == 'off') {
         this.temp_class = 'temp-off';
@@ -222,6 +188,11 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
                     </div>
                     <div class="thermostat_part_middle">
                       ${thermostat__body}
+                    </div>
+                    <div class="thermostat_part_bottom">
+                      <div class="body_heatreq_inner">
+                        ${heat_request}
+                      </div>
                       ${this.temp_overlay
                         ? html`
                             <div class="thermostat__footer">
@@ -230,11 +201,6 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
                             </div>
                           `
                         : html``}
-                    </div>
-                    <div class="thermostat_part_bottom">
-                      <div class="body_heatreq_inner">
-                        ${heat_request}
-                      </div>
                     </div>
                   </div>
                   <div class="tado-card-bottom">
@@ -369,6 +335,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
     // this._setTemp = this._getSetTemp(this.entity?.state);
     // this._setTemp = this._getSetTemp(this.hass.states[this.config.entity]);
     this.temp_overlay = this._getOverlayState(this.hass.states[this.config.overlay]);
+    this.temp_heating = this._getHeatingState(this.hass.states[this.config.heating]);
   }
 
   // _openSettings(): void {
@@ -432,7 +399,27 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
   //   return stateObj.attributes.temperature;
   // }
 
-  _getOverlayState(overlayObj): boolean {
+  _getHeatingState(heatingObj: HassEntity): string {
+    // throw new Error('Method not implemented.');
+    const heat_percent = parseInt(heatingObj.state);
+    let heat_class = 'heating_off';
+    if (heat_percent == 0) {
+      return heat_class;
+    } else if (heat_percent <= 33) {
+      heat_class = 'heating_one';
+      return heat_class;
+    } else if (heat_percent <= 66) {
+      heat_class = 'heating_two';
+      return heat_class;
+    } else if (heat_percent <= 100) {
+      heat_class = 'heating_three';
+      return heat_class;
+    } else {
+      heat_class = 'heating_err';
+      return heat_class;
+    }
+  }
+  _getOverlayState(overlayObj: HassEntity): boolean {
     /**
      * Correctly sets the Overlay boolean as it reads it as a string
      */
