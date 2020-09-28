@@ -38,10 +38,11 @@ export default [
         usePolling: true,
       },
     },
-    input: 'src/tadothermostatpopup-card.ts',
+    input: 'src/tadothermostat-popup-card.ts',
     output: {
-      dir: 'dist',
+      // dir: 'dist',
       format: 'es',
+      file: 'dist/tadothermostat-popup-card-dev.js',
     },
     plugins: [...plugins],
   },
