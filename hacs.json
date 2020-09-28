@@ -1,7 +1,7 @@
 {
     "name": "Tado Thermostat Popup Card",
     "render_readme": true,
-    "filename": "tadothermostatpopup-card.js",
+    "filename": "tadothermostat-popup-card.js",
     "country": [
         "GB"
     ]

@@ -15,6 +15,8 @@ export const thermostat_styling = css`
   }
 
   .popup-inner {
+    max-height: 600px;
+    min-height: 600px;
     max-width: 400px;
     width: 100%;
     display: flex;
@@ -22,21 +24,11 @@ export const thermostat_styling = css`
     justify-content: center;
     flex-direction: column;
     overflow: hidden;
-  }
-  .popup-inner.settemp {
-    /* animation: 0.5s ease-out 0s 1 popup_grow; */
-  }
-  .popup-inner.backed {
-    /* animation: 0.5s ease-out 0s 1 popup_shrink; */
+    color: white;
   }
 
   /* Main Popup Top */
 
-  .popup-inner {
-    color: white;
-    display: flex;
-    flex-direction: column;
-  }
   /* Thermostat Colors START */
   .popup-inner.temp-off {
     background: linear-gradient(rgb(159, 179, 194), rgb(104, 131, 150));

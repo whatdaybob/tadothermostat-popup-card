@@ -1,4 +1,4 @@
-import { LitElement, customElement, html, TemplateResult, property } from 'lit-element';
+import { LitElement, customElement, html, TemplateResult, property, CSSResultArray } from 'lit-element';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { HomeAssistant, LovelaceCard, computeDomain } from 'custom-card-helpers';
 import { CustomCardConfig } from './types';
@@ -479,10 +479,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
   }
 
   // Import Styling Externally
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  static get styles() {
+  static get styles(): CSSResultArray {
     return [animation_styling, shared_styling, thermostat_styling, slider_styling];
   }
 }
-
-// customElements.define('tadothermostatpopup-card', TadoPopupCard);
