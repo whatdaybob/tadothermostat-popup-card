@@ -3633,51 +3633,64 @@ const animation_styling = css `
 `;
 
 const shared_styling = css `
-  #thermostat {
+  :host([temp_selection]) .thermostat {
+    flex: 0 0 444px;
+    margin: 31px 0px 50px 0;
+  }
+  .tado-card-middle {
     box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
-    transition: transform 0.15s ease 0s, box-shadow 0.15s ease 0s, flex-basis 0.3s ease-out 0s;
+    transition-property: flex, opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
     will-change: transform;
-    flex: 0 1 300px;
     position: relative;
-    width: 100%;
     max-width: 300px;
     height: 300px;
-    /* margin-top: 30px; */
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 75px;
-    overflow: hidden;
-  }
-
-  .tado-card-middle {
     display: flex;
     flex-direction: column;
-    flex: 1 1 450px;
+    flex: 0 1 300px;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     width: 100%;
   }
+  :host([temp_selection]) .tado-card-middle {
+    flex: 0 0 444px;
+  }
 
   .thermostat_part_bottom {
-    flex: 1 1 100px;
+    flex: 0 0 100px;
     width: 100%;
+    opacity: 1;
+    transition-property: flex, opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
+    overflow: hidden;
   }
 
-  :host([temp_selection]) .tado-card-middle {
-    flex: 1 1 525px;
-  }
   :host([temp_selection]) .thermostat_part_top {
-    display: none;
+    opacity: 0;
+    flex: 0 0 0px;
   }
   :host([temp_selection]) .thermostat_part_bottom {
-    display: none;
+    opacity: 0;
+    flex: 0 0 0px;
   }
   /* Main Thermostat Start */
   .thermostat_part_top {
     line-height: 50px;
-    flex: 1 1 50px;
+    flex: 0 0 50px;
     text-align: center;
     width: 100%;
+    transition-property: flex, opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
+    overflow: hidden;
   }
   .thermostat_part_top_toolbar {
     padding: 18px;
@@ -3686,20 +3699,7 @@ const shared_styling = css `
     display: flex;
     justify-content: space-between;
   }
-  /* .thermostat_part_middle {
-    box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
-    transition: transform 0.15s ease 0s, box-shadow 0.15s ease 0s, flex-basis 0.3s ease-out 0s;
-    will-change: transform;
-    flex: 0 1 300px;
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    height: 300px;
 
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 75px;
-    overflow: hidden;
-  } */
   .thermostat:hover {
     transform: scale(1.03);
   }
@@ -3708,20 +3708,15 @@ const shared_styling = css `
   }
   .tado-card-top {
     flex: 0 0 100px;
+    transition-property: flex, opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
     /* display: inline-flex; */
   }
-  :host([temp_selection]) .thermostat {
-    box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
-    will-change: transform;
-    max-width: 300px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 75px;
-    overflow: hidden;
-    flex: 1 1 444px;
-    margin: 31px 0px 50px 0;
-  }
+
   :host([temp_selection]) .tado-card-top {
-    flex: 1 1 75px;
+    flex: 0 0 75px;
     display: inline-flex;
     width: 100%;
     justify-content: space-between;
@@ -3734,13 +3729,9 @@ const shared_styling = css `
     height: 28px;
   }
   /* Main Thermostat End */
-  /* .thermostat {
-    width: 300px;
-    height: 300px;
-    margin-top: 110px;
-  } */
 
   .thermostat_part_middle {
+    flex: 0 0 150px;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -3750,40 +3741,25 @@ const shared_styling = css `
     justify-content: center;
     flex-flow: column;
   }
-  /* :host([temp_selection]) .thermostat_part_middle {
-    flex: 0 1 400px;
-    background-color: hsla(0, 0%, 100%, 0.2);
-    box-shadow: 0 0 30px hsla(0, 0%, 39.2%, 0.2);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, flex-basis 0.3s ease-out;
-    will-change: transform;
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    height: 300px;
-    margin-top: 30px;
-    margin: 30px auto 60px auto;
-    border-radius: 75px;
-    overflow: hidden;
-  } */
+
   :host([temp_selection]) .thermostat__header {
     margin: 0px;
-    flex: 1 1 0px;
+    flex: 0 0 0px;
   }
 
   .thermostat__header {
     line-height: 50px;
-    flex: 1 1 50px;
+    flex: 0 0 50px;
     text-align: center;
   }
 
   :host([temp_selection]) .thermostat_part_middle {
     width: 300px;
-    flex: 1 1 400px;
-    /* animation: 0.5s ease-out 0s 1 temp_slider_start; */
+    flex: 0 0 400px;
   }
 
   .body_temperature {
-    flex: 1 1 150px;
+    flex: 0 0 150px;
     line-height: 190px;
     font-weight: 700;
     font-size: 5.5rem;
@@ -3791,8 +3767,13 @@ const shared_styling = css `
   }
 
   .body_heatreq_inner {
+    flex: 0 0 100px;
     width: 24px;
     margin: 0 auto;
+    transition-property: flex;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
   }
   .body_heatreq_inner svg path {
     opacity: 0.38;
@@ -3817,6 +3798,11 @@ const shared_styling = css `
     flex: 0 0 0%;
     background-color: #fff;
     color: #213953;
+    opacity: 0;
+    transition-property: flex, opacity;
+    transition-delay: 2s, 2s;
+    transition-duration: 2s;
+    transition-timing-function: ease-in-out;
   }
 
   /* Temp Overlay Start */
@@ -3841,6 +3827,7 @@ const shared_styling = css `
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    opacity: 1;
     flex: 0 0 100px;
   }
   /* Temp Overlay End */
@@ -3857,19 +3844,25 @@ const shared_styling = css `
   .thermostat__footer_termination_content_text {
     text-align: center;
     padding: 10px;
-    width: 100%;
+    width: calc(100% - 20px);
   }
 
   /* FOOTER END */
 
   /* INFO START */
   :host([temp_selection]) .tado-card-bottom {
-    display: none;
+    flex: 0 0 0px;
+    opacity: 0;
   }
   .tado-card-bottom {
     display: flex;
     flex-direction: row;
-    flex: 1 1 200px;
+    flex: 0 0 200px;
+    opacity: 1;
+    transition-property: flex, opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
   }
   .tado-card-bottom .temp {
     background-color: #67cd67;
@@ -4255,10 +4248,10 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
       <div class="popup-wrapper">
         <div style="display:flex;width:100%;height:100%;">
           <div id="popup" class="popup-inner ${this.temp_class}">
-            ${this.temp_selection
+            <!-- Tado set temp START -->
+            <div class="tado-card-top">
+              ${this.temp_selection
             ? html `
-                  <!-- Tado set temp START -->
-                  <div class="tado-card-top">
                     <div
                       class="btn-back"
                       @click="${(e) => this._thermostat_mouseclick(e)}"
@@ -4272,14 +4265,24 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                     >
                       ${confirm_btn}
                     </div>
-                  </div>
-                  <div class="tado-card-middle thermostat">
+                  `
+            : html ``}
+            </div>
+            <div
+              id="thermostat"
+              class="tado-card-middle thermostat"
+              @mousedown="${() => this._thermostat_mousedown()}"
+              @mouseup="${() => this._thermostat_mouseup()}"
+              @click="${(e) => this._thermostat_mouseclick(e)}"
+            >
+              ${this.temp_selection
+            ? html `
                     <div class="thermostat_part_top"></div>
                     <div class="thermostat_part_middle">
                       <div id="track" class="track" style="height: ${track_height};"></div>
-
                       <input
                         id="tempvaluerange"
+                        class="tempvaluerange"
                         type="range"
                         min="${min_temp - 1}"
                         max="${max_temp}"
@@ -4290,43 +4293,37 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                       />
                     </div>
                     <div class="thermostat_part_bottom"></div>
-                  </div>
-                  <div class="tado-card-bottom"></div>
-                  <!-- Tado set temp END -->
-                `
+                  `
             : html `
-                  <!-- Tado Thermostat START -->
-                  <div class="tado-card-top"></div>
-                  <div
-                    id="thermostat"
-                    class="tado-card-middle thermostat"
-                    @mousedown="${() => this._thermostat_mousedown()}"
-                    @mouseup="${() => this._thermostat_mouseup()}"
-                    @click="${(e) => this._thermostat_mouseclick(e)}"
-                  >
-                    <!-- <div  class="room-thermostat-area" tabindex="0"></div> -->
-
-                    <div class="thermostat_part_top">
+                    <div class="thermostat_part_top tempoverview">
                       <span>${thermostat__header}</span>
                     </div>
-                    <div class="thermostat_part_middle">
+                    <div class="thermostat_part_middle tempoverview">
                       ${thermostat__body}
                     </div>
-                    <div class="thermostat_part_bottom">
+                    <div class="thermostat_part_bottom tempoverview">
                       <div class="body_heatreq_inner">
                         ${heat_request}
                       </div>
                       ${this.temp_overlay
                 ? html `
                             <div class="thermostat__footer">
-                              <div class="thermostat__footer_termination_content_text">Manual Override Active</div>
+                              <div class="thermostat__footer_termination_content_text">
+                                Manual Override Active
+                              </div>
                               <button class="btn btn--cancel">Cancel</button>
                             </div>
                           `
-                : html ``}
+                : html `
+                            <div class="thermostat__footer"></div>
+                          `}
                     </div>
-                  </div>
-                  <div class="tado-card-bottom">
+                  `}
+            </div>
+            <div class="tado-card-bottom">
+              ${this.temp_selection
+            ? html ``
+            : html `
                     <div class="info_sensor_container">
                       <div class="info_sensor">
                         <div class="info_sensor_label">Inside now</div>
@@ -4337,9 +4334,14 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                         <div class="info_sensor_value">${parseInt(current_humidity)}%</div>
                       </div>
                     </div>
-                  </div>
-                  <!-- Tado Sensors END -->
-                `}
+                  `}
+            </div>
+            <!-- Tado set temp END -->
+            <!-- Tado Thermostat START -->
+            <!-- <div
+                  > -->
+            <!-- <div  class="room-thermostat-area" tabindex="0"></div> -->
+            <!-- Tado Sensors END -->
           </div>
         </div>
       </div>
@@ -4351,10 +4353,17 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
          */
         // Handle Cancel Button on main popup when overlay active
         const thermostat = this.shadowRoot;
+        let toggle = false;
         if (e !== null && this._isCancelOverrideButton(e.target)) {
             this._handleModeClick();
             thermostat.getElementById('popup').classList.add('temp-backed');
-            return; // Dont toggle view
+            console.log('CANCEL CALLED');
+            // return; // Dont toggle view
+        }
+        // Handle main thermostat click
+        if (e !== null && this._isTempOverview(e.target)) {
+            console.log('TOGGLE CALLED');
+            toggle = true;
         }
         // Handle Back Button when setting temperature
         if (e !== null && this._isBackButton(e.target)) {
@@ -4363,6 +4372,8 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                 .className.replace(/temp.*/g, '');
             thermostat.getElementById('popup').classList.add('temp-backed');
             thermostat.getElementById('popup').classList.add(this.temp_class);
+            console.log('BACK CALLED');
+            toggle = true;
         }
         // Handle Confirmation Button when setting temperature
         if (e !== null && this._isConfirmButton(e.target)) {
@@ -4372,21 +4383,26 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                 .className.replace(/temp.*/g, '');
             thermostat.getElementById('popup').classList.add('temp-backed');
             thermostat.getElementById('popup').classList.add('temp-' + this.temp_wanted.toString());
+            console.log('CONFIRM CALLED');
+            toggle = true;
         }
         // toggle thermostat view
-        const oldVal = this.temp_selection;
-        if (this.temp_selection) {
-            this.temp_selection = false;
-            thermostat.getElementById('popup').classList.remove('settemp');
-            thermostat.getElementById('popup').classList.add('temp-backed');
-            this.requestUpdate('temp_selection', oldVal);
+        if (toggle) {
+            const oldVal = this.temp_selection;
+            if (this.temp_selection) {
+                this.temp_selection = false;
+                thermostat.getElementById('popup').classList.remove('settemp');
+                thermostat.getElementById('popup').classList.add('temp-backed');
+                this.requestUpdate('temp_selection', oldVal);
+            }
+            else {
+                this.temp_selection = true;
+                thermostat.getElementById('popup').classList.add('settemp');
+                thermostat.getElementById('popup').classList.remove('temp-backed');
+                this.requestUpdate('temp_selection', oldVal);
+            }
         }
-        else {
-            this.temp_selection = true;
-            thermostat.getElementById('popup').classList.add('settemp');
-            thermostat.getElementById('popup').classList.remove('temp-backed');
-            this.requestUpdate('temp_selection', oldVal);
-        }
+        console.log(e);
     }
     _isCancelOverrideButton(target) {
         /**
@@ -4396,12 +4412,20 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         const exists = target.classList.contains(cancelOverrideClass);
         return exists;
     }
+    _isTempOverview(target) {
+        /**
+         * Temperature Override Cancel button check
+         */
+        const tempoverview = 'tempoverview';
+        const exists = target.classList.contains(tempoverview);
+        return exists;
+    }
     _isBackButton(target) {
         /**
          * Temperature Slider Back button check
          */
-        const BackBtnClass = 'btn-back';
-        const exists = target.classList.contains(BackBtnClass);
+        const backBtnClass = 'btn-back';
+        const exists = target.classList.contains(backBtnClass);
         return exists;
     }
     _isConfirmButton(target) {
@@ -4416,36 +4440,6 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         /**
          * First Update Handler.
          */
-        // if (this.settings && !this.settingsCustomCard) {
-        //   const mic = this.shadowRoot.querySelector('more-info-controls').shadowRoot;
-        //   mic.removeChild(mic.querySelector('app-toolbar'));
-        // } else if (this.settings && this.settingsCustomCard) {
-        //   this.shadowRoot.querySelectorAll('card-maker').forEach(customCard => {
-        //     let card = {
-        //       type: customCard.dataset.card,
-        //     };
-        //     card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
-        //     customCard.config = card;
-        //     let style = '';
-        //     if (customCard.dataset.style) {
-        //       style = customCard.dataset.style;
-        //     }
-        //     if (style != '') {
-        //       let itterations = 0;
-        //       const interval = setInterval(function() {
-        //         const el = customCard.children[0];
-        //         if (el) {
-        //           window.clearInterval(interval);
-        //           const styleElement = document.createElement('style');
-        //           styleElement.innerHTML = style;
-        //           el.shadowRoot.appendChild(styleElement);
-        //         } else if (++itterations === 10) {
-        //           window.clearInterval(interval);
-        //         }
-        //       }, 100);
-        //     }
-        //   });
-        // }
     }
     updated() {
         /**
@@ -4456,20 +4450,6 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         this.temp_overlay = this._getOverlayState(this.hass.states[this.config.overlay]);
         this.temp_heating = this._getHeatingState(this.hass.states[this.config.heating]);
     }
-    // _openSettings(): void {
-    //   /**
-    //    * Handles classes on opening settings popup.
-    //    */
-    //   this.shadowRoot.getElementById('popup').classList.add('off');
-    //   this.shadowRoot.getElementById('settings').classList.add('on');
-    // }
-    // _closeSettings(): void {
-    //   /**
-    //    * Handles classes on closing settings popup.
-    //    */
-    //   this.shadowRoot.getElementById('settings').classList.remove('on');
-    //   this.shadowRoot.getElementById('popup').classList.remove('off');
-    // }
     _thermostat_mousedown() {
         /**
          * Mouse Down Animation helper.

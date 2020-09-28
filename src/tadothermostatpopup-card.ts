@@ -132,10 +132,10 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
       <div class="popup-wrapper">
         <div style="display:flex;width:100%;height:100%;">
           <div id="popup" class="popup-inner ${this.temp_class}">
-            ${this.temp_selection
-              ? html`
-                  <!-- Tado set temp START -->
-                  <div class="tado-card-top">
+            <!-- Tado set temp START -->
+            <div class="tado-card-top">
+              ${this.temp_selection
+                ? html`
                     <div
                       class="btn-back"
                       @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
@@ -149,14 +149,24 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
                     >
                       ${confirm_btn}
                     </div>
-                  </div>
-                  <div class="tado-card-middle thermostat">
+                  `
+                : html``}
+            </div>
+            <div
+              id="thermostat"
+              class="tado-card-middle thermostat"
+              @mousedown="${(): void => this._thermostat_mousedown()}"
+              @mouseup="${(): void => this._thermostat_mouseup()}"
+              @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
+            >
+              ${this.temp_selection
+                ? html`
                     <div class="thermostat_part_top"></div>
                     <div class="thermostat_part_middle">
                       <div id="track" class="track" style="height: ${track_height};"></div>
-
                       <input
                         id="tempvaluerange"
+                        class="tempvaluerange"
                         type="range"
                         min="${min_temp - 1}"
                         max="${max_temp}"
@@ -167,43 +177,37 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
                       />
                     </div>
                     <div class="thermostat_part_bottom"></div>
-                  </div>
-                  <div class="tado-card-bottom"></div>
-                  <!-- Tado set temp END -->
-                `
-              : html`
-                  <!-- Tado Thermostat START -->
-                  <div class="tado-card-top"></div>
-                  <div
-                    id="thermostat"
-                    class="tado-card-middle thermostat"
-                    @mousedown="${(): void => this._thermostat_mousedown()}"
-                    @mouseup="${(): void => this._thermostat_mouseup()}"
-                    @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
-                  >
-                    <!-- <div  class="room-thermostat-area" tabindex="0"></div> -->
-
-                    <div class="thermostat_part_top">
+                  `
+                : html`
+                    <div class="thermostat_part_top tempoverview">
                       <span>${thermostat__header}</span>
                     </div>
-                    <div class="thermostat_part_middle">
+                    <div class="thermostat_part_middle tempoverview">
                       ${thermostat__body}
                     </div>
-                    <div class="thermostat_part_bottom">
+                    <div class="thermostat_part_bottom tempoverview">
                       <div class="body_heatreq_inner">
                         ${heat_request}
                       </div>
                       ${this.temp_overlay
                         ? html`
                             <div class="thermostat__footer">
-                              <div class="thermostat__footer_termination_content_text">Manual Override Active</div>
+                              <div class="thermostat__footer_termination_content_text">
+                                Manual Override Active
+                              </div>
                               <button class="btn btn--cancel">Cancel</button>
                             </div>
                           `
-                        : html``}
+                        : html`
+                            <div class="thermostat__footer"></div>
+                          `}
                     </div>
-                  </div>
-                  <div class="tado-card-bottom">
+                  `}
+            </div>
+            <div class="tado-card-bottom">
+              ${this.temp_selection
+                ? html``
+                : html`
                     <div class="info_sensor_container">
                       <div class="info_sensor">
                         <div class="info_sensor_label">Inside now</div>
@@ -214,9 +218,14 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
                         <div class="info_sensor_value">${parseInt(current_humidity)}%</div>
                       </div>
                     </div>
-                  </div>
-                  <!-- Tado Sensors END -->
-                `}
+                  `}
+            </div>
+            <!-- Tado set temp END -->
+            <!-- Tado Thermostat START -->
+            <!-- <div
+                  > -->
+            <!-- <div  class="room-thermostat-area" tabindex="0"></div> -->
+            <!-- Tado Sensors END -->
           </div>
         </div>
       </div>
@@ -229,11 +238,20 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
      */
     // Handle Cancel Button on main popup when overlay active
     const thermostat = this.shadowRoot;
+    let toggle = false;
     if (e !== null && this._isCancelOverrideButton(e.target as HTMLButtonElement)) {
       this._handleModeClick();
       thermostat.getElementById('popup').classList.add('temp-backed');
-      return; // Dont toggle view
+      console.log('CANCEL CALLED');
+      // return; // Dont toggle view
     }
+
+    // Handle main thermostat click
+    if (e !== null && this._isTempOverview(e.target as HTMLDivElement)) {
+      console.log('TOGGLE CALLED');
+      toggle = true;
+    }
+
     // Handle Back Button when setting temperature
     if (e !== null && this._isBackButton(e.target as HTMLDivElement)) {
       this.shadowRoot.getElementById('popup').className = this.shadowRoot
@@ -241,6 +259,8 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
         .className.replace(/temp.*/g, '');
       thermostat.getElementById('popup').classList.add('temp-backed');
       thermostat.getElementById('popup').classList.add(this.temp_class);
+      console.log('BACK CALLED');
+      toggle = true;
     }
     // Handle Confirmation Button when setting temperature
     if (e !== null && this._isConfirmButton(e.target as HTMLDivElement)) {
@@ -250,21 +270,25 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
         .className.replace(/temp.*/g, '');
       thermostat.getElementById('popup').classList.add('temp-backed');
       thermostat.getElementById('popup').classList.add('temp-' + this.temp_wanted.toString());
+      console.log('CONFIRM CALLED');
+      toggle = true;
     }
     // toggle thermostat view
-
-    const oldVal = this.temp_selection;
-    if (this.temp_selection) {
-      this.temp_selection = false;
-      thermostat.getElementById('popup').classList.remove('settemp');
-      thermostat.getElementById('popup').classList.add('temp-backed');
-      this.requestUpdate('temp_selection', oldVal);
-    } else {
-      this.temp_selection = true;
-      thermostat.getElementById('popup').classList.add('settemp');
-      thermostat.getElementById('popup').classList.remove('temp-backed');
-      this.requestUpdate('temp_selection', oldVal);
+    if (toggle) {
+      const oldVal = this.temp_selection;
+      if (this.temp_selection) {
+        this.temp_selection = false;
+        thermostat.getElementById('popup').classList.remove('settemp');
+        thermostat.getElementById('popup').classList.add('temp-backed');
+        this.requestUpdate('temp_selection', oldVal);
+      } else {
+        this.temp_selection = true;
+        thermostat.getElementById('popup').classList.add('settemp');
+        thermostat.getElementById('popup').classList.remove('temp-backed');
+        this.requestUpdate('temp_selection', oldVal);
+      }
     }
+    console.log(e);
   }
 
   _isCancelOverrideButton(target: HTMLButtonElement): boolean {
@@ -275,12 +299,20 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
     const exists = target.classList.contains(cancelOverrideClass);
     return exists;
   }
+  _isTempOverview(target: HTMLDivElement): boolean {
+    /**
+     * Temperature Override Cancel button check
+     */
+    const tempoverview = 'tempoverview';
+    const exists = target.classList.contains(tempoverview);
+    return exists;
+  }
   _isBackButton(target: HTMLDivElement): boolean {
     /**
      * Temperature Slider Back button check
      */
-    const BackBtnClass = 'btn-back';
-    const exists = target.classList.contains(BackBtnClass);
+    const backBtnClass = 'btn-back';
+    const exists = target.classList.contains(backBtnClass);
     return exists;
   }
   _isConfirmButton(target: HTMLDivElement): boolean {
@@ -296,36 +328,6 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
     /**
      * First Update Handler.
      */
-    // if (this.settings && !this.settingsCustomCard) {
-    //   const mic = this.shadowRoot.querySelector('more-info-controls').shadowRoot;
-    //   mic.removeChild(mic.querySelector('app-toolbar'));
-    // } else if (this.settings && this.settingsCustomCard) {
-    //   this.shadowRoot.querySelectorAll('card-maker').forEach(customCard => {
-    //     let card = {
-    //       type: customCard.dataset.card,
-    //     };
-    //     card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
-    //     customCard.config = card;
-    //     let style = '';
-    //     if (customCard.dataset.style) {
-    //       style = customCard.dataset.style;
-    //     }
-    //     if (style != '') {
-    //       let itterations = 0;
-    //       const interval = setInterval(function() {
-    //         const el = customCard.children[0];
-    //         if (el) {
-    //           window.clearInterval(interval);
-    //           const styleElement = document.createElement('style');
-    //           styleElement.innerHTML = style;
-    //           el.shadowRoot.appendChild(styleElement);
-    //         } else if (++itterations === 10) {
-    //           window.clearInterval(interval);
-    //         }
-    //       }, 100);
-    //     }
-    //   });
-    // }
   }
 
   updated(): void {
@@ -338,20 +340,6 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
     this.temp_heating = this._getHeatingState(this.hass.states[this.config.heating]);
   }
 
-  // _openSettings(): void {
-  //   /**
-  //    * Handles classes on opening settings popup.
-  //    */
-  //   this.shadowRoot.getElementById('popup').classList.add('off');
-  //   this.shadowRoot.getElementById('settings').classList.add('on');
-  // }
-  // _closeSettings(): void {
-  //   /**
-  //    * Handles classes on closing settings popup.
-  //    */
-  //   this.shadowRoot.getElementById('settings').classList.remove('on');
-  //   this.shadowRoot.getElementById('popup').classList.remove('off');
-  // }
   _thermostat_mousedown(): void {
     /**
      * Mouse Down Animation helper.

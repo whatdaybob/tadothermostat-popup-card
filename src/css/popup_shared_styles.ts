@@ -1,51 +1,64 @@
 import { css } from 'lit-element';
 
 export const shared_styling = css`
-  #thermostat {
+  :host([temp_selection]) .thermostat {
+    flex: 0 0 444px;
+    margin: 31px 0px 50px 0;
+  }
+  .tado-card-middle {
     box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
-    transition: transform 0.15s ease 0s, box-shadow 0.15s ease 0s, flex-basis 0.3s ease-out 0s;
+    transition-property: flex, opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
     will-change: transform;
-    flex: 0 1 300px;
     position: relative;
-    width: 100%;
     max-width: 300px;
     height: 300px;
-    /* margin-top: 30px; */
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 75px;
-    overflow: hidden;
-  }
-
-  .tado-card-middle {
     display: flex;
     flex-direction: column;
-    flex: 1 1 450px;
+    flex: 0 1 300px;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     width: 100%;
   }
+  :host([temp_selection]) .tado-card-middle {
+    flex: 0 0 444px;
+  }
 
   .thermostat_part_bottom {
-    flex: 1 1 100px;
+    flex: 0 0 100px;
     width: 100%;
+    opacity: 1;
+    transition-property: flex, opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
+    overflow: hidden;
   }
 
-  :host([temp_selection]) .tado-card-middle {
-    flex: 1 1 525px;
-  }
   :host([temp_selection]) .thermostat_part_top {
-    display: none;
+    opacity: 0;
+    flex: 0 0 0px;
   }
   :host([temp_selection]) .thermostat_part_bottom {
-    display: none;
+    opacity: 0;
+    flex: 0 0 0px;
   }
   /* Main Thermostat Start */
   .thermostat_part_top {
     line-height: 50px;
-    flex: 1 1 50px;
+    flex: 0 0 50px;
     text-align: center;
     width: 100%;
+    transition-property: flex, opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
+    overflow: hidden;
   }
   .thermostat_part_top_toolbar {
     padding: 18px;
@@ -54,20 +67,7 @@ export const shared_styling = css`
     display: flex;
     justify-content: space-between;
   }
-  /* .thermostat_part_middle {
-    box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
-    transition: transform 0.15s ease 0s, box-shadow 0.15s ease 0s, flex-basis 0.3s ease-out 0s;
-    will-change: transform;
-    flex: 0 1 300px;
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    height: 300px;
 
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 75px;
-    overflow: hidden;
-  } */
   .thermostat:hover {
     transform: scale(1.03);
   }
@@ -76,20 +76,15 @@ export const shared_styling = css`
   }
   .tado-card-top {
     flex: 0 0 100px;
+    transition-property: flex, opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
     /* display: inline-flex; */
   }
-  :host([temp_selection]) .thermostat {
-    box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
-    will-change: transform;
-    max-width: 300px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 75px;
-    overflow: hidden;
-    flex: 1 1 444px;
-    margin: 31px 0px 50px 0;
-  }
+
   :host([temp_selection]) .tado-card-top {
-    flex: 1 1 75px;
+    flex: 0 0 75px;
     display: inline-flex;
     width: 100%;
     justify-content: space-between;
@@ -102,13 +97,9 @@ export const shared_styling = css`
     height: 28px;
   }
   /* Main Thermostat End */
-  /* .thermostat {
-    width: 300px;
-    height: 300px;
-    margin-top: 110px;
-  } */
 
   .thermostat_part_middle {
+    flex: 0 0 150px;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -118,40 +109,25 @@ export const shared_styling = css`
     justify-content: center;
     flex-flow: column;
   }
-  /* :host([temp_selection]) .thermostat_part_middle {
-    flex: 0 1 400px;
-    background-color: hsla(0, 0%, 100%, 0.2);
-    box-shadow: 0 0 30px hsla(0, 0%, 39.2%, 0.2);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, flex-basis 0.3s ease-out;
-    will-change: transform;
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    height: 300px;
-    margin-top: 30px;
-    margin: 30px auto 60px auto;
-    border-radius: 75px;
-    overflow: hidden;
-  } */
+
   :host([temp_selection]) .thermostat__header {
     margin: 0px;
-    flex: 1 1 0px;
+    flex: 0 0 0px;
   }
 
   .thermostat__header {
     line-height: 50px;
-    flex: 1 1 50px;
+    flex: 0 0 50px;
     text-align: center;
   }
 
   :host([temp_selection]) .thermostat_part_middle {
     width: 300px;
-    flex: 1 1 400px;
-    /* animation: 0.5s ease-out 0s 1 temp_slider_start; */
+    flex: 0 0 400px;
   }
 
   .body_temperature {
-    flex: 1 1 150px;
+    flex: 0 0 150px;
     line-height: 190px;
     font-weight: 700;
     font-size: 5.5rem;
@@ -159,8 +135,13 @@ export const shared_styling = css`
   }
 
   .body_heatreq_inner {
+    flex: 0 0 100px;
     width: 24px;
     margin: 0 auto;
+    transition-property: flex;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
   }
   .body_heatreq_inner svg path {
     opacity: 0.38;
@@ -185,6 +166,11 @@ export const shared_styling = css`
     flex: 0 0 0%;
     background-color: #fff;
     color: #213953;
+    opacity: 0;
+    transition-property: flex, opacity;
+    transition-delay: 2s, 2s;
+    transition-duration: 2s;
+    transition-timing-function: ease-in-out;
   }
 
   /* Temp Overlay Start */
@@ -209,6 +195,7 @@ export const shared_styling = css`
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    opacity: 1;
     flex: 0 0 100px;
   }
   /* Temp Overlay End */
@@ -225,19 +212,25 @@ export const shared_styling = css`
   .thermostat__footer_termination_content_text {
     text-align: center;
     padding: 10px;
-    width: 100%;
+    width: calc(100% - 20px);
   }
 
   /* FOOTER END */
 
   /* INFO START */
   :host([temp_selection]) .tado-card-bottom {
-    display: none;
+    flex: 0 0 0px;
+    opacity: 0;
   }
   .tado-card-bottom {
     display: flex;
     flex-direction: row;
-    flex: 1 1 200px;
+    flex: 0 0 200px;
+    opacity: 1;
+    transition-property: flex, opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
   }
   .tado-card-bottom .temp {
     background-color: #67cd67;
