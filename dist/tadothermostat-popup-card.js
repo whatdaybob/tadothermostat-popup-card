@@ -3567,572 +3567,6 @@ const heat_request = html `
   </svg>
 `;
 
-const animation_styling = css `
-  @keyframes popup_grow {
-    0% {
-      height: 540px;
-    }
-    100% {
-      height: 600px;
-    }
-  }
-  @keyframes popup_shrink {
-    0% {
-      height: 600px;
-    }
-    100% {
-      height: 540px;
-    }
-  }
-
-  @keyframes temp_slider_start {
-    0% {
-      height: 300px;
-      top: -80px;
-    }
-    100% {
-      height: 400px;
-      top: 0px;
-    }
-  }
-  @keyframes tempend {
-    0% {
-      /* min-height: 400px; */
-      opacity: 0;
-      transform: translate(0%, 10%);
-    }
-    100% {
-      /* min-height: 300px; */
-      opacity: 1;
-      transform: translate(0%, 0%);
-    }
-  }
-
-  @keyframes track_fadein {
-    0% {
-      opacity: 0;
-      transform: translate(0%, 500%);
-    }
-    50% {
-      opacity: 0.5;
-      transform: translate(0%, 200%);
-    }
-    75% {
-      opacity: 1;
-      transform: translate(0%, 50%);
-    }
-    85% {
-      opacity: 1;
-      transform: translate(0%, 20%);
-    }
-    100% {
-      opacity: 1;
-      transform: translate(0%, 0%);
-    }
-  }
-`;
-
-const shared_styling = css `
-  :host([temp_selection]) .thermostat {
-    flex: 0 0 444px;
-    margin: 31px 0px 50px 0;
-  }
-  .tado-card-middle {
-    box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
-    transition-property: flex, opacity;
-    transition-delay: 0s;
-    transition-duration: 0.5s;
-    transition-timing-function: ease-in-out;
-    will-change: transform;
-    position: relative;
-    max-width: 300px;
-    height: 300px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 75px;
-    display: flex;
-    flex-direction: column;
-    flex: 0 1 300px;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    width: 100%;
-  }
-  :host([temp_selection]) .tado-card-middle {
-    flex: 0 0 444px;
-  }
-
-  .thermostat_part_bottom {
-    flex: 0 0 100px;
-    width: 100%;
-    opacity: 1;
-    transition-property: flex, opacity;
-    transition-delay: 0s;
-    transition-duration: 0.5s;
-    transition-timing-function: ease-in-out;
-    overflow: hidden;
-  }
-
-  :host([temp_selection]) .thermostat_part_top {
-    opacity: 0;
-    flex: 0 0 0px;
-  }
-  :host([temp_selection]) .thermostat_part_bottom {
-    opacity: 0;
-    flex: 0 0 0px;
-  }
-  /* Main Thermostat Start */
-  .thermostat_part_top {
-    line-height: 50px;
-    flex: 0 0 50px;
-    text-align: center;
-    width: 100%;
-    transition-property: flex, opacity;
-    transition-delay: 0s;
-    transition-duration: 0.5s;
-    transition-timing-function: ease-in-out;
-    overflow: hidden;
-  }
-  .thermostat_part_top_toolbar {
-    padding: 18px;
-    position: absolute;
-    width: calc(100% - 36px);
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .thermostat:hover {
-    transform: scale(1.03);
-  }
-  .thermostat.mousedown {
-    transform: scale(0.95);
-  }
-  .tado-card-top {
-    flex: 0 0 100px;
-    transition-property: flex, opacity;
-    transition-delay: 0s;
-    transition-duration: 0.5s;
-    transition-timing-function: ease-in-out;
-    /* display: inline-flex; */
-  }
-
-  :host([temp_selection]) .tado-card-top {
-    flex: 0 0 75px;
-    display: inline-flex;
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  :host([temp_selection]) .btn-confirm,
-  :host([temp_selection]) .btn-back {
-    margin: 20px;
-    width: 28px;
-    height: 28px;
-  }
-  /* Main Thermostat End */
-
-  .thermostat_part_middle {
-    flex: 0 0 150px;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    font-size: 6rem;
-    text-align: center;
-    justify-content: center;
-    flex-flow: column;
-  }
-
-  :host([temp_selection]) .thermostat__header {
-    margin: 0px;
-    flex: 0 0 0px;
-  }
-
-  .thermostat__header {
-    line-height: 50px;
-    flex: 0 0 50px;
-    text-align: center;
-  }
-
-  :host([temp_selection]) .thermostat_part_middle {
-    width: 300px;
-    flex: 0 0 400px;
-  }
-
-  .body_temperature {
-    flex: 0 0 150px;
-    line-height: 190px;
-    font-weight: 700;
-    font-size: 5.5rem;
-    text-align: center;
-  }
-
-  .body_heatreq_inner {
-    flex: 0 0 100px;
-    width: 24px;
-    margin: 0 auto;
-    transition-property: flex;
-    transition-delay: 0s;
-    transition-duration: 0.5s;
-    transition-timing-function: ease-in-out;
-  }
-  .body_heatreq_inner svg path {
-    opacity: 0.38;
-    fill: #fff;
-  }
-
-  :host([temp_heating~='heating_one']) .body_heatreq_inner svg path:nth-child(1) {
-    opacity: 1;
-  }
-  :host([temp_heating~='heating_two']) .body_heatreq_inner svg path:nth-child(1),
-  :host([temp_heating~='heating_two']) .body_heatreq_inner svg path:nth-child(2) {
-    opacity: 1;
-  }
-  :host([temp_heating~='heating_three']) .body_heatreq_inner svg path:nth-child(1),
-  :host([temp_heating~='heating_three']) .body_heatreq_inner svg path:nth-child(2),
-  :host([temp_heating~='heating_three']) .body_heatreq_inner svg path:nth-child(3) {
-    opacity: 1;
-  }
-  /* FOOTER START */
-
-  .thermostat__footer {
-    flex: 0 0 0%;
-    background-color: #fff;
-    color: #213953;
-    opacity: 0;
-    transition-property: flex, opacity;
-    transition-delay: 2s, 2s;
-    transition-duration: 2s;
-    transition-timing-function: ease-in-out;
-  }
-
-  /* Temp Overlay Start */
-  :host([temp_overlay]) .thermostat_part_top {
-    flex: 0 0 50px;
-  }
-  :host([temp_overlay]) .thermostat_part_middle {
-    flex: 0 0 100px;
-    font-size: 5.5em;
-  }
-  :host([temp_overlay]) .thermostat_part_bottom {
-    flex: 0 0 150px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  :host([temp_overlay]) .body_heatreq_inner {
-    flex: 0 0 50px;
-    overflow: hidden;
-  }
-  :host([temp_overlay]) .thermostat__footer {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    opacity: 1;
-    flex: 0 0 100px;
-  }
-  /* Temp Overlay End */
-
-  .thermostat__footercontent {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-flow: column;
-    height: 100%;
-    padding: 1em;
-  }
-  .thermostat__footer_termination_content_text {
-    text-align: center;
-    padding: 10px;
-    width: calc(100% - 20px);
-  }
-
-  /* FOOTER END */
-
-  /* INFO START */
-  :host([temp_selection]) .tado-card-bottom {
-    flex: 0 0 0px;
-    opacity: 0;
-  }
-  .tado-card-bottom {
-    display: flex;
-    flex-direction: row;
-    flex: 0 0 200px;
-    opacity: 1;
-    transition-property: flex, opacity;
-    transition-delay: 0s;
-    transition-duration: 0.5s;
-    transition-timing-function: ease-in-out;
-  }
-  .tado-card-bottom .temp {
-    background-color: #67cd67;
-    height: 60px;
-    width: 60px;
-    text-align: center;
-    line-height: 60px;
-    border-radius: 100%;
-    color: #fff;
-    font-size: 18px;
-  }
-
-  /* INFO END */
-
-  /* INFO SENSORS START */
-
-  .info_sensor_container {
-    display: flex;
-    align-items: center;
-  }
-  .info_sensor {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    width: 100px;
-  }
-  .info_sensor_label {
-    font-size: 1rem;
-    line-height: 3rem;
-    font-weight: 300;
-  }
-  .info_sensor_value {
-    font-size: 1.8rem;
-    line-height: 1.8rem;
-    font-weight: 700;
-  }
-
-  /* INFO SENSORS END */
-`;
-
-const slider_styling = css `
-  .track {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="450" height="472" viewBox="0 0 450 472" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M199 22L0 22L3.93402e-05 472L450 472L450 22H251C251 36.3594 239.359 48 225 48C210.641 48 199 36.3594 199 22Z"    fill="white"  /><path fill-rule="evenodd" clip-rule="evenodd" d="M203 22C203 9.84974 212.85 0 225 0C237.15 0 247 9.84974 247 22C247 34.1503 237.15 44 225 44C212.85 44 203 34.1503 203 22ZM220 12L218.5 10.5L225 4L231.5 10.5L230 12L225 7L220 12ZM231.5 33.5L230 32L225 37L220 32L218.5 33.5L225 40L231.5 33.5Z"    fill="white"  /></svg>');
-    background-position: center 0;
-    background-repeat: no-repeat;
-    background-clip: padding-box;
-    padding: 22px 0 0;
-    box-sizing: content-box;
-    /* animation: 1s ease-out 0s 1 track_fadein; */
-  }
-  /* Animation upon exiting the thermostat */
-  /* .popup-inner.temp-backed #thermostat {
-    animation: 0.5s ease-in 0s 1 tempend;
-  } */
-  /* Make sure svg is not passed into mouseclick events */
-  .btn-confirm svg,
-  .btn-back svg {
-    pointer-events: none;
-  }
-`;
-
-const thermostat_styling = css `
-  /* :host {
-    --heat-color: #ee7600;
-    --manual-color: #44739e;
-    --off-color: lightgrey;
-    --fan_only-color: #8a8a8a;
-    --dry-color: #efbd07;
-    --idle-color: #00cc66;
-    --unknown-color: #bac;
-  } */
-  :host *:focus {
-    outline: -webkit-focus-ring-color auto 0px;
-  }
-
-  .popup-inner {
-    max-height: 600px;
-    min-height: 600px;
-    max-width: 400px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    overflow: hidden;
-    color: white;
-  }
-
-  /* Main Popup Top */
-
-  /* Thermostat Colors START */
-  .popup-inner.temp-off {
-    background: linear-gradient(rgb(159, 179, 194), rgb(104, 131, 150));
-  }
-  .popup-inner.temp-5 {
-    background: linear-gradient(rgb(60, 150, 114), rgb(60, 134, 139));
-  }
-  .popup-inner.temp-6 {
-    background: linear-gradient(rgb(60, 153, 115), rgb(57, 139, 142));
-  }
-  .popup-inner.temp-7 {
-    background: linear-gradient(rgb(60, 158, 116), rgb(54, 144, 143));
-  }
-  .popup-inner.temp-8 {
-    background: linear-gradient(rgb(61, 162, 117), rgb(51, 147, 142));
-  }
-  .popup-inner.temp-9 {
-    background: linear-gradient(rgb(61, 166, 117), rgb(48, 149, 140));
-  }
-  .popup-inner.temp-10 {
-    background: linear-gradient(rgb(61, 170, 118), rgb(45, 152, 138));
-  }
-  .popup-inner.temp-11 {
-    background: linear-gradient(rgb(62, 174, 118), rgb(42, 154, 135));
-  }
-  .popup-inner.temp-12 {
-    background: linear-gradient(rgb(62, 178, 119), rgb(40, 157, 132));
-  }
-  .popup-inner.temp-13 {
-    background: linear-gradient(rgb(62, 182, 119), rgb(37, 159, 129));
-  }
-  .popup-inner.temp-14 {
-    background: linear-gradient(rgb(62, 187, 119), rgb(34, 162, 125));
-  }
-  .popup-inner.temp-15 {
-    background: linear-gradient(rgb(62, 191, 119), rgb(31, 164, 120));
-  }
-  .popup-inner.temp-16 {
-    background: linear-gradient(rgb(63, 194, 119), rgb(28, 166, 116));
-  }
-  .popup-inner.temp-17 {
-    background: linear-gradient(rgb(66, 196, 120), rgb(26, 169, 110));
-  }
-  .popup-inner.temp-18 {
-    background: linear-gradient(rgb(68, 198, 120), rgb(23, 171, 105));
-  }
-  .popup-inner.temp-19 {
-    background: linear-gradient(rgb(255, 208, 0), rgb(255, 187, 0));
-  }
-  .popup-inner.temp-20 {
-    background: linear-gradient(rgb(255, 197, 0), rgb(255, 170, 0));
-  }
-  .popup-inner.temp-21 {
-    background: linear-gradient(rgb(255, 186, 0), rgb(255, 153, 0));
-  }
-  .popup-inner.temp-22 {
-    background: linear-gradient(rgb(255, 174, 0), rgb(255, 136, 0));
-  }
-  .popup-inner.temp-23 {
-    background: linear-gradient(rgb(255, 163, 0), rgb(255, 119, 0));
-  }
-  .popup-inner.temp-24 {
-    background: linear-gradient(rgb(255, 152, 0), rgb(255, 102, 0));
-  }
-  .popup-inner.temp-25 {
-    background: linear-gradient(rgb(255, 140, 0), rgb(255, 85, 0));
-  }
-  /* Thermostat Colors END */
-
-  .thermostat__header_and_body {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    position: absolute;
-    width: 100%;
-  }
-  .thermostat__header_and_body {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  .thermostat__header_and_body[role='button'] {
-    cursor: pointer;
-  }
-
-  .btn {
-    display: inline-block;
-    color: #fff;
-    font-size: 0.9em;
-    text-decoration: none;
-    text-align: left;
-    line-height: 2.5;
-    padding: 0 1.5em;
-    border-radius: 1.25em;
-    border: none;
-    transition: background-color 0.1s ease, box-shadow 0.15s ease;
-  }
-
-  .btn--cancel {
-    color: rgb(33, 57, 83);
-    border: 1px solid rgb(33, 57, 83);
-    text-align: center;
-    background-color: rgb(255, 255, 255);
-    width: 40%;
-    margin: 0px auto;
-  }
-
-  /* Temperature Slider */
-
-  .panel-btn {
-    width: 2em;
-    height: 2em;
-    border-radius: 2em;
-    fill: hsla(0, 0%, 100%, 0.2);
-  }
-  .temperature_text {
-    font-size: 48px;
-    align-self: center;
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-
-  input[type='range'] {
-    background-color: transparent;
-    -webkit-appearance: none;
-    transform: rotate(-90deg);
-    -ms-writing-mode: bt-lr;
-    writing-mode: bt-lr;
-    position: absolute;
-    top: 0px;
-  }
-  input[type='range']::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: 1px solid #000000;
-    height: 36px;
-    width: 16px;
-    border-radius: 3px;
-    background: #ffffff;
-    cursor: pointer;
-    margin-top: -14px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
-    visibility: hidden;
-  }
-
-  /* All the same stuff for Firefox */
-  input[type='range']::-moz-range-thumb {
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-    border: 1px solid #000000;
-    height: 36px;
-    width: 16px;
-    border-radius: 3px;
-    background: #ffffff;
-    cursor: pointer;
-    visibility: hidden;
-  }
-
-  /* All the same stuff for IE */
-  input[type='range']::-ms-thumb {
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-    border: 1px solid #000000;
-    height: 36px;
-    width: 16px;
-    border-radius: 3px;
-    background: #ffffff;
-    cursor: pointer;
-    visibility: hidden;
-  }
-
-  /* app-toolbar {
-    color: var(--primary-text-color);
-    background-color: linear-gradient(rgb(159, 179, 194), rgb(104, 131, 150));
-  } */
-  /* Main Popup Top */
-`;
-
 const CARD_VERSION = '0.0.1';
 const CARD_NAME = 'tadothermostatpopup-card';
 const CARD_FRIENDLY_NAME = 'Tado Thermostat Popup';
@@ -4150,35 +3584,29 @@ function cctoconsole() {
     });
 }
 
+var style = ({ css }) => {
+        const extractorBody = `return css\`:host *:focus{outline:-webkit-focus-ring-color auto 0px}:host *{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box}.popup-inner{max-height:600px;min-height:600px;max-width:400px;width:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;color:white}.popup-inner.temp-5{background:linear-gradient(#3c9672, #3c868b)}.popup-inner.temp-6{background:linear-gradient(#3c9973, #398b8e)}.popup-inner.temp-7{background:linear-gradient(#3c9e74, #36908f)}.popup-inner.temp-8{background:linear-gradient(#3da275, #33938e)}.popup-inner.temp-9{background:linear-gradient(#3da675, #30958c)}.popup-inner.temp-10{background:linear-gradient(#3daa76, #2d988a)}.popup-inner.temp-11{background:linear-gradient(#3eae76, #2a9a87)}.popup-inner.temp-12{background:linear-gradient(#3eb277, #289d84)}.popup-inner.temp-13{background:linear-gradient(#3eb677, #259f81)}.popup-inner.temp-14{background:linear-gradient(#3ebb77, #22a27d)}.popup-inner.temp-15{background:linear-gradient(#3ebf77, #1fa478)}.popup-inner.temp-16{background:linear-gradient(#3fc277, #1ca674)}.popup-inner.temp-17{background:linear-gradient(#42c478, #1aa96e)}.popup-inner.temp-18{background:linear-gradient(#44c678, #17ab69)}.popup-inner.temp-19{background:linear-gradient(#ffd000, #fb0)}.popup-inner.temp-20{background:linear-gradient(#ffc500, #fa0)}.popup-inner.temp-21{background:linear-gradient(#ffba00, #f90)}.popup-inner.temp-22{background:linear-gradient(#ffae00, #f80)}.popup-inner.temp-23{background:linear-gradient(#ffa300, #f70)}.popup-inner.temp-24{background:linear-gradient(#ff9800, #f60)}.popup-inner.temp-25{background:linear-gradient(#ff8c00, #f50)}.popup-inner.temp-off{background:linear-gradient(#9fb3c2, #688396)}.panel-btn{width:2em;height:2em;border-radius:2em;fill:rgba(255,255,255,0.2)}.btn__cancel{padding:0 1.5em;border-radius:1.25em;line-height:2.5;color:#213953;border:1px solid #213953;text-align:center;background-color:#fff;width:40%;margin:0px auto}.btn__back{pointer-events:none;transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out}.btn__back svg{pointer-events:none}:host([temp_selection]) .btn__back{pointer-events:all;margin:20px;width:28px;height:28px;visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out}.btn__confirm{pointer-events:none;transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out}.btn__confirm svg{pointer-events:none}:host([temp_selection]) .btn__confirm{pointer-events:all;margin:20px;width:28px;height:28px;visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out}input[type='range']{background-color:transparent;-webkit-appearance:none;transform:rotate(-90deg);-ms-writing-mode:bt-lr;writing-mode:bt-lr;position:absolute;top:0px}input[type='range']::-webkit-slider-thumb{-webkit-appearance:none;border:1px solid #000000;height:36px;width:16px;border-radius:3px;background:#ffffff;cursor:pointer;margin-top:-14px;box-shadow:1px 1px 1px #000000, 0px 0px 1px #0d0d0d;visibility:hidden}input[type='range']::-moz-range-thumb{box-shadow:1px 1px 1px #000000, 0px 0px 1px #0d0d0d;border:1px solid #000000;height:36px;width:16px;border-radius:3px;background:#ffffff;cursor:pointer;visibility:hidden}input[type='range']::-ms-thumb{box-shadow:1px 1px 1px #000000, 0px 0px 1px #0d0d0d;border:1px solid #000000;height:36px;height:36px;width:16px;border-radius:3px;background:#ffffff;cursor:pointer;visibility:hidden}.track{opacity:0;visibility:hidden;transition-property:visibility, opacity;transition-delay:0.5s, 0s;transition-duration:0s, 0.5s;transition-timing-function:ease-in-out;position:absolute;left:0;right:0;bottom:0;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="450" height="472" viewBox="0 0 450 472" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M199 22L0 22L3.93402e-05 472L450 472L450 22H251C251 36.3594 239.359 48 225 48C210.641 48 199 36.3594 199 22Z"    fill="white"  /><path fill-rule="evenodd" clip-rule="evenodd" d="M203 22C203 9.84974 212.85 0 225 0C237.15 0 247 9.84974 247 22C247 34.1503 237.15 44 225 44C212.85 44 203 34.1503 203 22ZM220 12L218.5 10.5L225 4L231.5 10.5L230 12L225 7L220 12ZM231.5 33.5L230 32L225 37L220 32L218.5 33.5L225 40L231.5 33.5Z"    fill="white"  /></svg>');background-position:center 0;background-repeat:no-repeat;background-clip:padding-box;padding:22px 0 0;box-sizing:content-box}:host([temp_selection]) .track{visibility:visible;transition-delay:0s, 0.5s;transition-duration:0s, 0.5s;opacity:1}.thermostat:hover{transform:scale(1.03)}.thermostat.mousedown{transform:scale(0.95)}:host([temp_selection]) .thermostat{flex:0 0 444px;margin:31px 0px 50px 0}.tado-card-top{flex:0 0 100px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden}:host([temp_selection]) .tado-card-top{flex:0 0 75px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;flex-direction:row;justify-content:space-between}.tado-card-middle{flex:0 0 300px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden;box-shadow:rgba(100,100,100,0.2) 0px 0px 30px;background-color:rgba(255,255,255,0.1);position:relative;max-width:300px;border-radius:75px}:host([temp_selection]) .tado-card-middle{flex:0 0 444px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out}.tado-card-bottom{flex:0 0 200px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden;flex-direction:row}:host([temp_selection]) .tado-card-bottom{flex:0 0 0px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out}.thermostat_part_top{line-height:75px;flex:0 0 75px;text-align:center;width:100%;transition-property:flex, opacity;transition-delay:0s;transition-duration:0.5s;transition-timing-function:ease-in-out;overflow:hidden}:host([temp_selection]) .thermostat_part_top{opacity:0;flex:0 0 0px}:host([temp_overlay]) .thermostat_part_top{flex:0 0 50px}.thermostat_part_middle{flex:0 0 150px;width:100%;height:100%;overflow:hidden;display:flex;font-size:6rem;text-align:center;justify-content:center;flex-flow:column}:host([temp_selection]) .thermostat_part_middle{width:300px;flex:0 0 400px}:host([temp_overlay]) .thermostat_part_middle{flex:0 0 100px;font-size:5.5em}.thermostat_part_bottom{flex:0 0 75px;width:100%;opacity:1;transition-property:flex, opacity;transition-delay:0s;transition-duration:1s;transition-timing-function:ease-in-out;overflow:hidden;position:relative}:host([temp_selection]) .thermostat_part_bottom{opacity:0;flex:0 0 0px}:host([temp_overlay]) .thermostat_part_bottom{flex:0 0 150px;display:flex;flex-direction:column;overflow:hidden}.text_maintemp{pointer-events:none;visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s, 0.5s;transition-duration:0s, 0.5s;transition-timing-function:ease-in-out}:host([temp_selection]) .text_maintemp{transition-property:visibility, opacity;transition-delay:1s, 0s;visibility:hidden;opacity:0}.text_temperature{font-size:48px;align-self:center;text-align:center;text-transform:uppercase;font-weight:700;transition-property:visibility, opacity;transition-delay:0.5s, 0s;visibility:hidden;opacity:0}:host([temp_selection]) .text_temperature{pointer-events:all;visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s, 0.5s;transition-duration:0s, 0.5s;transition-timing-function:ease-in-out}.heatreq{pointer-events:none;flex:0 0 100px;width:24px;margin:0px auto;transition-property:flex, margin;transition-delay:0s;transition-duration:0.5s;transition-timing-function:ease-in-out}.heatreq svg path{opacity:0.38;fill:#fff}:host([temp_heating~='heating_one']) .heatreq svg path:nth-child(1){opacity:1}:host([temp_heating~='heating_two']) .heatreq svg path:nth-child(1),:host([temp_heating~='heating_two']) .heatreq svg path:nth-child(2){opacity:1}:host([temp_heating~='heating_three']) .heatreq svg path:nth-child(1),:host([temp_heating~='heating_three']) .heatreq svg path:nth-child(2),:host([temp_heating~='heating_three']) .heatreq svg path:nth-child(3){opacity:1}:host([temp_overlay]) .heatreq{flex:0 0 50px;overflow:hidden;margin:0 auto}.overlay{flex:0 0 0%;background-color:#fff;color:#213953;opacity:0;transition-property:bottom, opacity;transition-delay:0s, 0s;transition-duration:250ms, 250ms;transition-timing-function:ease-in-out;display:flex;flex-direction:column;overflow:hidden;position:relative;width:100%;padding:0 0 26px 0;bottom:-100px}:host([temp_overlay]) .overlay{opacity:1;transition-duration:1s, 1s;bottom:0px}.overlay_text{text-align:center;padding:10px;width:calc(100% - 20px)}.info{display:flex;align-items:center;max-height:200px;opacity:1;transition-property:max-height, opacity;transition-delay:0s, 0s;transition-duration:0.5s, 0.5s;transition-timing-function:ease-in-out}.info_sensor{display:flex;align-items:center;flex-direction:column;width:100px}.info_sensor_label{font-size:1rem;line-height:3rem;font-weight:300}.info_sensor_value{font-size:1.8rem;line-height:1.8rem;font-weight:700}:host([temp_selection]) .info{max-height:0;opacity:0;transition-delay:0s, 0s;overflow:hidden}
+\`;`;
+        return (new Function("css", extractorBody))(css);
+    };
+
 infotoconsole();
 cctoconsole();
 let TadoPopupCard = class TadoPopupCard extends LitElement {
     constructor() {
         super();
-        // this._setTemp = '';
         this.temp_wanted = 0;
         this.temp_class = 'temp-off';
         this.temp_selection = false;
         this.temp_heating = 'heating_off';
         this.temp_overlay = false;
-        // this.dragging = false;
     }
     get entity() {
         return this.hass.states[this.config.entity];
     }
-    // modeIcons = {
-    //   auto: 'hass:calendar-repeat',
-    //   heat: 'hass:fire',
-    //   off: 'hass:power',
-    // };
-    // settings = false;
-    // settingsCustomCard = false;
-    // settingsPosition = 'bottom';
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     static get properties() {
         return {
-            // hass: {},
-            // config: {},
             active: {},
             temp_selection: { type: Boolean, reflect: true },
             temp_overlay: { type: Boolean, reflect: true },
@@ -4195,11 +3623,7 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         if (d(this.entity.entity_id) !== 'climate') {
             throw new Error('You must set a climate entity');
         }
-        // const { hour, minute } = this.entity!.attributes;
-        // this.temp_wanted = 0;
-        // const entity = this.config.entity;
         const stateObj = (_a = this.entity) === null || _a === void 0 ? void 0 : _a.state;
-        // const currentTemp = this.entity?.attributes.current_temperature;
         const { hvac_modes, min_temp, max_temp, __target_temp_step, __preset_modes, current_temperature, temperature, current_humidity, hvac_action, __preset_mode, __friendly_name, __supported_features, } = this.entity.attributes;
         let thermostat__body;
         let thermostat__target;
@@ -4240,25 +3664,20 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
       <div class="popup-wrapper">
         <div style="display:flex;width:100%;height:100%;">
           <div id="popup" class="popup-inner ${this.temp_class}">
-            <!-- Tado set temp START -->
             <div class="tado-card-top">
-              ${this.temp_selection
-            ? html `
-                    <div
-                      class="btn-back"
-                      @click="${(e) => this._thermostat_mouseclick(e)}"
-                    >
-                      ${back_btn}
-                    </div>
-                    <div id="target_temp_track" class="temperature_text">${thermostat__body}</div>
-                    <div
-                      class="btn-confirm"
-                      @click="${(e) => this._thermostat_mouseclick(e)}"
-                    >
-                      ${confirm_btn}
-                    </div>
-                  `
-            : html ``}
+              <div
+                class="btn__back"
+                @click="${(e) => this._thermostat_mouseclick(e)}"
+              >
+                ${back_btn}
+              </div>
+              <div id="target_temp_track" class="text_temperature">${thermostat__body}</div>
+              <div
+                class="btn__confirm"
+                @click="${(e) => this._thermostat_mouseclick(e)}"
+              >
+                ${confirm_btn}
+              </div>
             </div>
             <div
               id="thermostat"
@@ -4267,11 +3686,17 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
               @mouseup="${() => this._thermostat_mouseup()}"
               @click="${(e) => this._thermostat_mouseclick(e)}"
             >
-              ${this.temp_selection
+              <div class="thermostat_part_top tempoverview">
+                <span style="pointer-events: none;">${thermostat__header}</span>
+              </div>
+              <div class="thermostat_part_middle tempoverview">
+                <div class="text_maintemp">
+                  ${thermostat__body}
+                </div>
+
+                <div id="track" class="track" style="height: ${track_height};"></div>
+                ${this.temp_selection
             ? html `
-                    <div class="thermostat_part_top"></div>
-                    <div class="thermostat_part_middle">
-                      <div id="track" class="track" style="height: ${track_height};"></div>
                       <input
                         id="tempvaluerange"
                         class="tempvaluerange"
@@ -4283,57 +3708,33 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                         @change="${(e) => this._change_track(e)}"
                         @input="${(e) => this._change_track(e)}"
                       />
-                    </div>
-                    <div class="thermostat_part_bottom"></div>
-                  `
-            : html `
-                    <div class="thermostat_part_top tempoverview">
-                      <span>${thermostat__header}</span>
-                    </div>
-                    <div class="thermostat_part_middle tempoverview">
-                      ${thermostat__body}
-                    </div>
-                    <div class="thermostat_part_bottom tempoverview">
-                      <div class="body_heatreq_inner">
-                        ${heat_request}
-                      </div>
-                      ${this.temp_overlay
-                ? html `
-                            <div class="thermostat__footer">
-                              <div class="thermostat__footer_termination_content_text">
-                                Manual Override Active
-                              </div>
-                              <button class="btn btn--cancel">Cancel</button>
-                            </div>
-                          `
-                : html `
-                            <div class="thermostat__footer"></div>
-                          `}
-                    </div>
-                  `}
+                    `
+            : ``}
+              </div>
+              <div class="thermostat_part_bottom tempoverview">
+                <div class="heatreq">
+                  ${heat_request}
+                </div>
+                <div class="overlay">
+                  <div class="overlay_text">
+                    Manual Override Active
+                  </div>
+                  <button class="btn__cancel">Cancel</button>
+                </div>
+              </div>
             </div>
             <div class="tado-card-bottom">
-              ${this.temp_selection
-            ? html ``
-            : html `
-                    <div class="info_sensor_container">
-                      <div class="info_sensor">
-                        <div class="info_sensor_label">Inside now</div>
-                        <div class="info_sensor_value">${current_temperature}&#176;</div>
-                      </div>
-                      <div class="info_sensor">
-                        <div class="info_sensor_label">Humidity</div>
-                        <div class="info_sensor_value">${parseInt(current_humidity)}%</div>
-                      </div>
-                    </div>
-                  `}
+              <div class="info">
+                <div class="info_sensor">
+                  <div class="info_sensor_label">Inside now</div>
+                  <div class="info_sensor_value">${current_temperature}&#176;</div>
+                </div>
+                <div class="info_sensor">
+                  <div class="info_sensor_label">Humidity</div>
+                  <div class="info_sensor_value">${parseInt(current_humidity)}%</div>
+                </div>
+              </div>
             </div>
-            <!-- Tado set temp END -->
-            <!-- Tado Thermostat START -->
-            <!-- <div
-                  > -->
-            <!-- <div  class="room-thermostat-area" tabindex="0"></div> -->
-            <!-- Tado Sensors END -->
           </div>
         </div>
       </div>
@@ -4350,7 +3751,6 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
             this._handleModeClick();
             thermostat.getElementById('popup').classList.add('temp-backed');
             console.log('CANCEL CALLED');
-            // return; // Dont toggle view
         }
         // Handle main thermostat click
         if (e !== null && this._isTempOverview(e.target)) {
@@ -4394,13 +3794,12 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                 this.requestUpdate('temp_selection', oldVal);
             }
         }
-        console.log(e);
     }
     _isCancelOverrideButton(target) {
         /**
          * Temperature Override Cancel button check
          */
-        const cancelOverrideClass = 'btn--cancel';
+        const cancelOverrideClass = 'btn__cancel';
         const exists = target.classList.contains(cancelOverrideClass);
         return exists;
     }
@@ -4416,7 +3815,7 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         /**
          * Temperature Slider Back button check
          */
-        const backBtnClass = 'btn-back';
+        const backBtnClass = 'btn__back';
         const exists = target.classList.contains(backBtnClass);
         return exists;
     }
@@ -4424,7 +3823,7 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         /**
          * Temperature Slider Confirmation button check
          */
-        const confirmBtnClass = 'btn-confirm';
+        const confirmBtnClass = 'btn__confirm';
         const exists = target.classList.contains(confirmBtnClass);
         return exists;
     }
@@ -4437,8 +3836,6 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         /**
          * Main updater handler.
          */
-        // this._setTemp = this._getSetTemp(this.entity?.state);
-        // this._setTemp = this._getSetTemp(this.hass.states[this.config.entity]);
         this.temp_overlay = this._getOverlayState(this.hass.states[this.config.overlay]);
         this.temp_heating = this._getHeatingState(this.hass.states[this.config.heating]);
     }
@@ -4478,15 +3875,6 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
             this.temp_wanted = e.srcElement.value;
         }
     }
-    // _getSetTemp(stateObj): string {
-    //   /**
-    //    * Gets the climates current temperature
-    //    */
-    //   if (stateObj.state === 'unavailable') {
-    //     return this.hass.localize('state.default.unavailable');
-    //   }
-    //   return stateObj.attributes.temperature;
-    // }
     _getHeatingState(heatingObj) {
         // throw new Error('Method not implemented.');
         const heat_percent = parseInt(heatingObj.state);
@@ -4518,16 +3906,6 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         const isTrueSet = overlayObj.state === 'True';
         return isTrueSet;
     }
-    // _close(event): void {
-    //   /**
-    //    * Closes the browser_mod popup.
-    //    */
-    //   if (event && event.target.classList.length > 0) {
-    //     if (event.target.classList.contains('popup-inner') || event.target.classList.contains('settings-inner')) {
-    //       closePopUp();
-    //     }
-    //   }
-    // }
     _setTemperature(temperature) {
         /**
          * Calls the Home Assistant set_temperature service.
@@ -4576,10 +3954,8 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
     getCardSize() {
         return 1;
     }
-    // Import Styling Externally
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     static get styles() {
-        return [animation_styling, shared_styling, thermostat_styling, slider_styling];
+        return [style({ css })];
     }
 };
 __decorate([
@@ -4591,6 +3967,5 @@ __decorate([
 TadoPopupCard = __decorate([
     customElement('tadothermostatpopup-card')
 ], TadoPopupCard);
-// customElements.define('tadothermostatpopup-card', TadoPopupCard);
 
 export { TadoPopupCard };
