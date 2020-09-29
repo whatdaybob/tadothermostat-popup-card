@@ -2,3 +2,6 @@
 /.rpt2_cache/
 package-lock.json
 dist/tadothermostat-popup-card-dev.js
+yarn.lock
+src/css/styles.css
+src/css/styles.css.map

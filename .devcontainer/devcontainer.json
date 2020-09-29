@@ -25,7 +25,9 @@
     "davidanson.vscode-markdownlint",
     "redhat.vscode-yaml",
     "mutantdino.resourcemonitor",
-    "pkief.material-icon-theme"
+    "pkief.material-icon-theme",
+    "syler.sass-indented",
+    "pranaygp.vscode-css-peek"
   ],
   "settings": {
     "files.eol": "\n",
@@ -35,9 +37,6 @@
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
     "files.trimTrailingWhitespace": true,
-    // "typescript.tsserver.pluginPaths": [
-    //   "typescript-plugin-css-modules"
-    // ],
     "typescript.tsdk": "./node_modules/typescript/lib",
     "files.exclude": {
       "**/node_modules": true
@@ -45,6 +44,8 @@
     "search.exclude": {
       "**/dist": true
     },
-    "workbench.iconTheme": "material-icon-theme"
+    "workbench.iconTheme": "material-icon-theme",
+    "sass.lint.enable": true,
+    "sass.disableAutoIndent": false,
   }
 }

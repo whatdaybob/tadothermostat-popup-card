@@ -5,6 +5,7 @@ import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 import serve from 'rollup-plugin-serve';
 import json from '@rollup/plugin-json';
+import litSass from '@ponday/rollup-plugin-lit-sass';
 
 const dev = process.env.ROLLUP_WATCH;
 
@@ -23,9 +24,7 @@ const plugins = [
   commonjs(),
   typescript({ clean: true }),
   json(),
-  // babel({
-  //   exclude: 'node_modules/**',
-  // }),
+  litSass(),
   babel({ babelHelpers: 'bundled' }),
   dev && serve(serveopts),
   !dev && terser(),
@@ -40,7 +39,6 @@ export default [
     },
     input: 'src/tadothermostat-popup-card.ts',
     output: {
-      // dir: 'dist',
       format: 'es',
       file: 'dist/tadothermostat-popup-card-dev.js',
     },
