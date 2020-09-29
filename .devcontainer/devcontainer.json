@@ -4,8 +4,7 @@
   "image": "ludeeus/container:monster",
   "context": "..",
   "appPort": [
-    "5000:5000",
-    "9123:8123"
+    "5000:5000"
   ],
   "postCreateCommand": "npm install",
   "runArgs": [
@@ -25,7 +24,8 @@
     "auchenberg.vscode-browser-preview",
     "davidanson.vscode-markdownlint",
     "redhat.vscode-yaml",
-    "mutantdino.resourcemonitor"
+    "mutantdino.resourcemonitor",
+    "pkief.material-icon-theme"
   ],
   "settings": {
     "files.eol": "\n",
@@ -38,6 +38,13 @@
     // "typescript.tsserver.pluginPaths": [
     //   "typescript-plugin-css-modules"
     // ],
-    "typescript.tsdk": "./node_modules/typescript/lib"
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "files.exclude": {
+      "**/node_modules": true
+    },
+    "search.exclude": {
+      "**/dist": true
+    },
+    "workbench.iconTheme": "material-icon-theme"
   }
 }
