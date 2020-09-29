@@ -1,10 +1,10 @@
-import { LitElement, customElement, html, TemplateResult, property, CSSResultArray } from 'lit-element';
+import { LitElement, customElement, html, css, TemplateResult, property, CSSResultArray } from 'lit-element';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { HomeAssistant, LovelaceCard, computeDomain } from 'custom-card-helpers';
 import { CustomCardConfig } from './types';
 import { back_btn, confirm_btn, heat_request } from './components/html_svg';
-import { maincss } from './css/main_styles';
 import { infotoconsole, cctoconsole } from './modules/card_information';
+import style from './css/styles.scss';
 
 infotoconsole();
 cctoconsole();
@@ -111,14 +111,14 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
           <div id="popup" class="popup-inner ${this.temp_class}">
             <div class="tado-card-top">
               <div
-                class="btn-back"
+                class="btn__back"
                 @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
               >
                 ${back_btn}
               </div>
-              <div id="target_temp_track" class="temperature_text">${thermostat__body}</div>
+              <div id="target_temp_track" class="text_temperature">${thermostat__body}</div>
               <div
-                class="btn-confirm"
+                class="btn__confirm"
                 @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
               >
                 ${confirm_btn}
@@ -132,10 +132,10 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
               @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
             >
               <div class="thermostat_part_top tempoverview">
-                <span>${thermostat__header}</span>
+                <span style="pointer-events: none;">${thermostat__header}</span>
               </div>
               <div class="thermostat_part_middle tempoverview">
-                <div class="maintemp">
+                <div class="text_maintemp">
                   ${thermostat__body}
                 </div>
 
@@ -157,19 +157,19 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
                   : ``}
               </div>
               <div class="thermostat_part_bottom tempoverview">
-                <div class="body_heatreq_inner">
+                <div class="heatreq">
                   ${heat_request}
                 </div>
-                <div class="thermostat__footer">
-                  <div class="thermostat__footer_termination_content_text">
+                <div class="overlay">
+                  <div class="overlay_text">
                     Manual Override Active
                   </div>
-                  <button class="btn btn--cancel">Cancel</button>
+                  <button class="btn__cancel">Cancel</button>
                 </div>
               </div>
             </div>
             <div class="tado-card-bottom">
-              <div class="info_sensor_container">
+              <div class="info">
                 <div class="info_sensor">
                   <div class="info_sensor_label">Inside now</div>
                   <div class="info_sensor_value">${current_temperature}&#176;</div>
@@ -250,7 +250,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
     /**
      * Temperature Override Cancel button check
      */
-    const cancelOverrideClass = 'btn--cancel';
+    const cancelOverrideClass = 'btn__cancel';
     const exists = target.classList.contains(cancelOverrideClass);
     return exists;
   }
@@ -268,7 +268,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
     /**
      * Temperature Slider Back button check
      */
-    const backBtnClass = 'btn-back';
+    const backBtnClass = 'btn__back';
     const exists = target.classList.contains(backBtnClass);
     return exists;
   }
@@ -277,7 +277,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
     /**
      * Temperature Slider Confirmation button check
      */
-    const confirmBtnClass = 'btn-confirm';
+    const confirmBtnClass = 'btn__confirm';
     const exists = target.classList.contains(confirmBtnClass);
     return exists;
   }
@@ -416,6 +416,6 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
   }
 
   static get styles(): CSSResultArray {
-    return [maincss];
+    return [style({ css })];
   }
 }
