@@ -222,6 +222,11 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
       thermostat.getElementById('popup').classList.add('temp-backed');
     }
 
+    // Handle airquality button
+    if (e !== null && this._isAirQualityButton(e.target as HTMLButtonElement)) {
+      thermostat.getElementById('popup').classList.add('airquality');
+    }
+
     // Handle main thermostat click
     if (e !== null && this._isTempOverview(e.target as HTMLDivElement)) {
       console.log('TOGGLE CALLED');
@@ -275,9 +280,10 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
     const exists = target.classList.contains(cancelOverrideClass);
     return exists;
   }
+
   _isAirQualityButton(target: HTMLButtonElement): boolean {
     /**
-     * Temperature Override Cancel button check
+     * Air Quality button
      */
     const airQualityClass = 'btn__airqual';
     const exists = target.classList.contains(airQualityClass);
