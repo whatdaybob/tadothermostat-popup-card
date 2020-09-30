@@ -44,13 +44,14 @@ resources:
 | `entity`  | string | **Required** |         | Entity of the tado climate integration (e.g `climate.hallway`) |
 | `heating` | string | **Required** |         | Heating sensor related to the climate entity                   |
 | `overlay` | string | **Required** |         | Overlay sensor related to the climate entity                   |
-| `title`   | string | **Required** |         | Title for the popup card                                       |
 
 Example configuration in lovelace-ui.yaml with use of browser_mod (<https://github.com/thomasloven/hass-browser_mod>).
 
 ```yaml
 popup_cards:
   climate.master_bedroom:
+  title: ""
+  large: false
     card:
       type: custom:tado-popup-card
       entity: climate.master_bedroom
