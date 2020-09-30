@@ -39,6 +39,19 @@ function __decorate(decorators, target, key, desc) {
  */
 const isCEPolyfill = typeof window !== 'undefined' && window.customElements != null && window.customElements.polyfillWrapFlushCallback !== undefined;
 /**
+ * Reparents nodes, starting from `start` (inclusive) to `end` (exclusive),
+ * into another container (could be the same container), before `before`. If
+ * `before` is null, it appends the nodes to the container.
+ */
+
+const reparentNodes = (container, start, end = null, before = null) => {
+  while (start !== end) {
+    const n = start.nextSibling;
+    container.insertBefore(start, before);
+    start = n;
+  }
+};
+/**
  * Removes nodes, starting from `start` (inclusive) to `end` (exclusive), from
  * `container`.
  */
@@ -775,6 +788,29 @@ class TemplateResult {
   }
 
 }
+/**
+ * A TemplateResult for SVG fragments.
+ *
+ * This class wraps HTML in an `<svg>` tag in order to parse its contents in the
+ * SVG namespace, then modifies the template to remove the `<svg>` tag so that
+ * clones only container the original fragment.
+ */
+
+class SVGTemplateResult extends TemplateResult {
+  getHTML() {
+    return `<svg>${super.getHTML()}</svg>`;
+  }
+
+  getTemplateElement() {
+    const template = super.getTemplateElement();
+    const content = template.content;
+    const svgElement = content.firstChild;
+    content.removeChild(svgElement);
+    reparentNodes(content, svgElement.firstChild);
+    return template;
+  }
+
+}
 
 /**
  * @license
@@ -1498,6 +1534,12 @@ if (typeof window !== 'undefined') {
 
 
 const html = (strings, ...values) => new TemplateResult(strings, values, 'html', defaultTemplateProcessor);
+/**
+ * Interprets a template literal as an SVG template that can efficiently
+ * render to and update a container.
+ */
+
+const svg = (strings, ...values) => new SVGTemplateResult(strings, values, 'svg', defaultTemplateProcessor);
 
 /**
  * @license
@@ -3567,6 +3609,198 @@ const heat_request = html `
   </svg>
 `;
 
+const air_comfort = html `
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-comfort" viewBox="0 0 79 63">
+    <path
+      fill-rule="evenodd"
+      d="M37.441 21.802h-.001l-34.984-.003A2.458 2.458 0 0 1 0 19.343a2.46 2.46 0 0 1 2.456-2.457l34.984.003h.001a5.944 5.944 0 0 0 4.231-1.755 5.946 5.946 0 0 0 1.757-4.232c0-1.597-.623-3.1-1.756-4.233a5.948 5.948 0 0 0-4.232-1.756 5.995 5.995 0 0 0-5.988 5.988c0 .656-.256 1.273-.72 1.736-.464.464-1.08.72-1.736.72h-.002a2.459 2.459 0 0 1-2.455-2.456C26.541 4.89 31.431 0 37.441 0a10.832 10.832 0 0 1 7.705 3.197 10.823 10.823 0 0 1 3.195 7.705c0 6.01-4.89 10.9-10.9 10.9m26.54 12.065h-.002l-55.493-.003a2.46 2.46 0 0 1-2.456-2.458 2.46 2.46 0 0 1 2.457-2.456l55.492.005c5.297 0 9.608-4.309 9.608-9.606 0-2.561-1-4.973-2.817-6.79a9.541 9.541 0 0 0-6.789-2.818h-.001a9.54 9.54 0 0 0-6.789 2.817 9.541 9.541 0 0 0-2.818 6.789 2.46 2.46 0 0 1-2.457 2.456 2.46 2.46 0 0 1-2.456-2.456c.001-8.006 6.514-14.519 14.52-14.519h.001c8.006.001 14.519 6.515 14.519 14.521a14.424 14.424 0 0 1-4.259 10.262 14.418 14.418 0 0 1-10.26 4.256M51.913 62.82c-6.011-.001-10.901-4.892-10.9-10.903a2.46 2.46 0 0 1 2.456-2.456 2.458 2.458 0 0 1 2.456 2.456 5.995 5.995 0 0 0 5.988 5.989 5.994 5.994 0 0 0 5.988-5.987 5.995 5.995 0 0 0-5.987-5.989l-37.397-.003a2.46 2.46 0 0 1-2.456-2.456c0-.657.256-1.274.721-1.738a2.438 2.438 0 0 1 1.734-.718h.004l37.394.003c2.908 0 5.644 1.135 7.705 3.196a10.83 10.83 0 0 1 3.196 7.705c-.001 6.011-4.892 10.901-10.902 10.901"
+    />
+  </svg>
+`;
+
+function _render_graphpos(x, y, circle_size) {
+    const half = circle_size / 2;
+    return html `
+    <svg
+      width="${circle_size}"
+      height="${circle_size}"
+      xmlns="http://www.w3.org/2000/svg"
+      class="bubble__graph-current_position"
+      style="top: ${x}px; left: ${y}px;"
+    >
+      <circle cx="${half}" cy="${half}" r="${half}" fill="white"></circle>
+    </svg>
+  `;
+}
+const airqual_warning = html `
+  <svg appSvgSymbol="warning" class="value-with-alert__alert">
+    <path
+      d="M6 12A6 6 0 1 1 6 0a6 6 0 0 1 0 12zM6 1.5a1 1 0 0 0-1 1v4a1 1 0 1 0 2 0v-4a1 1 0 0 0-1-1zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+    />
+  </svg>
+`;
+const bubble_humid_warn = svg `
+<path style="transform: scale(1.633);" fill="#3849AC" fill-rule="nonzero" d="M125.892 24.108c-4.621-4.357-11.9-4.143-16.257.478-4.357 4.62-4.143 11.899.478 16.256 9.766 9.209 15.392 21.97 15.392 35.658 0 13.69-5.627 26.451-15.394 35.66-4.621 4.357-4.835 11.635-.478 16.256s11.635 4.836 16.256.479c14.33-13.511 22.616-32.305 22.616-52.395 0-20.089-8.285-38.881-22.613-52.392z"></path>
+`;
+function _isAirQualityBackButton(target) {
+    /**
+     * Temperature Override Cancel button check
+     */
+    const cancelOverrideClass = 'btn__overview';
+    const exists = target.classList.contains(cancelOverrideClass);
+    return exists;
+}
+function _airquality_mouseclick(e = null, shadowRoot) {
+    const thermostat = shadowRoot;
+    if (e !== null && _isAirQualityBackButton(e.target)) {
+        thermostat.getElementById('popup').classList.remove('airquality');
+    }
+}
+function _air_comfort(shadowRoot, temperature, humidity) {
+    const point_size = 15;
+    const lower_temp = 5;
+    const upper_temp = 45;
+    const temp_range = upper_temp - lower_temp;
+    const new_temp = temperature - lower_temp;
+    const svg_size = 250;
+    const svg_outer_stroke = 2;
+    const points = svg_size / 100;
+    let x = 0, y = 0;
+    if (temperature > upper_temp) {
+        x = 0;
+    }
+    else {
+        if (temperature < lower_temp) {
+            x = 100 * points;
+        }
+        else {
+            x = (new_temp / temp_range) * 100 * points - point_size / 2;
+            x = svg_size - x;
+        }
+    }
+    y = (svg_size / 100) * humidity - point_size / 2;
+    const humwarn = humidity > 60;
+    const bubble_humwarn = humidity > 70;
+    const tempwarn = temperature < 20;
+    let thermal_comfort = '';
+    if (humwarn) {
+        thermal_comfort = ' humid';
+    }
+    if (tempwarn) {
+        thermal_comfort = thermal_comfort + ' cold';
+    }
+    if (thermal_comfort == '') {
+        thermal_comfort = 'pleasant';
+    }
+    return html `
+    <div class="airqual ${thermal_comfort}">
+      <header class="airqual__header">
+        <h2 class="airqual-header__room-name">
+          <span style="display:none">Master Bedroom</span>
+        </h2>
+        <div class="thermal-comfort">
+          <h3 class="thermal-comfort_status">
+            <span>${thermal_comfort}</span>
+          </h3>
+        </div>
+      </header>
+      <main class="bubble">
+        <span class="bubble__label-top">Too warm</span>
+        <span class="bubble__label-bottom">Cold</span>
+        <span class="bubble__label-left">Dry</span>
+        <span class="bubble__label-right">Humid</span>
+        <div class="bubble__graph">
+          ${_render_graphpos(x, y, point_size)}
+          <svg width="${svg_size}" height="${svg_size}" xmlns="http://www.w3.org/2000/svg">
+            ${bubble_humwarn
+        ? html `
+                  ${bubble_humid_warn}
+                `
+        : ``}
+            <circle
+              cx="${svg_size / 2}"
+              cy="${svg_size / 2}"
+              r="${svg_size / 2 - svg_outer_stroke}"
+              stroke="white"
+              stroke-width="${svg_outer_stroke}"
+              fill="none"
+            ></circle>
+            <circle
+              cx="${svg_size / 2}"
+              cy="${svg_size / 2}"
+              r="${(svg_size / 2 / 100) * 40}"
+              fill="white"
+              opacity=".6"
+            ></circle>
+          </svg>
+        </div>
+        <div class="bubble__alert">
+          ${bubble_humwarn
+        ? html `
+                <p class="alert alert--humid">Increased risk of mold</p>
+              `
+        : ``}
+        </div>
+      </main>
+      <footer class="airqual__footer">
+        <div>
+          <h4 class="measurement__label">Temperature</h4>
+          <div class="measurement__content">
+            <div class="value-with-alert">
+              ${tempwarn
+        ? html `
+                    ${airqual_warning}
+                  `
+        : ``}
+              <div class="app-temperature-display value-with-alert__value">
+                <div>
+                  <div class="temperature">${temperature}°</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h4 class="measurement__label">Humidity</h4>
+          <div class="measurement__content">
+            <div class="value-with-alert">
+              ${humwarn
+        ? html `
+                    ${airqual_warning}
+                  `
+        : ``}
+              <app-humidity class="value-with-alert__value">
+                <div class="humidity">
+                  ${humidity}%
+                </div>
+              </app-humidity>
+            </div>
+          </div>
+        </div>
+      </footer>
+      <app-air-comfort-message class="airqual__message">
+        <aside class="message">
+          <figure style="display:none;" class="stacked">
+            <figcaption class="message__text text-center" style="width: 100%;">
+              <p>
+                Feel like getting under a warm blanket? Turn up your heating a bit to stay comfy in here.
+              </p>
+            </figcaption>
+          </figure>
+          <footer class="message__link text-center stacked">
+            <a
+              class="btn btn--more text-center btn__overview"
+              @click="${(e) => _airquality_mouseclick(e, shadowRoot)}"
+            >
+              <span style="pointer-events:none;">Back</span>
+            </a>
+          </footer>
+        </aside>
+      </app-air-comfort-message>
+    </div>
+  `;
+}
+
 const CARD_VERSION = '0.0.1';
 const CARD_NAME = 'tadothermostatpopup-card';
 const CARD_FRIENDLY_NAME = 'Tado Thermostat Popup';
@@ -3585,7 +3819,7 @@ function cctoconsole() {
 }
 
 var style = ({ css }) => {
-        const extractorBody = `return css\`:host *:focus{outline:-webkit-focus-ring-color auto 0px}:host *{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box}.popup-inner{max-height:600px;min-height:600px;max-width:400px;width:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;color:white}.popup-inner.temp-5{background:linear-gradient(#3c9672, #3c868b)}.popup-inner.temp-6{background:linear-gradient(#3c9973, #398b8e)}.popup-inner.temp-7{background:linear-gradient(#3c9e74, #36908f)}.popup-inner.temp-8{background:linear-gradient(#3da275, #33938e)}.popup-inner.temp-9{background:linear-gradient(#3da675, #30958c)}.popup-inner.temp-10{background:linear-gradient(#3daa76, #2d988a)}.popup-inner.temp-11{background:linear-gradient(#3eae76, #2a9a87)}.popup-inner.temp-12{background:linear-gradient(#3eb277, #289d84)}.popup-inner.temp-13{background:linear-gradient(#3eb677, #259f81)}.popup-inner.temp-14{background:linear-gradient(#3ebb77, #22a27d)}.popup-inner.temp-15{background:linear-gradient(#3ebf77, #1fa478)}.popup-inner.temp-16{background:linear-gradient(#3fc277, #1ca674)}.popup-inner.temp-17{background:linear-gradient(#42c478, #1aa96e)}.popup-inner.temp-18{background:linear-gradient(#44c678, #17ab69)}.popup-inner.temp-19{background:linear-gradient(#ffd000, #fb0)}.popup-inner.temp-20{background:linear-gradient(#ffc500, #fa0)}.popup-inner.temp-21{background:linear-gradient(#ffba00, #f90)}.popup-inner.temp-22{background:linear-gradient(#ffae00, #f80)}.popup-inner.temp-23{background:linear-gradient(#ffa300, #f70)}.popup-inner.temp-24{background:linear-gradient(#ff9800, #f60)}.popup-inner.temp-25{background:linear-gradient(#ff8c00, #f50)}.popup-inner.temp-off{background:linear-gradient(#9fb3c2, #688396)}.panel-btn{width:2em;height:2em;border-radius:2em;fill:rgba(255,255,255,0.2)}.btn__cancel{padding:0 1.5em;border-radius:1.25em;line-height:2.5;color:#213953;border:1px solid #213953;text-align:center;background-color:#fff;width:40%;margin:0px auto}.btn__back{pointer-events:none;transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out}.btn__back svg{pointer-events:none}:host([temp_selection]) .btn__back{pointer-events:all;margin:20px;width:28px;height:28px;visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out}.btn__confirm{pointer-events:none;transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out}.btn__confirm svg{pointer-events:none}:host([temp_selection]) .btn__confirm{pointer-events:all;margin:20px;width:28px;height:28px;visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out}input[type='range']{background-color:transparent;-webkit-appearance:none;transform:rotate(-90deg);-ms-writing-mode:bt-lr;writing-mode:bt-lr;position:absolute;top:0px}input[type='range']::-webkit-slider-thumb{-webkit-appearance:none;border:1px solid #000000;height:36px;width:16px;border-radius:3px;background:#ffffff;cursor:pointer;margin-top:-14px;box-shadow:1px 1px 1px #000000, 0px 0px 1px #0d0d0d;visibility:hidden}input[type='range']::-moz-range-thumb{box-shadow:1px 1px 1px #000000, 0px 0px 1px #0d0d0d;border:1px solid #000000;height:36px;width:16px;border-radius:3px;background:#ffffff;cursor:pointer;visibility:hidden}input[type='range']::-ms-thumb{box-shadow:1px 1px 1px #000000, 0px 0px 1px #0d0d0d;border:1px solid #000000;height:36px;height:36px;width:16px;border-radius:3px;background:#ffffff;cursor:pointer;visibility:hidden}.track{opacity:0;visibility:hidden;transition-property:visibility, opacity;transition-delay:0.5s, 0s;transition-duration:0s, 0.5s;transition-timing-function:ease-in-out;position:absolute;left:0;right:0;bottom:0;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="450" height="472" viewBox="0 0 450 472" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M199 22L0 22L3.93402e-05 472L450 472L450 22H251C251 36.3594 239.359 48 225 48C210.641 48 199 36.3594 199 22Z"    fill="white"  /><path fill-rule="evenodd" clip-rule="evenodd" d="M203 22C203 9.84974 212.85 0 225 0C237.15 0 247 9.84974 247 22C247 34.1503 237.15 44 225 44C212.85 44 203 34.1503 203 22ZM220 12L218.5 10.5L225 4L231.5 10.5L230 12L225 7L220 12ZM231.5 33.5L230 32L225 37L220 32L218.5 33.5L225 40L231.5 33.5Z"    fill="white"  /></svg>');background-position:center 0;background-repeat:no-repeat;background-clip:padding-box;padding:22px 0 0;box-sizing:content-box}:host([temp_selection]) .track{visibility:visible;transition-delay:0s, 0.5s;transition-duration:0s, 0.5s;opacity:1}.thermostat:hover{transform:scale(1.03)}.thermostat.mousedown{transform:scale(0.95)}:host([temp_selection]) .thermostat{flex:0 0 444px;margin:31px 0px 50px 0}.tado-card-top{flex:0 0 100px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden}:host([temp_selection]) .tado-card-top{flex:0 0 75px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;flex-direction:row;justify-content:space-between}.tado-card-middle{flex:0 0 300px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden;box-shadow:rgba(100,100,100,0.2) 0px 0px 30px;background-color:rgba(255,255,255,0.1);position:relative;max-width:300px;border-radius:75px}:host([temp_selection]) .tado-card-middle{flex:0 0 444px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out}.tado-card-bottom{flex:0 0 200px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden;flex-direction:row}:host([temp_selection]) .tado-card-bottom{flex:0 0 0px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out}.thermostat_part_top{line-height:75px;flex:0 0 75px;text-align:center;width:100%;transition-property:flex, opacity;transition-delay:0s;transition-duration:0.5s;transition-timing-function:ease-in-out;overflow:hidden}:host([temp_selection]) .thermostat_part_top{opacity:0;flex:0 0 0px}:host([temp_overlay]) .thermostat_part_top{flex:0 0 50px}.thermostat_part_middle{flex:0 0 150px;width:100%;height:100%;overflow:hidden;display:flex;font-size:6rem;text-align:center;justify-content:center;flex-flow:column}:host([temp_selection]) .thermostat_part_middle{width:300px;flex:0 0 400px}:host([temp_overlay]) .thermostat_part_middle{flex:0 0 100px;font-size:5.5em}.thermostat_part_bottom{flex:0 0 75px;width:100%;opacity:1;transition-property:flex, opacity;transition-delay:0s;transition-duration:1s;transition-timing-function:ease-in-out;overflow:hidden;position:relative}:host([temp_selection]) .thermostat_part_bottom{opacity:0;flex:0 0 0px}:host([temp_overlay]) .thermostat_part_bottom{flex:0 0 150px;display:flex;flex-direction:column;overflow:hidden}.text_maintemp{pointer-events:none;visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s, 0.5s;transition-duration:0s, 0.5s;transition-timing-function:ease-in-out}:host([temp_selection]) .text_maintemp{transition-property:visibility, opacity;transition-delay:1s, 0s;visibility:hidden;opacity:0}.text_temperature{font-size:48px;align-self:center;text-align:center;text-transform:uppercase;font-weight:700;transition-property:visibility, opacity;transition-delay:0.5s, 0s;visibility:hidden;opacity:0}:host([temp_selection]) .text_temperature{pointer-events:all;visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s, 0.5s;transition-duration:0s, 0.5s;transition-timing-function:ease-in-out}.heatreq{pointer-events:none;flex:0 0 100px;width:24px;margin:0px auto;transition-property:flex, margin;transition-delay:0s;transition-duration:0.5s;transition-timing-function:ease-in-out}.heatreq svg path{opacity:0.38;fill:#fff}:host([temp_heating~='heating_one']) .heatreq svg path:nth-child(1){opacity:1}:host([temp_heating~='heating_two']) .heatreq svg path:nth-child(1),:host([temp_heating~='heating_two']) .heatreq svg path:nth-child(2){opacity:1}:host([temp_heating~='heating_three']) .heatreq svg path:nth-child(1),:host([temp_heating~='heating_three']) .heatreq svg path:nth-child(2),:host([temp_heating~='heating_three']) .heatreq svg path:nth-child(3){opacity:1}:host([temp_overlay]) .heatreq{flex:0 0 50px;overflow:hidden;margin:0 auto}.overlay{flex:0 0 0%;background-color:#fff;color:#213953;opacity:0;transition-property:bottom, opacity;transition-delay:0s, 0s;transition-duration:250ms, 250ms;transition-timing-function:ease-in-out;display:flex;flex-direction:column;overflow:hidden;position:relative;width:100%;padding:0 0 26px 0;bottom:-100px}:host([temp_overlay]) .overlay{opacity:1;transition-duration:1s, 1s;bottom:0px}.overlay_text{text-align:center;padding:10px;width:calc(100% - 20px)}.info{display:flex;align-items:center;max-height:200px;opacity:1;transition-property:max-height, opacity;transition-delay:0s, 0s;transition-duration:0.5s, 0.5s;transition-timing-function:ease-in-out}.info_sensor{display:flex;align-items:center;flex-direction:column;width:100px}.info_sensor_label{font-size:1rem;line-height:3rem;font-weight:300}.info_sensor_value{font-size:1.8rem;line-height:1.8rem;font-weight:700}:host([temp_selection]) .info{max-height:0;opacity:0;transition-delay:0s, 0s;overflow:hidden}
+        const extractorBody = `return css\`:host *:focus{outline:-webkit-focus-ring-color auto 0px}:host *{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box}.popup-inner{max-height:600px;min-height:600px;max-width:400px;width:100%;display:flex;overflow:hidden;color:white}.popup-inner.temp-5{background:linear-gradient(#3c9672, #3c868b)}.popup-inner.temp-6{background:linear-gradient(#3c9973, #398b8e)}.popup-inner.temp-7{background:linear-gradient(#3c9e74, #36908f)}.popup-inner.temp-8{background:linear-gradient(#3da275, #33938e)}.popup-inner.temp-9{background:linear-gradient(#3da675, #30958c)}.popup-inner.temp-10{background:linear-gradient(#3daa76, #2d988a)}.popup-inner.temp-11{background:linear-gradient(#3eae76, #2a9a87)}.popup-inner.temp-12{background:linear-gradient(#3eb277, #289d84)}.popup-inner.temp-13{background:linear-gradient(#3eb677, #259f81)}.popup-inner.temp-14{background:linear-gradient(#3ebb77, #22a27d)}.popup-inner.temp-15{background:linear-gradient(#3ebf77, #1fa478)}.popup-inner.temp-16{background:linear-gradient(#3fc277, #1ca674)}.popup-inner.temp-17{background:linear-gradient(#42c478, #1aa96e)}.popup-inner.temp-18{background:linear-gradient(#44c678, #17ab69)}.popup-inner.temp-19{background:linear-gradient(#ffd000, #fb0)}.popup-inner.temp-20{background:linear-gradient(#ffc500, #fa0)}.popup-inner.temp-21{background:linear-gradient(#ffba00, #f90)}.popup-inner.temp-22{background:linear-gradient(#ffae00, #f80)}.popup-inner.temp-23{background:linear-gradient(#ffa300, #f70)}.popup-inner.temp-24{background:linear-gradient(#ff9800, #f60)}.popup-inner.temp-25{background:linear-gradient(#ff8c00, #f50)}.popup-inner.temp-off{background:linear-gradient(#9fb3c2, #688396)}.panel-btn{width:2em;height:2em;border-radius:2em;fill:rgba(255,255,255,0.2)}.btn__holder.options{flex:0 0 100px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden;align-items:flex-start;justify-content:flex-end;flex-direction:row}:host([temp_selection]) .btn__holder.options{flex:0 0 0px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out}.btn__holder.selection{flex:0 0 0px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden}:host([temp_selection]) .btn__holder.selection{flex:0 0 75px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;flex-direction:row;justify-content:space-between}.btn__airqual{visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out;margin:20px;width:28px;height:28px;pointer-events:all}.btn__airqual svg{pointer-events:none;fill:#359296}:host([temp_selection]) .btn__airqual{transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out;pointer-events:none}.btn__cancel{padding:0 1.5em;border-radius:1.25em;line-height:2.5;color:#213953;border:1px solid #213953;text-align:center;background-color:#fff;width:40%;margin:0px auto}.btn__back{pointer-events:none;transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out}.btn__back svg{pointer-events:none}:host([temp_selection]) .btn__back{pointer-events:all;margin:20px;width:28px;height:28px;visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out}.btn__confirm{pointer-events:none;transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out}.btn__confirm svg{pointer-events:none}:host([temp_selection]) .btn__confirm{pointer-events:all;margin:20px;width:28px;height:28px;visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out}input[type='range']{background-color:transparent;-webkit-appearance:none;transform:rotate(-90deg);-ms-writing-mode:bt-lr;writing-mode:bt-lr;position:absolute;top:0px}input[type='range']::-webkit-slider-thumb{-webkit-appearance:none;border:1px solid #000000;height:36px;width:16px;border-radius:3px;background:#ffffff;cursor:pointer;margin-top:-14px;box-shadow:1px 1px 1px #000000, 0px 0px 1px #0d0d0d;visibility:hidden}input[type='range']::-moz-range-thumb{box-shadow:1px 1px 1px #000000, 0px 0px 1px #0d0d0d;border:1px solid #000000;height:36px;width:16px;border-radius:3px;background:#ffffff;cursor:pointer;visibility:hidden}input[type='range']::-ms-thumb{box-shadow:1px 1px 1px #000000, 0px 0px 1px #0d0d0d;border:1px solid #000000;height:36px;height:36px;width:16px;border-radius:3px;background:#ffffff;cursor:pointer;visibility:hidden}.track{transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out;position:absolute;left:0;right:0;bottom:0;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="450" height="472" viewBox="0 0 450 472" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M199 22L0 22L3.93402e-05 472L450 472L450 22H251C251 36.3594 239.359 48 225 48C210.641 48 199 36.3594 199 22Z"    fill="white"  /><path fill-rule="evenodd" clip-rule="evenodd" d="M203 22C203 9.84974 212.85 0 225 0C237.15 0 247 9.84974 247 22C247 34.1503 237.15 44 225 44C212.85 44 203 34.1503 203 22ZM220 12L218.5 10.5L225 4L231.5 10.5L230 12L225 7L220 12ZM231.5 33.5L230 32L225 37L220 32L218.5 33.5L225 40L231.5 33.5Z"    fill="white"  /></svg>');background-position:center 0;background-repeat:no-repeat;background-clip:padding-box;padding:22px 0 0;box-sizing:content-box}:host([temp_selection]) .track{visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out}.thermostat{margin:auto}.thermostat:hover{transform:scale(1.03)}.thermostat.mousedown{transform:scale(0.95)}:host([temp_selection]) .thermostat{flex:0 0 444px;margin:31px auto 50px auto}.tado{position:relative}.tado-air{position:absolute;left:400px;transition-property:left;transition-delay:0s;transition-duration:0.5s;transition-timing-function:ease-in-out;width:400px;height:600px}.airquality .tado-air{position:absolute;left:0px;transition-property:left;transition-delay:0s;transition-duration:0.5s;transition-timing-function:ease-in-out}.tado-card{position:absolute;left:0px;transition-property:left;transition-delay:0s;transition-duration:0.5s;transition-timing-function:ease-in-out}.airquality .tado-card{position:absolute;left:-400px;transition-property:left;transition-delay:0s;transition-duration:0.5s;transition-timing-function:ease-in-out}.tado-card-top{flex:0 0 100px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden}:host([temp_selection]) .tado-card-top{flex:0 0 75px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out}.tado-card-middle{flex:0 0 300px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden;box-shadow:rgba(100,100,100,0.2) 0px 0px 30px;background-color:rgba(255,255,255,0.1);position:relative;max-width:300px;border-radius:75px}:host([temp_selection]) .tado-card-middle{flex:0 0 444px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out}.tado-card-bottom{flex:0 0 200px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;overflow:hidden;flex-direction:row}:host([temp_selection]) .tado-card-bottom{flex:0 0 0px;transition-property:flex;transition-delay:0s;transition-duration:.5s;transition-timing-function:ease-in-out}.thermostat_part_top{line-height:75px;flex:0 0 75px;text-align:center;width:100%;transition-property:flex, opacity;transition-delay:0s;transition-duration:1s;transition-timing-function:ease-in-out;overflow:hidden}:host([temp_selection]) .thermostat_part_top{opacity:0;flex:0 0 0px}:host([temp_overlay]) .thermostat_part_top{flex:0 0 50px}.thermostat_part_middle{flex:0 0 150px;width:100%;height:100%;overflow:hidden;display:flex;font-size:6rem;text-align:center;justify-content:center;flex-flow:column}:host([temp_selection]) .thermostat_part_middle{width:300px;flex:0 0 400px}:host([temp_overlay]) .thermostat_part_middle{flex:0 0 100px;font-size:5.5em}.thermostat_part_bottom{visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out;flex:0 0 75px;width:100%;overflow:hidden;position:relative}:host([temp_selection]) .thermostat_part_bottom{transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out;flex:0 0 0px}:host([temp_overlay]) .thermostat_part_bottom{flex:0 0 150px;display:flex;flex-direction:column;overflow:hidden}.text{pointer-events:none}.text_maintemp{visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out}:host([temp_selection]) .text_maintemp{transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out}.text_temperature{transition-property:visibility, opacity;transition-delay:.5s,0s;visibility:hidden;opacity:0;transition-timing-function:ease-in-out;font-size:48px;align-self:center;text-align:center;text-transform:uppercase;font-weight:700}:host([temp_selection]) .text_temperature{visibility:visible;opacity:1;transition-property:visibility, opacity;transition-delay:0s,.5s;transition-duration:0s,.5s;transition-timing-function:ease-in-out}.heatreq{pointer-events:none;flex:0 0 100px;width:24px;margin:0px auto;transition-property:flex, margin;transition-delay:0s;transition-duration:1s;transition-timing-function:ease-in-out}.heatreq svg path{opacity:0.38;fill:#fff}:host([temp_heating~='heating_one']) .heatreq svg path:nth-child(1){opacity:1}:host([temp_heating~='heating_two']) .heatreq svg path:nth-child(1),:host([temp_heating~='heating_two']) .heatreq svg path:nth-child(2){opacity:1}:host([temp_heating~='heating_three']) .heatreq svg path:nth-child(1),:host([temp_heating~='heating_three']) .heatreq svg path:nth-child(2),:host([temp_heating~='heating_three']) .heatreq svg path:nth-child(3){opacity:1}:host([temp_overlay]) .heatreq{flex:0 0 50px;overflow:hidden;margin:0 auto}.overlay{flex:0 0 0px;background-color:#fff;color:#213953;opacity:0;transition-property:bottom, opacity;transition-delay:0s, 0s;transition-duration:1s, 1s;transition-timing-function:ease-in-out;display:flex;flex-direction:column;overflow:hidden;position:relative;width:100%;padding:0 0 26px 0;bottom:-100px}:host([temp_overlay]) .overlay{flex:0 0 100px;opacity:1;transition-duration:1s, 1s;bottom:0px}.overlay_text{text-align:center;padding:10px;width:calc(100% - 20px)}.info{display:flex;align-items:center;max-height:200px;opacity:1;transition-property:max-height, opacity;transition-delay:0s, 0s;transition-duration:1s, 1s;transition-timing-function:ease-in-out}.info_sensor{display:flex;align-items:center;flex-direction:column;width:100px}.info_sensor_label{font-size:1rem;line-height:3rem;font-weight:300}.info_sensor_value{font-size:1.8rem;line-height:1.8rem;font-weight:700}:host([temp_selection]) .info{max-height:0;opacity:0;transition-delay:0s, 0s;overflow:hidden}.tado-air .airqual.humid{background:linear-gradient(110deg, #6ba0e1, #5463c4)}.tado-air .airqual.cold{background:linear-gradient(110deg, #6bb0b3, #4d9699)}.tado-air .airqual.pleasant{background:linear-gradient(110deg, #3bce91, #19b876)}.tado-air .airqual{height:100%;width:100%;background:linear-gradient(110deg, #6bb0b3, #4d9699);font-size:0.8em;color:#fff;display:flex;flex-flow:column nowrap;justify-content:space-between;align-items:center;overflow:hidden}.tado-air .airqual__header{width:100%;flex:0 0 auto;padding:16px;display:flex;flex-flow:row nowrap;justify-content:space-between;align-items:flex-start}.tado-air .airqual-header__room-name{min-width:30%;margin-top:0;margin-right:15px;font-size:1.8em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tado-air .airqual__footer{width:100%;flex:0 0 51px;padding-bottom:16px;display:flex;flex-flow:row nowrap;justify-content:space-around;align-items:flex-end}.tado-air .airqual .thermal-comfort{max-width:70%}.tado-air .airqual .thermal-comfort_status{margin:0;font-size:1.8em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}.tado-air .measurement__label{margin-bottom:3px;text-transform:uppercase;font-weight:400}.tado-air .measurement__content,.tado-air .value-with-alert{display:flex;justify-content:center}.tado-air .value-with-alert{align-items:center;position:relative}.tado-air .value-with-alert__alert{width:12px;height:12px;position:absolute;right:100%;bottom:5px;margin-right:4px;fill:#fff;opacity:0.7}.tado-air .value-with-alert__value{font-size:1.5em}.tado-air .temperature{font-weight:400}.tado-air .humidity{font-weight:400}.tado-air .app-air-comfort-message{display:block;width:100%;background-color:#fff}.tado-air .message{color:#485258;font-size:14px}.tado-air .message figure{display:flex}.tado-air .stacked{margin:16px 0;padding:0 16px}.tado-air .text-center{text-align:center}.tado-air .bubble{flex:0 0 246px;padding-top:10px;position:relative;display:grid;grid-template-columns:1fr 250px 1fr;grid-auto-rows:-webkit-min-content;grid-auto-rows:min-content;text-align:center;align-items:center;grid-column-gap:5px;grid-row-gap:5px;text-transform:uppercase}.tado-air .bubble__label-top{grid-row-start:1;grid-column-start:2}.tado-air .bubble__label-bottom{grid-row-start:3;grid-column-start:2}.tado-air .bubble__label-left{grid-row-start:2;grid-column-start:1;text-align:right}.tado-air .bubble__label-right{grid-row-start:2;grid-column-start:3}.tado-air .bubble__graph{grid-row-start:2;grid-column-start:2;position:relative;overflow:hidden}.tado-air .bubble__graph-current_position{position:absolute}.tado-air .bubble__alert{position:absolute;bottom:-40px;width:100%}.tado-air .alert{display:inline-block;margin:auto;padding:0 8px;line-height:1.5em;font-size:1em;font-weight:400;text-transform:none}.tado-air .alert--humid{background:#3849ac}.tado-air .btn{cursor:pointer;display:inline-block;color:#000000;font-size:0.9em;text-decoration:none;text-align:left;line-height:2.5;padding:0 1.5em;border-radius:1.25em;border:none;transition:background-color 0.1s ease, box-shadow 0.15s ease}.tado-air .btn--more{background-color:#ffffff;min-width:137px;height:34px;line-height:34px;border-radius:17px;text-align:center}
 \`;`;
         return (new Function("css", extractorBody))(css);
     };
@@ -3599,6 +3833,7 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         this.temp_class = 'temp-off';
         this.temp_selection = false;
         this.temp_heating = 'heating_off';
+        this.temp_airqual = false;
         this.temp_overlay = false;
     }
     get entity() {
@@ -3611,6 +3846,7 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
             temp_selection: { type: Boolean, reflect: true },
             temp_overlay: { type: Boolean, reflect: true },
             temp_heating: { type: String, reflect: true },
+            temp_airqual: { type: Boolean, reflect: true },
             temp_class: { type: String },
             temp_wanted: { type: Number },
         };
@@ -3664,74 +3900,91 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
       <div class="popup-wrapper">
         <div style="display:flex;width:100%;height:100%;">
           <div id="popup" class="popup-inner ${this.temp_class}">
-            <div class="tado-card-top">
-              <div
-                class="btn__back"
-                @click="${(e) => this._thermostat_mouseclick(e)}"
-              >
-                ${back_btn}
+            <div class="tado">
+              <div class="tado-air">
+                ${_air_comfort(this.shadowRoot, current_temperature, current_humidity)}
               </div>
-              <div id="target_temp_track" class="text_temperature">${thermostat__body}</div>
-              <div
-                class="btn__confirm"
-                @click="${(e) => this._thermostat_mouseclick(e)}"
-              >
-                ${confirm_btn}
-              </div>
-            </div>
-            <div
-              id="thermostat"
-              class="tado-card-middle thermostat"
-              @mousedown="${() => this._thermostat_mousedown()}"
-              @mouseup="${() => this._thermostat_mouseup()}"
-              @click="${(e) => this._thermostat_mouseclick(e)}"
-            >
-              <div class="thermostat_part_top tempoverview">
-                <span style="pointer-events: none;">${thermostat__header}</span>
-              </div>
-              <div class="thermostat_part_middle tempoverview">
-                <div class="text_maintemp">
-                  ${thermostat__body}
-                </div>
-
-                <div id="track" class="track" style="height: ${track_height};"></div>
-                ${this.temp_selection
-            ? html `
-                      <input
-                        id="tempvaluerange"
-                        class="tempvaluerange"
-                        type="range"
-                        min="${min_temp - 1}"
-                        max="${max_temp}"
-                        step="1"
-                        style="width: 444px; height: 300px; transform-origin: 222px 222px;"
-                        @change="${(e) => this._change_track(e)}"
-                        @input="${(e) => this._change_track(e)}"
-                      />
-                    `
-            : ``}
-              </div>
-              <div class="thermostat_part_bottom tempoverview">
-                <div class="heatreq">
-                  ${heat_request}
-                </div>
-                <div class="overlay">
-                  <div class="overlay_text">
-                    Manual Override Active
+              <div class="tado-card" style="display: flex;flex-direction: column;width: 400px;height: 600px">
+                <div class="tado-card-top">
+                  <div class="btn__holder options">
+                    <div
+                      class="btn__airqual"
+                      @click="${(e) => this._thermostat_mouseclick(e)}"
+                    >
+                      ${air_comfort}
+                    </div>
                   </div>
-                  <button class="btn__cancel">Cancel</button>
+                  <div class="btn__holder selection">
+                    <div
+                      class="btn__back"
+                      @click="${(e) => this._thermostat_mouseclick(e)}"
+                    >
+                      ${back_btn}
+                    </div>
+                    <div id="target_temp_track" class="text_temperature">${thermostat__body}</div>
+                    <div
+                      class="btn__confirm"
+                      @click="${(e) => this._thermostat_mouseclick(e)}"
+                    >
+                      ${confirm_btn}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="tado-card-bottom">
-              <div class="info">
-                <div class="info_sensor">
-                  <div class="info_sensor_label">Inside now</div>
-                  <div class="info_sensor_value">${current_temperature}&#176;</div>
+                <div
+                  id="thermostat"
+                  class="tado-card-middle thermostat"
+                  @mousedown="${() => this._thermostat_mousedown()}"
+                  @mouseup="${() => this._thermostat_mouseup()}"
+                  @click="${(e) => this._thermostat_mouseclick(e)}"
+                >
+                  <div class="thermostat_part_top tempoverview">
+                    <span style="pointer-events: none;">${thermostat__header}</span>
+                  </div>
+                  <div class="thermostat_part_middle tempoverview">
+                    <div class="text text_maintemp">
+                      ${thermostat__body}
+                    </div>
+
+                    <div id="track" class="track" style="height: ${track_height};"></div>
+                    ${this.temp_selection
+            ? html `
+                          <input
+                            id="tempvaluerange"
+                            class="tempvaluerange"
+                            type="range"
+                            min="${min_temp - 1}"
+                            max="${max_temp}"
+                            step="1"
+                            style="width: 444px; height: 300px; transform-origin: 222px 222px;"
+                            @change="${(e) => this._change_track(e)}"
+                            @input="${(e) => this._change_track(e)}"
+                          />
+                        `
+            : ``}
+                  </div>
+                  <div class="thermostat_part_bottom tempoverview">
+                    <div class="heatreq">
+                      ${heat_request}
+                    </div>
+                    <div class="overlay">
+                      <div class="overlay_text">
+                        Manual Override Active
+                      </div>
+                      <button class="btn__cancel">Cancel</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="info_sensor">
-                  <div class="info_sensor_label">Humidity</div>
-                  <div class="info_sensor_value">${parseInt(current_humidity)}%</div>
+                <div class="tado-card-bottom">
+                  <div class="info">
+                    <div class="info_sensor">
+                      <div class="info_sensor_label">Inside now</div>
+                      <div class="info_sensor_value">${current_temperature}&#176;</div>
+                    </div>
+                    <div class="info_sensor">
+                      <div class="info_sensor_label">Humidity</div>
+                      <div class="info_sensor_value">${parseInt(current_humidity)}%</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3744,13 +3997,12 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         /**
          * Main mouse event handler for thermostat popup
          */
-        // Handle Cancel Button on main popup when overlay active
         const thermostat = this.shadowRoot;
         let toggle = false;
+        // Handle Cancel Button on main popup when overlay active
         if (e !== null && this._isCancelOverrideButton(e.target)) {
             this._handleModeClick();
             thermostat.getElementById('popup').classList.add('temp-backed');
-            console.log('CANCEL CALLED');
         }
         // Handle main thermostat click
         if (e !== null && this._isTempOverview(e.target)) {
@@ -3764,7 +4016,6 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
                 .className.replace(/temp.*/g, '');
             thermostat.getElementById('popup').classList.add('temp-backed');
             thermostat.getElementById('popup').classList.add(this.temp_class);
-            console.log('BACK CALLED');
             toggle = true;
         }
         // Handle Confirmation Button when setting temperature
@@ -3801,6 +4052,14 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
          */
         const cancelOverrideClass = 'btn__cancel';
         const exists = target.classList.contains(cancelOverrideClass);
+        return exists;
+    }
+    _isAirQualityButton(target) {
+        /**
+         * Temperature Override Cancel button check
+         */
+        const airQualityClass = 'btn__airqual';
+        const exists = target.classList.contains(airQualityClass);
         return exists;
     }
     _isTempOverview(target) {
@@ -3876,7 +4135,6 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
         }
     }
     _getHeatingState(heatingObj) {
-        // throw new Error('Method not implemented.');
         const heat_percent = parseInt(heatingObj.state);
         let heat_class = 'heating_off';
         if (heat_percent == 0) {
@@ -3938,16 +4196,13 @@ let TadoPopupCard = class TadoPopupCard extends LitElement {
             throw new Error('Invalid configuration');
         }
         if (!config.entity) {
-            throw new Error('You need to define a climate entity');
+            throw new Error('You need to define a climate entity via entity: <entity>');
         }
         if (!config.heating) {
-            throw new Error('You need to define a heating entity');
-        }
-        if (!config.title) {
-            throw new Error('You need to give this a title via title: <title>');
+            throw new Error('You need to define a heating entity via heating: <entity>');
         }
         if (!config.overlay) {
-            throw new Error('You need to give this a title via title: <title>');
+            throw new Error('You need to define an overlay entity via overlay: <entity>');
         }
         this.config = config;
     }

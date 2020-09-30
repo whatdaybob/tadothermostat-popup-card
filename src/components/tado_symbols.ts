@@ -1,7 +1,7 @@
 import { html } from 'lit-element';
 
 export const nav_bar_home = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="nav-bar-home" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="nav-bar-home" viewBox="0 0 24 24">
     <path
       fill-rule="nonzero"
       d="M7 9.5h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm0 6h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm7-6h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm0 6h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zM1.56 8.829A1 1 0 1 1 .44 7.17L10.323.503a3 3 0 0 1 3.356 0l9.881 6.668a1 1 0 1 1-1.118 1.658L12.559 2.16a1 1 0 0 0-1.118 0L1.559 8.829zM1.5 11a1 1 0 0 1 2 0v10a1 1 0 0 0 1 1h15a1 1 0 0 0 1-1V11a1 1 0 0 1 2 0v10a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V11z"
@@ -9,7 +9,7 @@ export const nav_bar_home = html`
   </svg>
 `;
 export const nav_bar_more = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="nav-bar-more" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="nav-bar-more" viewBox="0 0 24 24">
     <path
       fill-rule="nonzero"
       d="M8.5 10c1.858 0 3-1.475 3-3.75 0-2.334-1.272-3.75-3-3.75s-3 1.416-3 3.75c0 2.275 1.142 3.75 3 3.75zm0 1.5C5.5 11.5 4 9 4 6.25 4 3 6.015 1 8.5 1S13 3 13 6.25C13 9 11.5 11.5 8.5 11.5zM16 4h7a1 1 0 0 1 0 2h-7a1 1 0 0 1 0-2zm-1 6h8.064a1 1 0 1 1 0 2H15a1 1 0 0 1 0-2zm5.064 6h3a1 1 0 1 1 0 2h-3a1 1 0 0 1 0-2zM1.507 21.684a2 2 0 0 1-1.432-2.131C.572 14.85 3.392 12.5 8.535 12.5c5.143 0 7.963 2.35 8.46 7.053a2 2 0 0 1-1.431 2.13c-1.876.545-4.22.817-7.029.817-2.81 0-5.152-.272-7.028-.816zm.418-1.44c1.725.5 3.932.756 6.61.756 2.679 0 4.885-.256 6.61-.757a.5.5 0 0 0 .359-.533C15.09 15.797 12.934 14 8.535 14c-4.399 0-6.554 1.797-6.968 5.71a.5.5 0 0 0 .358.533z"
@@ -17,7 +17,7 @@ export const nav_bar_more = html`
   </svg>
 `;
 export const nav_bar_settings = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="nav-bar-settings" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="nav-bar-settings" viewBox="0 0 24 24">
     <path
       fill-rule="nonzero"
       d="M14.145 18a3.503 3.503 0 0 1 3.355-2.5 3.503 3.503 0 0 1 3.355 2.5H23a1 1 0 0 1 0 2h-2.145a3.503 3.503 0 0 1-3.355 2.5 3.503 3.503 0 0 1-3.355-2.5H1a1 1 0 0 1 0-2h13.145zm-11-7A3.503 3.503 0 0 1 6.5 8.5 3.503 3.503 0 0 1 9.855 11H23a1 1 0 0 1 0 2H9.855A3.503 3.503 0 0 1 6.5 15.5 3.503 3.503 0 0 1 3.145 13H1a1 1 0 0 1 0-2h2.145zm17.71-7H23a1 1 0 0 1 0 2h-2.145A3.503 3.503 0 0 1 17.5 8.5 3.503 3.503 0 0 1 14.145 6H1a1 1 0 1 1 0-2h13.145A3.503 3.503 0 0 1 17.5 1.5 3.503 3.503 0 0 1 20.855 4zM17.5 3c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm-11 7c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm11 7c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"
@@ -25,7 +25,7 @@ export const nav_bar_settings = html`
   </svg>
 `;
 export const nav_bar_home_active = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="nav-bar-home-active" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="nav-bar-home-active" viewBox="0 0 24 24">
     <path
       fill-rule="nonzero"
       d="M7 9.5h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm0 6h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm7-6h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm0 6h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zM1.56 8.829A1 1 0 1 1 .44 7.17L10.323.503a3 3 0 0 1 3.356 0l9.881 6.668a1 1 0 1 1-1.118 1.658L12.559 2.16a1 1 0 0 0-1.118 0L1.559 8.829zM1.5 11a1 1 0 0 1 2 0v10a1 1 0 0 0 1 1h15a1 1 0 0 0 1-1V11a1 1 0 0 1 2 0v10a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V11z"
@@ -33,7 +33,7 @@ export const nav_bar_home_active = html`
   </svg>
 `;
 export const nav_bar_more_active = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="nav-bar-more-active" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="nav-bar-more-active" viewBox="0 0 24 24">
     <path
       fill-rule="nonzero"
       d="M8.436 10c1.858 0 3-1.475 3-3.75 0-2.334-1.272-3.75-3-3.75s-3 1.416-3 3.75c0 2.275 1.142 3.75 3 3.75zm0 1.5c-3 0-4.5-2.5-4.5-5.25C3.936 3 5.951 1 8.436 1s4.5 2 4.5 5.25c0 2.75-1.5 5.25-4.5 5.25zm7.5-7.5h7a1 1 0 0 1 0 2h-7a1 1 0 1 1 0-2zm-1 6H23a1 1 0 0 1 0 2h-8.064a1 1 0 1 1 0-2zM20 16h3a1 1 0 0 1 0 2h-3a1 1 0 0 1 0-2zM1.443 21.684A2 2 0 0 1 .01 19.553C.508 14.85 3.328 12.5 8.471 12.5c5.143 0 7.963 2.35 8.46 7.053a2 2 0 0 1-1.431 2.13c-1.876.545-4.219.817-7.029.817-2.81 0-5.152-.272-7.028-.816zm.418-1.44c1.726.5 3.932.756 6.61.756 2.679 0 4.885-.256 6.61-.757a.5.5 0 0 0 .359-.533C15.026 15.797 12.87 14 8.47 14c-4.399 0-6.554 1.797-6.968 5.71a.5.5 0 0 0 .358.533z"
@@ -41,7 +41,7 @@ export const nav_bar_more_active = html`
   </svg>
 `;
 export const nav_bar_settings_active = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="nav-bar-settings-active" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="nav-bar-settings-active" viewBox="0 0 24 24">
     <path
       fill-rule="nonzero"
       d="M14.145 18a3.503 3.503 0 0 1 3.355-2.5 3.503 3.503 0 0 1 3.355 2.5H23a1 1 0 0 1 0 2h-2.145a3.503 3.503 0 0 1-3.355 2.5 3.503 3.503 0 0 1-3.355-2.5H1a1 1 0 0 1 0-2h13.145zm-11-7A3.503 3.503 0 0 1 6.5 8.5 3.503 3.503 0 0 1 9.855 11H23a1 1 0 0 1 0 2H9.855A3.503 3.503 0 0 1 6.5 15.5 3.503 3.503 0 0 1 3.145 13H1a1 1 0 0 1 0-2h2.145zm17.71-7H23a1 1 0 0 1 0 2h-2.145A3.503 3.503 0 0 1 17.5 8.5 3.503 3.503 0 0 1 14.145 6H1a1 1 0 1 1 0-2h13.145A3.503 3.503 0 0 1 17.5 1.5 3.503 3.503 0 0 1 20.855 4zM17.5 3c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm-11 7c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm11 7c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"
@@ -49,12 +49,12 @@ export const nav_bar_settings_active = html`
   </svg>
 `;
 export const plus = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="plus" viewBox="0 0 18 18">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="plus" viewBox="0 0 18 18">
     <path fill-rule="evenodd" d="M8 0h2v8h8v2h-8v8H8v-8H0V8h8z" />
   </svg>
 `;
 export const question_circle = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="question-circle" fill="none" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="question-circle" fill="none" viewBox="0 0 24 24">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -71,7 +71,7 @@ export const question_circle = html`
   </svg>
 `;
 export const cart = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="cart" viewBox="0 0 20 20">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="cart" viewBox="0 0 20 20">
     <path
       fill-rule="nonzero"
       d="M4.265 3.5H19.25a.75.75 0 0 1 .735.897l-1.5 7.5a.75.75 0 0 1-.735.603H6.065l.3 1.5H16.75a.75.75 0 1 1 0 1.5h-11a.75.75 0 0 1-.735-.603L2.635 3H.75a.75.75 0 0 1 0-1.5h2.5a.75.75 0 0 1 .735.603l.28 1.397zm.3 1.5l1.2 6h11.37l1.2-6H4.565zM7 16.5c.533 0 1 .467 1 1 0 .533-.467 1-1 1-.533 0-1-.467-1-1 0-.533.467-1 1-1zm8 0c.533 0 1 .467 1 1 0 .533-.467 1-1 1-.533 0-1-.467-1-1 0-.533.467-1 1-1z"
@@ -79,7 +79,7 @@ export const cart = html`
   </svg>
 `;
 export const open_window = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="open-window" viewBox="0 0 30 30">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="open-window" viewBox="0 0 30 30">
     <path
       fill-rule="nonzero"
       d="M9 9v13h12V9H9zm19.5 5.5V4.968L23 8.254V14.5h5.5zm0 2H23v6.04l5.5 3.286V16.5zM7 14.5V8.254L1.724 4.968V14.5H7zm0 2H1.724v9.326L7 22.54V16.5zm.842 7.5l-5.608 3.564c-.236.15-.514.23-.797.23-.794 0-1.437-.613-1.437-1.37V4.37c0-.27.084-.535.241-.76.44-.63 1.333-.8 1.993-.38L8.167 7h13.666l5.933-3.77c.66-.42 1.553-.25 1.993.38.157.225.241.49.241.76v22.054c0 .757-.643 1.37-1.437 1.37-.283 0-.56-.08-.797-.23L22.158 24H7.842z"
@@ -87,7 +87,7 @@ export const open_window = html`
   </svg>
 `;
 export const back_button = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="back-button" viewBox="0 0 28 28">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="back-button" viewBox="0 0 28 28">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -100,7 +100,7 @@ export const back_button = html`
   </svg>
 `;
 export const confirm_button = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="confirm-button" viewBox="0 0 28 28">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="confirm-button" viewBox="0 0 28 28">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -113,7 +113,7 @@ export const confirm_button = html`
   </svg>
 `;
 export const close_button = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="close-button" viewBox="0 0 28 28">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="close-button" viewBox="0 0 28 28">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -140,7 +140,7 @@ export const close_button = html`
   </svg>
 `;
 export const info_button = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="info-button" viewBox="0 0 28 28">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="info-button" viewBox="0 0 28 28">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -149,7 +149,7 @@ export const info_button = html`
   </svg>
 `;
 export const ellipsis_button = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="ellipsis-button" viewBox="0 0 28 28">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="ellipsis-button" viewBox="0 0 28 28">
     <g clip-path="url(#clip0)">
       <path
         fill-rule="evenodd"
@@ -183,7 +183,7 @@ export const ellipsis_button = html`
   </svg>
 `;
 export const schedule = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="schedule" viewBox="0 0 25 25">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="schedule" viewBox="0 0 25 25">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -192,14 +192,14 @@ export const schedule = html`
   </svg>
 `;
 export const warning = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="warning" viewBox="0 0 12 12">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="warning" viewBox="0 0 12 12">
     <path
       d="M6 12A6 6 0 1 1 6 0a6 6 0 0 1 0 12zM6 1.5a1 1 0 0 0-1 1v4a1 1 0 1 0 2 0v-4a1 1 0 0 0-1-1zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
     />
   </svg>
 `;
 export const arrow_left_button = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="arrow-left-button" viewBox="0 0 36 36">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="arrow-left-button" viewBox="0 0 36 36">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -214,7 +214,7 @@ export const arrow_left_button = html`
   </svg>
 `;
 export const arrow_right_button = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="arrow-right-button" viewBox="0 0 36 36">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="arrow-right-button" viewBox="0 0 36 36">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -229,7 +229,7 @@ export const arrow_right_button = html`
   </svg>
 `;
 export const arrow_right = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="arrow-right" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="arrow-right" viewBox="0 0 24 24">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -238,7 +238,7 @@ export const arrow_right = html`
   </svg>
 `;
 export const trend_arrow_right = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="trend-arrow-right" viewBox="0 0 18 18">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="trend-arrow-right" viewBox="0 0 18 18">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -261,7 +261,7 @@ export const trend_arrow_right = html`
   </svg>
 `;
 export const search_icon = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="search-icon" viewBox="0 0 14 14">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="search-icon" viewBox="0 0 14 14">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -270,7 +270,7 @@ export const search_icon = html`
   </svg>
 `;
 export const incident_status_no = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="incident-status-no" viewBox="0 0 60 60" fill="none">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="incident-status-no" viewBox="0 0 60 60" fill="none">
     <circle cx="30" cy="30" r="30" fill="white" />
     <circle cx="30" cy="30" r="30" fill="#25BE6B" fill-opacity="0.4" />
     <path
@@ -284,7 +284,13 @@ export const incident_status_no = html`
   </svg>
 `;
 export const incident_status_confirmed = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="incident-status-confirmed" viewBox="0 0 60 60" fill="none">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="panel-btn"
+    id="incident-status-confirmed"
+    viewBox="0 0 60 60"
+    fill="none"
+  >
     <circle cx="30" cy="30" r="30" fill="white" />
     <circle cx="30" cy="30" r="30" fill="#25BE6B" fill-opacity="0.1" />
     <path
@@ -303,7 +309,7 @@ export const incident_status_confirmed = html`
   </svg>
 `;
 export const incident_status_new = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="incident-status-new" viewBox="0 0 60 60" fill="none">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="incident-status-new" viewBox="0 0 60 60" fill="none">
     <circle cx="30" cy="30" r="30" fill="white" />
     <circle cx="30" cy="30" r="30" fill="#CC2200" fill-opacity="0.2" />
     <rect width="2.85272" height="3.5659" transform="matrix(-1 0 0 1 51.0814 18.3765)" fill="#55687D" />
@@ -379,7 +385,7 @@ export const incident_status_new = html`
   </svg>
 `;
 export const incident_postponed = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="incident-postponed" viewBox="0 0 60 60" fill="none">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="incident-postponed" viewBox="0 0 60 60" fill="none">
     <circle cx="30" cy="30" r="30" fill="white" />
     <circle cx="30" cy="30" r="30" fill="#E6BD00" fill-opacity="0.4" />
     <path
@@ -403,7 +409,7 @@ export const incident_postponed = html`
   </svg>
 `;
 export const care_and_protect = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="care-and-protect" viewBox="0 0 77 77" fill="none">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="care-and-protect" viewBox="0 0 77 77" fill="none">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -449,7 +455,7 @@ export const care_and_protect = html`
 
 // <!-- weather icons -->
 export const windy = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="windy" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="windy" viewBox="0 0 24 24">
     <path d="M21.09,10.02H17.152a.329.329,0,0,1,0-.657H21.09a.329.329,0,0,1,0,.657Z" />
     <path d="M21.91,13.3H19.285a.328.328,0,0,1,0-.656H21.91a.328.328,0,1,1,0,.656Z" />
     <path d="M23.223,11.66H18.629a.328.328,0,1,1,0-.656h4.594a.328.328,0,1,1,0,.656Z" />
@@ -459,7 +465,7 @@ export const windy = html`
   </svg>
 `;
 export const thunderstorms = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="thunderstorms" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="thunderstorms" viewBox="0 0 24 24">
     <path
       d="M13.078,15.059,8.914,17.612a.337.337,0,0,0-.04.583l2.3,1.9a.448.448,0,0,1,.032.676L8.679,23.3c-.2.2-.15.262.1.148l6-2.717c.253-.115.271-.333.04-.487l-2.784-1.855a.547.547,0,0,1-.169-.716l1.393-2.437C13.4,14.992,13.315,14.914,13.078,15.059Z"
     />
@@ -469,7 +475,7 @@ export const thunderstorms = html`
   </svg>
 `;
 export const sunny = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="sunny" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="sunny" viewBox="0 0 24 24">
     <path d="M16.268,12.1A4.268,4.268,0,1,0,12,16.366,4.268,4.268,0,0,0,16.268,12.1Z" />
     <path d="M12,6.358a.516.516,0,0,1-.517-.517V2.528a.517.517,0,1,1,1.033,0V5.841A.516.516,0,0,1,12,6.358Z" />
     <path d="M12,21.85a.517.517,0,0,1-.517-.517V18.02a.517.517,0,1,1,1.033,0v3.313A.517.517,0,0,1,12,21.85Z" />
@@ -490,7 +496,7 @@ export const sunny = html`
   </svg>
 `;
 export const rainy = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="rainy" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="rainy" viewBox="0 0 24 24">
     <path
       d="M9.83,16.266c-.423-.168-1.366,1.2-1.534,1.623a.824.824,0,1,0,1.531.61C9.995,18.077,10.253,16.435,9.83,16.266Z"
     />
@@ -518,7 +524,7 @@ export const rainy = html`
   </svg>
 `;
 export const rainy_scattered = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="rainy_scattered" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="rainy_scattered" viewBox="0 0 24 24">
     <path
       d="M11.788,17.564c-.39-.155-1.259,1.106-1.414,1.5a.76.76,0,1,0,1.411.563C11.94,19.233,12.178,17.719,11.788,17.564Z"
     />
@@ -553,7 +559,7 @@ export const rainy_scattered = html`
   </svg>
 `;
 export const snow = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="snow" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="snow" viewBox="0 0 24 24">
     <path
       d="M19.934,6.765h-.012a2.367,2.367,0,0,0-2.414-2.081,2.242,2.242,0,0,0-.806.183A5.01,5.01,0,0,0,7.084,3.714a3.572,3.572,0,0,0-4.324,3.5,3.59,3.59,0,0,0,.136.973A2.918,2.918,0,0,0,3.6,13.872a23.931,23.931,0,0,0,4.812.134L19.8,13.992a3.714,3.714,0,0,0,3.727-3.6A3.623,3.623,0,0,0,19.934,6.765Z"
     />
@@ -575,7 +581,7 @@ export const snow = html`
   </svg>
 `;
 export const snow_scattered = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="snow_scattered" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="snow_scattered" viewBox="0 0 24 24">
     <polygon
       points="9.974 17.344 8.442 17.344 9.48 16.307 9.258 16.086 8.253 17.091 8.253 15.78 7.941 15.78 7.941 17.201 6.936 16.196 6.714 16.417 7.641 17.344 6.22 17.344 6.22 17.657 7.687 17.657 6.604 18.74 6.825 18.961 7.941 17.846 7.941 19.378 8.253 19.378 8.253 17.956 9.258 18.961 9.48 18.74 8.396 17.657 9.974 17.657 9.974 17.344"
     />
@@ -604,7 +610,7 @@ export const snow_scattered = html`
   </svg>
 `;
 export const rainy_snow = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="rainy_snow" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="rainy_snow" viewBox="0 0 24 24">
     <path
       d="M19.711,6.854H19.7a2.366,2.366,0,0,0-2.414-2.081,2.242,2.242,0,0,0-.806.183A5.01,5.01,0,0,0,6.861,3.8,3.572,3.572,0,0,0,2.537,7.3a3.59,3.59,0,0,0,.137.973,2.918,2.918,0,0,0,.707,5.684,24,24,0,0,0,4.811.134l11.386-.014a3.713,3.713,0,0,0,3.727-3.6A3.623,3.623,0,0,0,19.711,6.854Z"
     />
@@ -626,7 +632,7 @@ export const rainy_snow = html`
   </svg>
 `;
 export const rainy_snow_scattered = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="rainy_snow_scattered" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="rainy_snow_scattered" viewBox="0 0 24 24">
     <polygon
       points="20.152 17.631 18.587 17.631 19.647 16.571 19.421 16.345 18.394 17.372 18.394 16.033 18.074 16.033 18.074 17.485 17.047 16.458 16.821 16.684 17.768 17.631 16.316 17.631 16.316 17.951 17.815 17.951 16.708 19.058 16.934 19.284 18.074 18.144 18.074 19.709 18.394 19.709 18.394 18.257 19.421 19.284 19.647 19.058 18.54 17.951 20.152 17.951 20.152 17.631"
     />
@@ -657,7 +663,7 @@ export const rainy_snow_scattered = html`
   </svg>
 `;
 export const hail = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="hail" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="hail" viewBox="0 0 24 24">
     <path
       d="M19.728,6.773h-.013A2.366,2.366,0,0,0,17.3,4.691a2.222,2.222,0,0,0-.806.184A5.01,5.01,0,0,0,6.877,3.721a3.619,3.619,0,0,0-.742-.079A3.574,3.574,0,0,0,2.69,8.2,2.918,2.918,0,0,0,3.4,13.88a24,24,0,0,0,4.811.134L19.594,14a3.714,3.714,0,0,0,3.727-3.6A3.622,3.622,0,0,0,19.728,6.773Z"
     />
@@ -679,7 +685,7 @@ export const hail = html`
   </svg>
 `;
 export const rainy_hail = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="rainy_hail" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="rainy_hail" viewBox="0 0 24 24">
     <path
       d="M19.728,7.2h-.013A2.367,2.367,0,0,0,17.3,5.114,2.222,2.222,0,0,0,16.5,5.3,5.01,5.01,0,0,0,6.877,4.144a3.619,3.619,0,0,0-.742-.079A3.574,3.574,0,0,0,2.69,8.619,2.918,2.918,0,0,0,3.4,14.3a24,24,0,0,0,4.811.134l11.386-.014a3.713,3.713,0,0,0,3.727-3.6A3.622,3.622,0,0,0,19.728,7.2Z"
     />
@@ -701,7 +707,7 @@ export const rainy_hail = html`
   </svg>
 `;
 export const night_cloudy = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="night_cloudy" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="night_cloudy" viewBox="0 0 24 24">
     <path
       d="M17.081,11.866H17.07a1.83,1.83,0,0,0-1.956-1.636,1.859,1.859,0,0,0-.653.173A4.058,4.058,0,0,0,6.67,9.488a2.9,2.9,0,0,0-3.393,3.63,2.364,2.364,0,0,0,.573,4.6,19.415,19.415,0,0,0,3.9.11l9.225-.012a3.052,3.052,0,0,0,3.02-2.966A2.978,2.978,0,0,0,17.081,11.866Z"
     />
@@ -711,21 +717,21 @@ export const night_cloudy = html`
   </svg>
 `;
 export const night_clear = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="night_clear" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="night_clear" viewBox="0 0 24 24">
     <path
       d="M15.407,5.328c.272.055.271.179.012.278a5.879,5.879,0,0,0,0,10.985c.259.1.26.224-.012.278a5.81,5.81,0,0,1-1.135.113,5.884,5.884,0,1,1,0-11.767A5.81,5.81,0,0,1,15.407,5.328Z"
     />
   </svg>
 `;
 export const freezing = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="freezing" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="freezing" viewBox="0 0 24 24">
     <path
       d="M18.065,12.685H18.8a.532.532,0,1,0,0-1.064h-.737l1.11-.916a.532.532,0,0,0-.678-.821l-2.1,1.737H13.326l2.229-2.229,2.715-.26a.532.532,0,1,0-.1-1.06l-1.431.137.52-.521a.532.532,0,0,0-.753-.753l-.521.521.137-1.432a.532.532,0,0,0-1.06-.1L14.8,8.639l-2.269,2.269V7.67l1.736-2.1a.532.532,0,0,0-.821-.678L12.533,6V5.261a.533.533,0,0,0-1.065,0V6l-.916-1.11a.532.532,0,0,0-.821.678l1.737,2.1v3.106l-2.2-2.2-.26-2.716a.532.532,0,0,0-1.06.1L8.088,7.4l-.521-.521a.532.532,0,0,0-.753.753l.521.521L5.9,8.013a.532.532,0,0,0-.1,1.06l2.716.26,2.288,2.287h-3.2L5.5,9.884a.532.532,0,0,0-.678.821l1.109.915H5.2a.533.533,0,0,0,0,1.065h.737l-1.11.916a.532.532,0,0,0,.678.821l2.1-1.737h3.147L8.59,14.85l-2.716.26a.532.532,0,0,0,.1,1.06l1.431-.137-.52.52a.532.532,0,0,0,.753.753l.521-.52-.137,1.431a.532.532,0,0,0,1.06.1L9.343,15.6l2.124-2.124v2.975l-1.736,2.1a.532.532,0,1,0,.821.677l.915-1.108v.736a.533.533,0,0,0,1.065,0v-.737l.916,1.109a.532.532,0,1,0,.821-.677l-1.737-2.1V13.347l2.2,2.2.26,2.716a.532.532,0,1,0,1.059-.1l-.136-1.432.52.521a.532.532,0,0,0,.753-.753l-.521-.521,1.432.136a.532.532,0,1,0,.1-1.059l-2.716-.26-2.105-2.106h3.016l2.1,1.737a.532.532,0,0,0,.678-.821Z"
     />
   </svg>
 `;
 export const foggy = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="foggy" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="foggy" viewBox="0 0 24 24">
     <path
       d="M19.907,8.164h-.013a2.2,2.2,0,0,0-2.47-2.291,2.234,2.234,0,0,0-.825.108,5.169,5.169,0,0,0-5.074-4.456A5.108,5.108,0,0,0,6.759,4.74,3.644,3.644,0,0,0,2.474,9.3,2.984,2.984,0,0,0,3.2,15.114a24.505,24.505,0,0,0,4.922.138l11.65-.015a3.667,3.667,0,0,0,3.813-3.521A3.57,3.57,0,0,0,19.907,8.164Z"
     />
@@ -741,7 +747,7 @@ export const foggy = html`
   </svg>
 `;
 export const drizzle = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="drizzle" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="drizzle" viewBox="0 0 24 24">
     <path
       d="M13.818,16c-.428-.17-1.381,1.214-1.552,1.641a.833.833,0,1,0,1.548.617C13.985,17.831,14.245,16.171,13.818,16Z"
     />
@@ -755,7 +761,7 @@ export const drizzle = html`
   </svg>
 `;
 export const cloudy = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="cloudy" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="cloudy" viewBox="0 0 24 24">
     <path
       d="M15.405,12.956H15.4c-.125-1.673-.938-1.812-1.922-1.812a1.726,1.726,0,0,0-.642.069A4.029,4.029,0,0,0,8.882,7.738a3.971,3.971,0,0,0-3.708,2.5,2.889,2.889,0,0,0-.592-.074,2.84,2.84,0,0,0-2.743,3.619A2.322,2.322,0,0,0,2.4,18.305a19.057,19.057,0,0,0,3.83.107L15.3,18.4a2.829,2.829,0,0,0,2.967-2.71A2.755,2.755,0,0,0,15.405,12.956Z"
     />
@@ -765,7 +771,7 @@ export const cloudy = html`
   </svg>
 `;
 export const cloudy_partly = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="cloudy_partly" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="cloudy_partly" viewBox="0 0 24 24">
     <path d="M6.147,7.5a.508.508,0,0,1-.721,0l-2.31-2.31a.51.51,0,0,1,.721-.721l2.309,2.31A.509.509,0,0,1,6.147,7.5Z" />
     <path d="M16.951,5.185,14.64,7.5a.509.509,0,1,1-.72-.721l2.31-2.31a.51.51,0,0,1,.721.721Z" />
     <path d="M10.393,5.736a.51.51,0,0,1-.87-.36V2.109a.51.51,0,1,1,1.019,0V5.376A.5.5,0,0,1,10.393,5.736Z" />
@@ -779,14 +785,14 @@ export const cloudy_partly = html`
   </svg>
 `;
 export const cloudy_mostly = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="cloudy_mostly" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="cloudy_mostly" viewBox="0 0 24 24">
     <path
       d="M19.929,11.151h-.014a2.435,2.435,0,0,0-2.478-2.145,2.292,2.292,0,0,0-.827.185A5.144,5.144,0,0,0,6.736,8a3.67,3.67,0,0,0-4.3,4.593,3,3,0,0,0,.726,5.836,24.674,24.674,0,0,0,4.939.138l11.691-.015a3.806,3.806,0,0,0,3.825-3.688A3.711,3.711,0,0,0,19.929,11.151Z"
     />
   </svg>
 `;
 export const outside_temp = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="outside_temp" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="outside_temp" viewBox="0 0 24 24">
     <path
       d="M16.66,16V12.346a4.373,4.373,0,0,0-1.364-.919,3.955,3.955,0,0,0-2.7-6.681,3.365,3.365,0,0,0-6.721,0,3.955,3.955,0,0,0-2.7,6.681,4.373,4.373,0,0,0,1.69,8.407h3V24h2.751V19.834h3a4.427,4.427,0,0,0,.928-.1A5.182,5.182,0,0,1,16.66,16Z"
     />
@@ -799,35 +805,35 @@ export const outside_temp = html`
 // <!-- air conditioning -->
 // <!--widget (special icons with extra spacing in viewBox to align unified with other widget icons)-->
 export const air_conditioning_widget_cool = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-widget-cool" viewBox="0 0 84 84">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-widget-cool" viewBox="0 0 84 84">
     <path
       d="M30.665 22.402l-5.48-3.164a2.381 2.381 0 1 1 2.38-4.124l5.325 3.075-1.593-5.945a2.381 2.381 0 1 1 4.6-1.233l2.825 10.545 10.897 6.29v-12.21l-7.78-7.782a2.381 2.381 0 0 1 3.366-3.367l4.414 4.414V2.38a2.381 2.381 0 0 1 4.762 0v6.655l4.549-4.549a2.381 2.381 0 0 1 3.367 3.367l-7.916 7.917v12.134l10.947-6.32 2.826-10.545a2.381 2.381 0 1 1 4.6 1.233l-1.593 5.944 5.325-3.074a2.381 2.381 0 1 1 2.38 4.124l-5.48 3.164 6.264 1.679a2.381 2.381 0 1 1-1.233 4.6l-10.863-2.911L56.812 32l10.712 6.184 10.725-2.873a2.381 2.381 0 0 1 1.233 4.6l-6.126 1.64 5.51 3.182a2.381 2.381 0 0 1-2.38 4.124l-5.472-3.16 1.605 5.992a2.381 2.381 0 0 1-4.6 1.233L65.183 42.33 54.38 36.095v12.302l7.882 7.882a2.381 2.381 0 1 1-3.367 3.367l-4.515-4.515v6.488a2.381 2.381 0 0 1-4.762 0v-6.488l-4.515 4.515a2.381 2.381 0 1 1-3.367-3.367l7.882-7.882V36.153l-10.867 6.274-2.789 10.408a2.381 2.381 0 1 1-4.6-1.233l1.557-5.808-5.355 3.092a2.381 2.381 0 0 1-2.38-4.124l5.625-3.248-6.308-1.69a2.381 2.381 0 0 1 1.232-4.6l10.908 2.923L47.29 32l-10.792-6.23-10.863 2.91a2.381 2.381 0 0 1-1.233-4.6l6.264-1.678z"
     />
   </svg>
 `;
 export const air_conditioning_widget_heat = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-widget-heat" viewBox="0 0 84 84">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-widget-heat" viewBox="0 0 84 84">
     <path
       d="M52 42.353c-5.718 0-10.353-4.635-10.353-10.353S46.282 21.647 52 21.647 62.353 26.282 62.353 32 57.718 42.353 52 42.353zM52 0c1.3 0 2.353 1.053 2.353 2.353v10.353a2.353 2.353 0 0 1-4.706 0V2.353C49.647 1.053 50.701 0 52 0zm0 48.941c1.3 0 2.353 1.054 2.353 2.353v10.353a2.353 2.353 0 1 1-4.706 0V51.294c0-1.3 1.054-2.353 2.353-2.353zM76.624 7.376a2.353 2.353 0 0 1 0 3.328l-7.32 7.32a2.353 2.353 0 1 1-3.328-3.327l7.32-7.321a2.353 2.353 0 0 1 3.328 0zm-38.6 38.6a2.353 2.353 0 0 1 0 3.327l-7.32 7.321a2.353 2.353 0 1 1-3.328-3.328l7.32-7.32a2.353 2.353 0 0 1 3.328 0zm38.6 10.648a2.353 2.353 0 0 1-3.328 0l-7.32-7.32a2.353 2.353 0 1 1 3.327-3.328l7.321 7.32a2.353 2.353 0 0 1 0 3.328zm-38.6-38.6a2.353 2.353 0 0 1-3.327 0l-7.321-7.32a2.353 2.353 0 1 1 3.328-3.328l7.32 7.32a2.353 2.353 0 0 1 0 3.328zM84 32c0 1.3-1.053 2.353-2.353 2.353H71.294a2.353 2.353 0 0 1 0-4.706h10.353c1.3 0 2.353 1.054 2.353 2.353zm-48.941 0c0 1.3-1.054 2.353-2.353 2.353H22.353a2.353 2.353 0 0 1 0-4.706h10.353c1.3 0 2.353 1.054 2.353 2.353z"
     />
   </svg>
 `;
 export const air_conditioning_widget_auto = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-widget-auto" viewBox="0 0 84 84">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-widget-auto" viewBox="0 0 84 84">
     <path
       d="M40.4 55.766A26.47 26.47 0 0 0 52 58.442c14.58 0 26.442-11.863 26.442-26.442 0-4.64-1.22-9.203-3.524-13.196a2.78 2.78 0 1 1 4.816-2.778A31.994 31.994 0 0 1 84 32c0 17.645-14.355 32-32 32a32.017 32.017 0 0 1-14.982-3.716l-1.66 2.218-4.362-10.192 11.008 1.315-1.604 2.141zM67.092 3.778l1.671-2.214 4.323 10.207-11.001-1.356 1.61-2.135A26.472 26.472 0 0 0 52 5.558C37.424 5.558 25.562 17.424 25.562 32c0 4.732 1.264 9.376 3.657 13.43a2.78 2.78 0 1 1-4.787 2.826A31.969 31.969 0 0 1 20 32C20 14.358 34.358 0 52 0c5.279 0 10.47 1.302 15.092 3.778z"
     />
   </svg>
 `;
 export const air_conditioning_widget_dry = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-widget-dry" viewBox="0 0 84 84">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-widget-dry" viewBox="0 0 84 84">
     <path
       d="M48.815 16h19.542a2.353 2.353 0 1 1 0 4.706H51.43c1.5 2.62 3.094 5.346 4.76 8.47H73.97a2.353 2.353 0 0 1 0 4.706H58.589c.296.612.595 1.239.895 1.883 1.049 2.25 1.7 4.459 2.006 6.588h17.157a2.353 2.353 0 1 1 0 4.706H61.611C60.674 56.847 52.295 64 42.645 64 29.548 64 18.79 50.824 25.806 35.765 32.823 20.705 38.903 15.059 42.646 0c1.644 6.619 3.74 11.42 6.17 16zm-9.275 4.172c-.829 1.498-3.941 6.915-4.594 8.08-1.865 3.329-3.393 6.266-4.904 9.51-5.13 11.008 1.884 21.532 12.603 21.532 10.72 0 17.733-10.524 12.604-21.532-1.512-3.244-3.04-6.181-4.904-9.51-.653-1.165-3.766-6.582-4.595-8.08a96.856 96.856 0 0 1-3.105-6.056 96.856 96.856 0 0 1-3.105 6.056z"
     />
   </svg>
 `;
 export const air_conditioning_widget_fan = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-widget-fan" viewBox="0 0 84 84">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-widget-fan" viewBox="0 0 84 84">
     <g fill="none" fill-rule="evenodd">
       <path d="M0 0h84v74H0z" />
       <g stroke="#1890E8" stroke-width="5">
@@ -844,14 +850,14 @@ export const air_conditioning_widget_fan = html`
 `;
 // <!--settings (centered icons with no extra space in viewBox)-->
 export const air_conditioning_v3p_cool = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-cool" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-v3p-cool" viewBox="0 0 24 24">
     <path
       d="M12.005 24a.882.882 0 0 1-.88-.875v-2.848l-1.933 1.91a.885.885 0 0 1-1.245 0 .852.852 0 0 1-.258-.619c0-.235.097-.448.258-.619l3.178-3.136v-4.309l-3.79 2.165-1.16 4.278c-.118.448-.569.736-1.073.618a.926.926 0 0 1-.548-.405.841.841 0 0 1-.086-.661l.709-2.603-2.502 1.419a.903.903 0 0 1-1.202-.32.841.841 0 0 1-.086-.662.888.888 0 0 1 .408-.533l2.49-1.419-2.63-.693a.87.87 0 0 1-.622-1.067.883.883 0 0 1 1.084-.618l4.338 1.152L10.234 12l-3.78-2.155-4.337 1.152a.887.887 0 0 1-1.084-.618.841.841 0 0 1 .086-.662.855.855 0 0 1 .536-.405l2.63-.693-2.49-1.43a.85.85 0 0 1-.408-.533.841.841 0 0 1 .086-.661.893.893 0 0 1 1.202-.32l2.502 1.418-.709-2.592a.841.841 0 0 1 .086-.661.855.855 0 0 1 .537-.405.883.883 0 0 1 1.084.618l1.16 4.278 3.78 2.154V6.176L7.946 3.051a.852.852 0 0 1-.258-.619c0-.235.086-.459.258-.619a.885.885 0 0 1 1.245 0l1.933 1.91V.875a.881.881 0 0 1 1.76 0v2.837l1.933-1.91a.885.885 0 0 1 1.246 0c.172.16.258.385.258.62a.852.852 0 0 1-.258.618l-3.178 3.147v4.309l3.779-2.155 1.16-4.288a.892.892 0 0 1 1.62-.213c.119.203.151.437.087.661l-.709 2.603 2.502-1.419c.418-.234.966-.096 1.202.32.118.203.15.438.086.662a.888.888 0 0 1-.408.533l-2.49 1.419 2.63.693a.893.893 0 0 1 .537.405c.118.203.15.438.085.662a.892.892 0 0 1-1.084.618l-4.338-1.152L13.766 12l3.78 2.155 4.337-1.152a.85.85 0 0 1 .666.085.85.85 0 0 1 .408.533.841.841 0 0 1-.086.662.855.855 0 0 1-.537.405l-2.63.693 2.49 1.419a.85.85 0 0 1 .408.533.889.889 0 0 1-.086.662c-.236.405-.805.544-1.202.32l-2.502-1.419.709 2.603a.841.841 0 0 1-.086.661.892.892 0 0 1-1.621-.213l-1.16-4.288-3.779-2.155v4.31l3.178 3.135c.172.16.258.384.258.619a.834.834 0 0 1-.258.619c-.333.32-.913.33-1.245 0l-1.933-1.91v2.848a.865.865 0 0 1-.87.875z"
     />
   </svg>
 `;
 export const air_conditioning_v3p_heat = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-heat" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-v3p-heat" viewBox="0 0 24 24">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -860,7 +866,7 @@ export const air_conditioning_v3p_heat = html`
   </svg>
 `;
 export const air_conditioning_v3p_auto = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-auto" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-v3p-auto" viewBox="0 0 24 24">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -869,7 +875,7 @@ export const air_conditioning_v3p_auto = html`
   </svg>
 `;
 export const air_conditioning_v3p_dry = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-dry" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-v3p-dry" viewBox="0 0 24 24">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -878,7 +884,7 @@ export const air_conditioning_v3p_dry = html`
   </svg>
 `;
 export const air_conditioning_v3p_fan = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-fan" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-v3p-fan" viewBox="0 0 24 24">
     <g clip-path="url(#clip0)">
       <path
         d="M22.2536 12.9574C21.0453 12.18 19.535 12.1883 18.2067 12.9783C17.2301 13.5635 16.2412 13.5426 15.5915 13.4256C15.6205 13.2249 15.637 13.0201 15.6288 12.8111C15.6163 12.4308 15.5294 12.0629 15.4053 11.7118C16.6425 10.5707 17.4246 8.9949 17.7391 7.87051C18.4715 5.23719 17.5984 3.10963 15.2232 1.71773C13.4812 0.697844 10.8288 0.656045 8.62737 1.61324C7.27841 2.19842 6.36392 3.50672 6.29772 4.94878C6.23151 6.37412 6.99703 7.6657 8.34599 8.40972C9.12392 8.84025 9.58323 9.45469 9.86048 10.0148C9.68255 10.1485 9.51289 10.2907 9.35565 10.4579C9.07841 10.7546 8.86737 11.0974 8.70599 11.4569C7.07151 10.9344 5.26737 11.0472 4.10461 11.344C1.44393 12.0337 0.0246149 13.8436 -0.000212687 16.5856C-0.0209023 18.5961 1.27013 20.9034 3.21082 22.3245C3.89358 22.8219 4.70875 23.0769 5.52806 23.0769C6.1322 23.0769 6.74048 22.9348 7.29082 22.6506C8.55289 21.9943 9.29358 20.6902 9.26461 19.1645C9.23979 17.8688 10.1294 16.7737 10.6053 16.2846C10.9239 16.4184 11.2715 16.4894 11.6315 16.527C11.8922 18.6253 13.0674 20.431 13.9694 21.3423C15.8977 23.2817 18.1819 23.5952 20.5777 22.2493C22.3405 21.2587 23.706 18.9974 23.975 16.619C24.1405 15.1769 23.4619 13.7391 22.2536 12.9574ZM7.58875 19.1938C7.60944 20.4143 6.92668 20.9535 6.51703 21.1625C5.78875 21.5429 4.87841 21.4677 4.19979 20.9703C2.72255 19.8877 1.6591 18.0527 1.67565 16.6023C1.6922 14.621 2.59841 13.4674 4.52255 12.97C4.99841 12.8487 5.59427 12.7693 6.22323 12.7693C6.86875 12.7693 7.72944 12.8905 8.38323 13.0912C8.41634 13.8895 8.71427 14.6085 9.17772 15.1853C9.19841 15.2104 9.20668 15.2396 9.22737 15.2605C8.59841 15.8917 7.55565 17.2376 7.58875 19.1938ZM9.14875 6.94258C8.06875 6.34904 7.94461 5.48798 7.9653 5.0282C8.00255 4.22148 8.52392 3.48164 9.28944 3.15143C10.9736 2.41995 13.1129 2.42831 14.375 3.16815C16.0963 4.1755 16.6508 5.52978 16.1253 7.42745C15.8853 8.29268 15.2936 9.43379 14.4743 10.2823C13.7667 9.62606 12.8522 9.27495 11.8798 9.31257C11.7184 9.31675 11.5653 9.35019 11.4081 9.37527C11.0646 8.4975 10.2205 7.53194 9.14875 6.94258ZM10.3901 14.0358C10.1874 13.7391 10.0591 13.3838 10.0467 12.9992C10.0301 12.4767 10.2163 11.9793 10.5722 11.599C10.9281 11.2186 11.4122 10.9971 11.9336 10.9803C11.9543 10.9803 11.9791 10.9803 11.9998 10.9803C12.2729 10.9803 12.5377 11.043 12.7819 11.1475C12.9805 11.2353 13.1708 11.3524 13.3322 11.507C13.7129 11.8623 13.9322 12.3472 13.9529 12.8696C13.9694 13.3921 13.7832 13.8895 13.4274 14.2699C13.0715 14.6503 12.5874 14.8718 12.066 14.8885C11.3708 14.9136 10.7543 14.5709 10.3901 14.0358ZM19.7625 20.7905C18.0205 21.7686 16.5556 21.568 15.1612 20.1635C14.3501 19.3443 13.4232 17.8144 13.3115 16.3807C13.3115 16.3557 13.3032 16.3348 13.3032 16.3097C13.8081 16.1132 14.2756 15.8206 14.6563 15.411C14.7722 15.2856 14.8674 15.1435 14.9667 15.0056C15.8605 15.2187 17.4619 15.3734 19.0674 14.4162C20.1391 13.7767 20.9584 14.1111 21.3515 14.3619C22.0301 14.8008 22.4108 15.6116 22.3198 16.4309C22.1087 18.2408 21.037 20.0758 19.7625 20.7905Z"
@@ -892,7 +898,7 @@ export const air_conditioning_v3p_fan = html`
   </svg>
 `;
 export const air_conditioning_v3p_fan_speed = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-fan-speed" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-v3p-fan-speed" viewBox="0 0 24 24">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -901,7 +907,12 @@ export const air_conditioning_v3p_fan_speed = html`
   </svg>
 `;
 export const air_conditioning_v3p_fan_speed_none = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-fan-speed-none" viewBox="0 0 32 10">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="panel-btn"
+    id="air-conditioning-v3p-fan-speed-none"
+    viewBox="0 0 32 10"
+  >
     <path
       opacity="0.45"
       fill-rule="evenodd"
@@ -911,7 +922,7 @@ export const air_conditioning_v3p_fan_speed_none = html`
   </svg>
 `;
 export const air_conditioning_v3p_fan_speed_low = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-fan-speed-low" viewBox="0 0 31 10">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-v3p-fan-speed-low" viewBox="0 0 31 10">
     <path
       opacity="0.3"
       fill-rule="evenodd"
@@ -922,7 +933,12 @@ export const air_conditioning_v3p_fan_speed_low = html`
   </svg>
 `;
 export const air_conditioning_v3p_fan_speed_middle = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-fan-speed-middle" viewBox="0 0 31 10">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="panel-btn"
+    id="air-conditioning-v3p-fan-speed-middle"
+    viewBox="0 0 31 10"
+  >
     <path
       opacity="0.3"
       fill-rule="evenodd"
@@ -937,7 +953,12 @@ export const air_conditioning_v3p_fan_speed_middle = html`
   </svg>
 `;
 export const air_conditioning_v3p_fan_speed_high = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-fan-speed-high" viewBox="0 0 31 10">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="panel-btn"
+    id="air-conditioning-v3p-fan-speed-high"
+    viewBox="0 0 31 10"
+  >
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -946,7 +967,7 @@ export const air_conditioning_v3p_fan_speed_high = html`
   </svg>
 `;
 export const air_conditioning_v3p_swing = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-swing" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-v3p-swing" viewBox="0 0 24 24">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -955,7 +976,7 @@ export const air_conditioning_v3p_swing = html`
   </svg>
 `;
 export const air_conditioning_v3p_off = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-v3p-off" viewBox="0 0 25 25">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-v3p-off" viewBox="0 0 25 25">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -969,7 +990,7 @@ export const air_conditioning_v3p_off = html`
 
 // <!-- from the old app -->
 export const air_conditioning_old_off = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-old-off" viewBox="0 0 1000 1100">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-conditioning-old-off" viewBox="0 0 1000 1100">
     <path
       transform="scale(1, -1) translate(0, -1000)"
       d="M452.28 934.482h132.52v-399.64h-132.52zM660.528 846.814c178.278-61.714 306.66-231.144 306.62-430.148 0-250.976-204.146-455.154-455.154-455.154-250.962 0-455.148 204.178-455.148 455.154 0 196.798 125.57 364.768 300.748 428.134v-143.34c-100.924-54.94-169.594-161.99-169.594-284.794 0-178.674 145.36-323.994 324.034-323.994s324.028 145.32 324.028 323.994c0 125.126-71.42 233.704-175.534 287.662v142.486z"
@@ -977,7 +998,12 @@ export const air_conditioning_old_off = html`
   </svg>
 `;
 export const air_conditioning_old_thermometer = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-conditioning-old-thermometer" viewBox="0 -50 1000 1000">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="panel-btn"
+    id="air-conditioning-old-thermometer"
+    viewBox="0 -50 1000 1000"
+  >
     <path
       transform="scale(1, -1) translate(0, -900)"
       d="M617.813 370.176v450.56c0 58.709-47.787 107.179-107.179 107.179-58.709 0-107.179-47.787-107.179-107.179v-451.243c-66.219-38.229-106.496-107.179-106.496-184.32 0-117.419 95.573-213.675 213.675-213.675 117.419 0 213.675 95.573 213.675 213.675 0 77.141-40.277 146.773-106.496 185.003zM511.317 879.445c32.085 0 58.709-26.624 58.709-58.709v-205.483h-117.419v205.483c0 32.768 25.941 58.709 58.709 58.709z"
@@ -987,7 +1013,7 @@ export const air_conditioning_old_thermometer = html`
 
 // <!-- following icons are not square sized - if it causes any css problems (e.g. aligning) they need to be re-exported by designers in a square shape-->
 export const power_off = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="power-off" viewBox="0 0 68 71">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="power-off" viewBox="0 0 68 71">
     <g fill-rule="evenodd">
       <path
         d="M34.001 39C36.211 39 38 37.331 38 35.276V3.724C38 1.669 36.21 0 34.001 0 31.791 0 30 1.669 30 3.724v31.552C30 37.331 31.792 39 34.001 39"
@@ -999,7 +1025,7 @@ export const power_off = html`
   </svg>
 `;
 export const no_remote_access = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="no-remote-access" viewBox="0 0 83 56">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="no-remote-access" viewBox="0 0 83 56">
     <path
       fill-rule="evenodd"
       d="M58.21 13.81l.007-.007a2.754 2.754 0 0 1 3.894.007 2.774 2.774 0 0 1 0 3.916L46.104 33.794a1 1 0 0 0 0 1.412l16.007 16.068a2.774 2.774 0 0 1-.007 3.923 2.754 2.754 0 0 1-3.894-.007L42.208 39.127l-.002-.003a1 1 0 0 0-1.414.003L24.79 55.19a2.753 2.753 0 0 1-3.9 0 2.774 2.774 0 0 1 0-3.916l16.007-16.068a1 1 0 0 0 0-1.412L20.89 17.726a2.774 2.774 0 0 1 .007-3.924 2.753 2.753 0 0 1 3.893.008l16.002 16.063.002.003a1 1 0 0 0 1.414-.003L58.21 13.81zM0 34.486a2.498 2.498 0 0 1 2.498-2.499h28.088a1 1 0 0 1 .707.293l1.5 1.498a1 1 0 0 1 0 1.415l-1.5 1.498a1 1 0 0 1-.707.293H2.498A2.498 2.498 0 0 1 0 34.486zm51.707-2.204a1 1 0 0 1 .709-.295h28.086a2.498 2.498 0 1 1 0 4.997h-28.09a1 1 0 0 1-.704-.29l-1.5-1.489a1 1 0 0 1-.003-1.414l1.502-1.509z"
@@ -1007,7 +1033,7 @@ export const no_remote_access = html`
   </svg>
 `;
 export const hot_water = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="hot-water" viewBox="0 0 23 27">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="hot-water" viewBox="0 0 23 27">
     <g fill-rule="evenodd">
       <path
         d="M21 19.853c.029 0 .058.018.072.054.32.803 1.434 2.857 1.784 3.804.075.2.144.549.144.858C23 25.837 22.245 27 21 27s-2-1.163-2-2.43c0-.31.118-.815.199-1.013.31-.762 1.288-2.514 1.73-3.65.009-.024.033-.042.071-.054zM11 8V2l4.5.5c.294.04.5-.186.5-.5V.464c0-.313-.21-.516-.5-.452L10 1c-.29.064-.71.064-1 0L3.5.012c-.29-.065-.5.139-.5.452V2c0 .314.206.54.5.5L8 2v6H1.5V6H0v9.37h1.5V13h12.19c2.891 0 3.538 1.985 4.31 5h5c-.833-5.645-3.19-9.98-9-10h-3z"
@@ -1016,7 +1042,7 @@ export const hot_water = html`
   </svg>
 `;
 export const air_comfort = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-comfort" viewBox="0 0 79 63">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-comfort" viewBox="0 0 79 63">
     <path
       fill-rule="evenodd"
       d="M37.441 21.802h-.001l-34.984-.003A2.458 2.458 0 0 1 0 19.343a2.46 2.46 0 0 1 2.456-2.457l34.984.003h.001a5.944 5.944 0 0 0 4.231-1.755 5.946 5.946 0 0 0 1.757-4.232c0-1.597-.623-3.1-1.756-4.233a5.948 5.948 0 0 0-4.232-1.756 5.995 5.995 0 0 0-5.988 5.988c0 .656-.256 1.273-.72 1.736-.464.464-1.08.72-1.736.72h-.002a2.459 2.459 0 0 1-2.455-2.456C26.541 4.89 31.431 0 37.441 0a10.832 10.832 0 0 1 7.705 3.197 10.823 10.823 0 0 1 3.195 7.705c0 6.01-4.89 10.9-10.9 10.9m26.54 12.065h-.002l-55.493-.003a2.46 2.46 0 0 1-2.456-2.458 2.46 2.46 0 0 1 2.457-2.456l55.492.005c5.297 0 9.608-4.309 9.608-9.606 0-2.561-1-4.973-2.817-6.79a9.541 9.541 0 0 0-6.789-2.818h-.001a9.54 9.54 0 0 0-6.789 2.817 9.541 9.541 0 0 0-2.818 6.789 2.46 2.46 0 0 1-2.457 2.456 2.46 2.46 0 0 1-2.456-2.456c.001-8.006 6.514-14.519 14.52-14.519h.001c8.006.001 14.519 6.515 14.519 14.521a14.424 14.424 0 0 1-4.259 10.262 14.418 14.418 0 0 1-10.26 4.256M51.913 62.82c-6.011-.001-10.901-4.892-10.9-10.903a2.46 2.46 0 0 1 2.456-2.456 2.458 2.458 0 0 1 2.456 2.456 5.995 5.995 0 0 0 5.988 5.989 5.994 5.994 0 0 0 5.988-5.987 5.995 5.995 0 0 0-5.987-5.989l-37.397-.003a2.46 2.46 0 0 1-2.456-2.456c0-.657.256-1.274.721-1.738a2.438 2.438 0 0 1 1.734-.718h.004l37.394.003c2.908 0 5.644 1.135 7.705 3.196a10.83 10.83 0 0 1 3.196 7.705c-.001 6.011-4.892 10.901-10.902 10.901"
@@ -1024,7 +1050,7 @@ export const air_comfort = html`
   </svg>
 `;
 export const home_mode = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="home-mode" viewBox="0 0 66 59">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="home-mode" viewBox="0 0 66 59">
     <path
       fill-rule="evenodd"
       d="M54.79 18.085l9.946 8.355c1.47 1.224 1.69 3.433.492 4.935a3.4 3.4 0 0 1-2.663 1.291c-.763 0-1.53-.258-2.167-.789L33 8.302 5.602 31.877a3.383 3.383 0 0 1-4.83-.502c-1.198-1.502-.978-3.711.492-4.935L33 0l13.074 10.97V5.633h8.716v12.452zM9.467 34.095L33 13.638l23.533 20.457V56.4c0 1.436-1.139 2.6-2.545 2.6H39.101V39.482H26.9V59H12.012c-1.406 0-2.545-1.164-2.545-2.6V34.095z"
@@ -1032,7 +1058,7 @@ export const home_mode = html`
   </svg>
 `;
 export const away_mode = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="away-mode" viewBox="0 0 44 71">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="away-mode" viewBox="0 0 44 71">
     <path
       fill-rule="evenodd"
       d="M42.02 33.314a3.407 3.407 0 0 1 1.65 4.55 3.454 3.454 0 0 1-4.586 1.636l-4.965-2.317a10.355 10.355 0 0 1-4.513-4.056l-2.656-4.412-2.354 9.987a2.534 2.534 0 0 0 .414 2.065l7.832 10.852 5.21 13.234c.694 1.76-.122 3.792-1.886 4.494a3.448 3.448 0 0 1-4.502-1.927l-4.895-12.43-10.95-12.567a7.39 7.39 0 0 1-1.656-6.414l2.34-10.829-4.166 1.414a4.431 4.431 0 0 0-2.119 1.526l-4.015 5.31a3.463 3.463 0 0 1-4.823.684 3.398 3.398 0 0 1-.69-4.785l4.015-5.313a11.3 11.3 0 0 1 5.403-3.894l7.126-2.415c5.349-1.816 11.337.364 14.235 5.177l4.055 6.736a3.522 3.522 0 0 0 1.53 1.375l4.966 2.32zm-28.944 11.02c.07.086.138.175.214.259l5.468 6.279-3.312 8.297-7.453 9.51A3.448 3.448 0 0 1 5.269 70a3.457 3.457 0 0 1-2.114-.721 3.402 3.402 0 0 1-.605-4.797l6.739-8.596 3.787-11.552zm13.282-31.862c-3.471 0-6.284-2.793-6.284-6.235C20.074 2.793 22.887 0 26.358 0c3.472 0 6.285 2.793 6.285 6.237 0 3.442-2.813 6.235-6.285 6.235z"
@@ -1040,7 +1066,7 @@ export const away_mode = html`
   </svg>
 `;
 export const auto_mode = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="auto-mode" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="auto-mode" viewBox="0 0 24 24">
     <path
       d="M14.0127 12.3216C14.0127 12.3115 14.0228 12.2914 14.0228 12.2813L14.1237 11.8273L13.5991 12.483C12.8828 13.3809 11.5714 13.5423 10.6533 12.8866C9.69495 12.2106 9.47301 10.879 10.2195 9.9307L11.42 8.42754C11.9648 7.74154 12.7113 7.23713 13.5588 6.96474L14.154 6.77307V4.65453H11.985V5.74406L8.93833 3.18164L0.343118 10.4149C-0.0503244 10.7478 -0.110854 11.3531 0.211971 11.7668C0.534795 12.1804 1.11992 12.2409 1.52345 11.908L2.71386 10.8689V18.6167C2.71386 19.0101 3.0266 19.333 3.39986 19.333H7.31411V13.8651H10.4919V19.333H10.8551L12.5398 16.8008L14.0127 12.3216Z"
     />
@@ -1052,7 +1078,7 @@ export const auto_mode = html`
   </svg>
 `;
 export const infinity = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="infinity" viewBox="0 0 65 28">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="infinity" viewBox="0 0 65 28">
     <path
       fill-rule="nonzero"
       d="M32.5 15.484c-3.214 3.627-5.925 6.49-7.9 8.397C21.853 26.536 18.173 28 14.317 28c-3.856 0-7.536-1.464-10.284-4.119C1.368 21.308.012 17.761 0 13.855c.013-3.82 1.343-7.13 4.04-9.734C6.787 1.466 10.467.002 14.323.002c3.856 0 7.536 1.464 10.284 4.119 1.939 1.873 4.655 4.74 7.892 8.378 3.699-4.172 6.166-6.844 7.752-8.379C42.996 1.465 46.67 0 50.522 0c3.85 0 7.525 1.465 10.27 4.12 2.748 2.66 4.196 6.005 4.208 9.748-.012 3.79-1.499 7.387-4.209 10.01-2.744 2.655-6.419 4.12-10.27 4.12-3.85 0-7.525-1.465-10.27-4.12-1.63-1.58-4.18-4.343-7.751-8.394zm26.89 6.96c2.361-2.285 3.59-5.387 3.6-8.582-.01-3.184-1.232-6.017-3.6-8.308C57.008 3.247 53.829 2 50.522 2c-3.306 0-6.485 1.247-8.868 3.554-1.629 1.576-4.23 4.412-7.797 8.437 3.567 4.05 6.168 6.877 7.797 8.453 2.383 2.307 5.562 3.554 8.868 3.554 3.307 0 6.486-1.247 8.87-3.554zm-53.959.002C7.819 24.753 11.003 26 14.316 26c3.313 0 6.498-1.247 8.885-3.554 1.651-1.595 4.302-4.34 7.943-8.455-3.638-4.094-6.285-6.841-7.935-8.435-2.388-2.307-5.573-3.554-8.885-3.554-3.313 0-6.497 1.247-8.885 3.554-2.371 2.29-3.419 5.123-3.43 8.305.01 3.194 1.057 6.3 3.422 8.585z"
@@ -1060,7 +1086,7 @@ export const infinity = html`
   </svg>
 `;
 export const devices = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="devices" viewBox="0 0 84 78">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="devices" viewBox="0 0 84 78">
     <g fill-rule="evenodd">
       <path
         fill-rule="nonzero"
@@ -1073,7 +1099,7 @@ export const devices = html`
   </svg>
 `;
 export const air_freshness_leafs = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="air-freshness-leafs" viewBox="0 0 30 30">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="air-freshness-leafs" viewBox="0 0 30 30">
     <g fill-rule="evenodd">
       <path
         d="M7.895 4.748c3.175-2.644 7.395-2.174 10.229-.528-2.27-.7-6.16-1.089-10.031 1.515 3.852 8.855 12.917-1.006 17.17.54C17.616-2.587 8.271-1.088 7.895 4.748M27.813 15.419c.753 4.191-1.68 7.682-4.458 9.332 1.694-1.644 3.896-4.886 3.513-9.673-9.475-1.21-5.336 11.963-8.71 14.922 11.302-2.145 14.5-11.203 9.655-14.581M8.146 28.658c-3.686-1.311-5.293-5.063-5.275-8.254.496 2.244 2.015 5.68 5.997 7.591 5.49-7.675-6.942-10.252-7.677-14.574C-2.51 24.26 3.149 31.288 8.146 28.658"
@@ -1082,7 +1108,7 @@ export const air_freshness_leafs = html`
   </svg>
 `;
 export const boiler_repair_services = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="boiler-repair-services" viewBox="0 0 82 58">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="boiler-repair-services" viewBox="0 0 82 58">
     <g fill-rule="evenodd">
       <path
         d="M19.497 53C17.514 53 16 51.502 16 49.547 16 47.587 17.514 46 19.497 46 21.482 46 23 47.587 23 49.547 23 51.507 21.482 53 19.497 53m.001-12C14.863 41 11 44.779 11 49.5c0 4.637 3.863 8.5 8.498 8.5C24.222 58 28 54.137 28 49.5c0-4.721-3.778-8.5-8.502-8.5M63.497 53C61.512 53 60 51.502 60 49.547 60 47.587 61.512 46 63.497 46 65.48 46 67 47.587 67 49.547 67 51.507 65.48 53 63.497 53m.003-12c-4.635 0-8.5 3.779-8.5 8.5 0 4.637 3.865 8.5 8.5 8.5 4.724 0 8.5-3.863 8.5-8.5 0-4.721-3.776-8.5-8.5-8.5M73.618 44H82v3.467c0 .756-.666 1.533-2 1.533h-5.01a11.496 11.496 0 0 0-1.372-5zM9.405 44a11.392 11.392 0 0 0-1.394 5H1c-1.165 0-.975-.742-1-1v-3c0-.851.776-.998 1-1H9.405z"
@@ -1094,7 +1120,7 @@ export const boiler_repair_services = html`
   </svg>
 `;
 export const next_time_block = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="next-time-block" viewBox="0 0 25 25">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="next-time-block" viewBox="0 0 25 25">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -1103,7 +1129,7 @@ export const next_time_block = html`
   </svg>
 `;
 export const infinity_small = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="infinity-small" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="infinity-small" viewBox="0 0 24 24">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -1112,7 +1138,13 @@ export const infinity_small = html`
   </svg>
 `;
 export const care_and_protect_widget_xl = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="care-and-protect-widget-xl" viewBox="0 0 76 67" fill="none">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="panel-btn"
+    id="care-and-protect-widget-xl"
+    viewBox="0 0 76 67"
+    fill="none"
+  >
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -1126,7 +1158,7 @@ export const care_and_protect_widget_xl = html`
   </svg>
 `;
 export const arrow_down = html`
-  <svg xmlns="http://www.w3.org/2000/svg" id="arrow-down" viewBox="0 0 30 30">
+  <svg xmlns="http://www.w3.org/2000/svg" class="panel-btn" id="arrow-down" viewBox="0 0 30 30">
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"

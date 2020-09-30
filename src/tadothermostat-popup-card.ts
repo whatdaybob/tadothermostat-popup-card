@@ -3,6 +3,8 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { HomeAssistant, LovelaceCard, computeDomain } from 'custom-card-helpers';
 import { CustomCardConfig } from './types';
 import { back_btn, confirm_btn, heat_request } from './components/html_svg';
+import { air_comfort } from './components/tado_symbols';
+import { _air_comfort } from './modules/view_aircomfort';
 import { infotoconsole, cctoconsole } from './modules/card_information';
 import style from './css/styles.scss';
 
@@ -23,6 +25,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
   temp_selection: boolean;
   temp_overlay: boolean;
   temp_heating: string;
+  temp_airqual: boolean;
   temp_class: string;
   temp_wanted: number;
 
@@ -33,6 +36,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
       temp_selection: { type: Boolean, reflect: true },
       temp_overlay: { type: Boolean, reflect: true },
       temp_heating: { type: String, reflect: true },
+      temp_airqual: { type: Boolean, reflect: true },
       temp_class: { type: String },
       temp_wanted: { type: Number },
     };
@@ -44,6 +48,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
     this.temp_class = 'temp-off';
     this.temp_selection = false;
     this.temp_heating = 'heating_off';
+    this.temp_airqual = false;
     this.temp_overlay = false;
   }
 
@@ -109,74 +114,91 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
       <div class="popup-wrapper">
         <div style="display:flex;width:100%;height:100%;">
           <div id="popup" class="popup-inner ${this.temp_class}">
-            <div class="tado-card-top">
-              <div
-                class="btn__back"
-                @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
-              >
-                ${back_btn}
+            <div class="tado">
+              <div class="tado-air">
+                ${_air_comfort(this.shadowRoot, current_temperature, current_humidity)}
               </div>
-              <div id="target_temp_track" class="text_temperature">${thermostat__body}</div>
-              <div
-                class="btn__confirm"
-                @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
-              >
-                ${confirm_btn}
-              </div>
-            </div>
-            <div
-              id="thermostat"
-              class="tado-card-middle thermostat"
-              @mousedown="${(): void => this._thermostat_mousedown()}"
-              @mouseup="${(): void => this._thermostat_mouseup()}"
-              @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
-            >
-              <div class="thermostat_part_top tempoverview">
-                <span style="pointer-events: none;">${thermostat__header}</span>
-              </div>
-              <div class="thermostat_part_middle tempoverview">
-                <div class="text_maintemp">
-                  ${thermostat__body}
-                </div>
-
-                <div id="track" class="track" style="height: ${track_height};"></div>
-                ${this.temp_selection
-                  ? html`
-                      <input
-                        id="tempvaluerange"
-                        class="tempvaluerange"
-                        type="range"
-                        min="${min_temp - 1}"
-                        max="${max_temp}"
-                        step="1"
-                        style="width: 444px; height: 300px; transform-origin: 222px 222px;"
-                        @change="${(e: MouseEvent | null | undefined): void => this._change_track(e)}"
-                        @input="${(e: MouseEvent | null | undefined): void => this._change_track(e)}"
-                      />
-                    `
-                  : ``}
-              </div>
-              <div class="thermostat_part_bottom tempoverview">
-                <div class="heatreq">
-                  ${heat_request}
-                </div>
-                <div class="overlay">
-                  <div class="overlay_text">
-                    Manual Override Active
+              <div class="tado-card" style="display: flex;flex-direction: column;width: 400px;height: 600px">
+                <div class="tado-card-top">
+                  <div class="btn__holder options">
+                    <div
+                      class="btn__airqual"
+                      @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
+                    >
+                      ${air_comfort}
+                    </div>
                   </div>
-                  <button class="btn__cancel">Cancel</button>
+                  <div class="btn__holder selection">
+                    <div
+                      class="btn__back"
+                      @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
+                    >
+                      ${back_btn}
+                    </div>
+                    <div id="target_temp_track" class="text_temperature">${thermostat__body}</div>
+                    <div
+                      class="btn__confirm"
+                      @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
+                    >
+                      ${confirm_btn}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="tado-card-bottom">
-              <div class="info">
-                <div class="info_sensor">
-                  <div class="info_sensor_label">Inside now</div>
-                  <div class="info_sensor_value">${current_temperature}&#176;</div>
+                <div
+                  id="thermostat"
+                  class="tado-card-middle thermostat"
+                  @mousedown="${(): void => this._thermostat_mousedown()}"
+                  @mouseup="${(): void => this._thermostat_mouseup()}"
+                  @click="${(e: MouseEvent | null | undefined): void => this._thermostat_mouseclick(e)}"
+                >
+                  <div class="thermostat_part_top tempoverview">
+                    <span style="pointer-events: none;">${thermostat__header}</span>
+                  </div>
+                  <div class="thermostat_part_middle tempoverview">
+                    <div class="text text_maintemp">
+                      ${thermostat__body}
+                    </div>
+
+                    <div id="track" class="track" style="height: ${track_height};"></div>
+                    ${this.temp_selection
+                      ? html`
+                          <input
+                            id="tempvaluerange"
+                            class="tempvaluerange"
+                            type="range"
+                            min="${min_temp - 1}"
+                            max="${max_temp}"
+                            step="1"
+                            style="width: 444px; height: 300px; transform-origin: 222px 222px;"
+                            @change="${(e: MouseEvent | null | undefined): void => this._change_track(e)}"
+                            @input="${(e: MouseEvent | null | undefined): void => this._change_track(e)}"
+                          />
+                        `
+                      : ``}
+                  </div>
+                  <div class="thermostat_part_bottom tempoverview">
+                    <div class="heatreq">
+                      ${heat_request}
+                    </div>
+                    <div class="overlay">
+                      <div class="overlay_text">
+                        Manual Override Active
+                      </div>
+                      <button class="btn__cancel">Cancel</button>
+                    </div>
+                  </div>
                 </div>
-                <div class="info_sensor">
-                  <div class="info_sensor_label">Humidity</div>
-                  <div class="info_sensor_value">${parseInt(current_humidity)}%</div>
+                <div class="tado-card-bottom">
+                  <div class="info">
+                    <div class="info_sensor">
+                      <div class="info_sensor_label">Inside now</div>
+                      <div class="info_sensor_value">${current_temperature}&#176;</div>
+                    </div>
+                    <div class="info_sensor">
+                      <div class="info_sensor_label">Humidity</div>
+                      <div class="info_sensor_value">${parseInt(current_humidity)}%</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -191,13 +213,13 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
      * Main mouse event handler for thermostat popup
      */
 
-    // Handle Cancel Button on main popup when overlay active
     const thermostat = this.shadowRoot;
     let toggle = false;
+
+    // Handle Cancel Button on main popup when overlay active
     if (e !== null && this._isCancelOverrideButton(e.target as HTMLButtonElement)) {
       this._handleModeClick();
       thermostat.getElementById('popup').classList.add('temp-backed');
-      console.log('CANCEL CALLED');
     }
 
     // Handle main thermostat click
@@ -213,7 +235,6 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
         .className.replace(/temp.*/g, '');
       thermostat.getElementById('popup').classList.add('temp-backed');
       thermostat.getElementById('popup').classList.add(this.temp_class);
-      console.log('BACK CALLED');
       toggle = true;
     }
 
@@ -252,6 +273,14 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
      */
     const cancelOverrideClass = 'btn__cancel';
     const exists = target.classList.contains(cancelOverrideClass);
+    return exists;
+  }
+  _isAirQualityButton(target: HTMLButtonElement): boolean {
+    /**
+     * Temperature Override Cancel button check
+     */
+    const airQualityClass = 'btn__airqual';
+    const exists = target.classList.contains(airQualityClass);
     return exists;
   }
 
@@ -335,7 +364,6 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
   }
 
   _getHeatingState(heatingObj: HassEntity): string {
-    // throw new Error('Method not implemented.');
     const heat_percent = parseInt(heatingObj.state);
     let heat_class = 'heating_off';
     if (heat_percent == 0) {
@@ -397,16 +425,13 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
       throw new Error('Invalid configuration');
     }
     if (!config.entity) {
-      throw new Error('You need to define a climate entity');
+      throw new Error('You need to define a climate entity via entity: <entity>');
     }
     if (!config.heating) {
-      throw new Error('You need to define a heating entity');
-    }
-    if (!config.title) {
-      throw new Error('You need to give this a title via title: <title>');
+      throw new Error('You need to define a heating entity via heating: <entity>');
     }
     if (!config.overlay) {
-      throw new Error('You need to give this a title via title: <title>');
+      throw new Error('You need to define an overlay entity via overlay: <entity>');
     }
 
     this.config = config;

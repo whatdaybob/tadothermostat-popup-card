@@ -1,64 +1,109 @@
-import { html, css, TemplateResult } from 'lit-element';
-
-export function _render_graphpos(x: number, y: number): TemplateResult {
+import { html, TemplateResult, svg } from 'lit-element';
+export function _render_graphpos(x: number, y: number, circle_size: number): TemplateResult {
+  const half = circle_size / 2;
   return html`
     <svg
-      width="15"
-      height="15"
+      width="${circle_size}"
+      height="${circle_size}"
       xmlns="http://www.w3.org/2000/svg"
-      class="b-bubble-graph__current_position ng-star-inserted"
+      class="bubble__graph-current_position"
       style="top: ${x}px; left: ${y}px;"
     >
-      <circle cx="7.5" cy="7.5" r="7.5" fill="white"></circle>
+      <circle cx="${half}" cy="${half}" r="${half}" fill="white"></circle>
     </svg>
   `;
 }
 
-export function _air_comfort(temperature, humidity): TemplateResult {
-  const best_temperature = 20;
-  const temp_range = 10;
-  const svg_size = 153;
+export const airqual_warning = html`
+  <svg appSvgSymbol="warning" class="value-with-alert__alert">
+    <path
+      d="M6 12A6 6 0 1 1 6 0a6 6 0 0 1 0 12zM6 1.5a1 1 0 0 0-1 1v4a1 1 0 1 0 2 0v-4a1 1 0 0 0-1-1zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+    />
+  </svg>
+`;
+
+export const bubble_humid_warn = svg`
+<path style="transform: scale(1.633);" fill="#3849AC" fill-rule="nonzero" d="M125.892 24.108c-4.621-4.357-11.9-4.143-16.257.478-4.357 4.62-4.143 11.899.478 16.256 9.766 9.209 15.392 21.97 15.392 35.658 0 13.69-5.627 26.451-15.394 35.66-4.621 4.357-4.835 11.635-.478 16.256s11.635 4.836 16.256.479c14.33-13.511 22.616-32.305 22.616-52.395 0-20.089-8.285-38.881-22.613-52.392z"></path>
+`;
+
+export function _isAirQualityBackButton(target: HTMLButtonElement): boolean {
+  /**
+   * Temperature Override Cancel button check
+   */
+  const cancelOverrideClass = 'btn__overview';
+  const exists = target.classList.contains(cancelOverrideClass);
+  return exists;
+}
+
+export function _airquality_mouseclick(e: MouseEvent | null = null, shadowRoot): void {
+  const thermostat = shadowRoot;
+  if (e !== null && _isAirQualityBackButton(e.target as HTMLButtonElement)) {
+    thermostat.getElementById('popup').classList.remove('airquality');
+  }
+}
+
+export function _air_comfort(shadowRoot, temperature: number, humidity: number): TemplateResult {
+  const point_size = 15;
+  const lower_temp = 5;
+  const upper_temp = 45;
+  const temp_range = upper_temp - lower_temp;
+  const new_temp = temperature - lower_temp;
+  const svg_size = 250;
   const svg_outer_stroke = 2;
-  const y = humidity;
-  let temp_start = 0,
-    x = 0,
-    __type = 'none';
-  // calculate temp y range
-  if (temperature > best_temperature) {
-    __type = 'hot';
-    temp_start = temperature - best_temperature;
-    if (temp_start > temp_range) {
-      x = 100;
-    } else {
-      x = (temp_start / best_temperature) * 100;
-    }
+  const points = svg_size / 100;
+  let x = 0,
+    y = 0;
+  if (temperature > upper_temp) {
+    x = 0;
   } else {
-    __type = 'cold';
-    temp_start = temperature - best_temperature + temp_range;
-    if (temp_start < 0) {
-      x = 0;
+    if (temperature < lower_temp) {
+      x = 100 * points;
     } else {
-      x = (temp_start / best_temperature) * 100;
+      x = (new_temp / temp_range) * 100 * points - point_size / 2;
+      x = svg_size - x;
     }
   }
+
+  y = (svg_size / 100) * humidity - point_size / 2;
+  const humwarn = humidity > 60;
+  const bubble_humwarn = humidity > 70;
+  const tempwarn = temperature < 20;
+  let thermal_comfort = '';
+  if (humwarn) {
+    thermal_comfort = ' humid';
+  }
+  if (tempwarn) {
+    thermal_comfort = thermal_comfort + ' cold';
+  }
+  if (thermal_comfort == '') {
+    thermal_comfort = 'pleasant';
+  }
+
   return html`
-    <div class="b-card" style="background: linear-gradient(110deg, rgb(107, 176, 179), rgb(77, 150, 153));">
-      <header class="b-card__header">
-        <h2 class="b-card-header__room-name">Master Bedroom</h2>
-        <div class="b-thermal-comfort ng-star-inserted">
-          <h3 class="b-thermal-comfort_status">
-            <span class="ng-star-inserted">Cold</span>
+    <div class="airqual ${thermal_comfort}">
+      <header class="airqual__header">
+        <h2 class="airqual-header__room-name">
+          <span style="display:none">Master Bedroom</span>
+        </h2>
+        <div class="thermal-comfort">
+          <h3 class="thermal-comfort_status">
+            <span>${thermal_comfort}</span>
           </h3>
         </div>
       </header>
-      <main class="b-bubble">
-        <span class="b-bubble__label-top">Too warm</span>
-        <span class="b-bubble__label-bottom">Cold</span>
-        <span class="b-bubble__label-left">Dry</span>
-        <span class="b-bubble__label-right">Humid</span>
-        <div class="b-bubble__graph">
-          ${_render_graphpos(x, y)}
+      <main class="bubble">
+        <span class="bubble__label-top">Too warm</span>
+        <span class="bubble__label-bottom">Cold</span>
+        <span class="bubble__label-left">Dry</span>
+        <span class="bubble__label-right">Humid</span>
+        <div class="bubble__graph">
+          ${_render_graphpos(x, y, point_size)}
           <svg width="${svg_size}" height="${svg_size}" xmlns="http://www.w3.org/2000/svg">
+            ${bubble_humwarn
+              ? html`
+                  ${bubble_humid_warn}
+                `
+              : ``}
             <circle
               cx="${svg_size / 2}"
               cy="${svg_size / 2}"
@@ -70,61 +115,71 @@ export function _air_comfort(temperature, humidity): TemplateResult {
             <circle
               cx="${svg_size / 2}"
               cy="${svg_size / 2}"
-              r="${(svg_size / 100) * 39.2}"
+              r="${(svg_size / 2 / 100) * 40}"
               fill="white"
               opacity=".6"
             ></circle>
           </svg>
         </div>
-        <div class="b-bubble__alert"></div>
+        <div class="bubble__alert">
+          ${bubble_humwarn
+            ? html`
+                <p class="alert alert--humid">Increased risk of mold</p>
+              `
+            : ``}
+        </div>
       </main>
-      <footer class="b-card__footer">
+      <footer class="airqual__footer">
         <div>
-          <h4 class="b-measurement__label">Temperature</h4>
-          <div class="b-measurement__content">
-            <div class="b-value-with-alert">
-              <svg appSvgSymbol="warning" class="b-value-with-alert__alert ng-star-inserted">
-                <path
-                  d="M6 12A6 6 0 1 1 6 0a6 6 0 0 1 0 12zM6 1.5a1 1 0 0 0-1 1v4a1 1 0 1 0 2 0v-4a1 1 0 0 0-1-1zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
-                />
-              </svg>
-              <div class="app-temperature-display b-value-with-alert__value">
-                <div class="ng-star-inserted">
-                  <div class="b-temperature ng-star-inserted">20°</div>
+          <h4 class="measurement__label">Temperature</h4>
+          <div class="measurement__content">
+            <div class="value-with-alert">
+              ${tempwarn
+                ? html`
+                    ${airqual_warning}
+                  `
+                : ``}
+              <div class="app-temperature-display value-with-alert__value">
+                <div>
+                  <div class="temperature">${temperature}°</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div>
-          <h4 class="b-measurement__label">Humidity</h4>
-          <div class="b-measurement__content">
-            <div class="b-value-with-alert">
-              <app-humidity class="b-value-with-alert__value" _nghost-coq-c70="">
-                <div _ngcontent-coq-c70="" class="b-humidity ng-star-inserted">
-                  {' '} 52%
+          <h4 class="measurement__label">Humidity</h4>
+          <div class="measurement__content">
+            <div class="value-with-alert">
+              ${humwarn
+                ? html`
+                    ${airqual_warning}
+                  `
+                : ``}
+              <app-humidity class="value-with-alert__value">
+                <div class="humidity">
+                  ${humidity}%
                 </div>
               </app-humidity>
             </div>
           </div>
         </div>
       </footer>
-      <app-air-comfort-message class="b-card__message ng-star-inserted" _nghost-coq-c96="">
-        <aside _ngcontent-coq-c96="" class="message">
-          <figure _ngcontent-coq-c96="" class="stacked">
-            <figcaption _ngcontent-coq-c96="" class="message__text text-center" style="width: 100%;">
-              <p _ngcontent-coq-c96="">
+      <app-air-comfort-message class="airqual__message">
+        <aside class="message">
+          <figure style="display:none;" class="stacked">
+            <figcaption class="message__text text-center" style="width: 100%;">
+              <p>
                 Feel like getting under a warm blanket? Turn up your heating a bit to stay comfy in here.
               </p>
             </figcaption>
           </figure>
-          <footer _ngcontent-coq-c96="" class="message__link text-center stacked ng-star-inserted">
+          <footer class="message__link text-center stacked">
             <a
-              _ngcontent-coq-c96=""
-              class="b-btn b-btn--more text-center ng-star-inserted"
-              href="/app/en/main/home/zone/1"
+              class="btn btn--more text-center btn__overview"
+              @click="${(e: MouseEvent | null | undefined): void => _airquality_mouseclick(e, shadowRoot)}"
             >
-              <span _ngcontent-coq-c96="">Adjust heating</span>
+              <span style="pointer-events:none;">Back</span>
             </a>
           </footer>
         </aside>
@@ -132,160 +187,3 @@ export function _air_comfort(temperature, humidity): TemplateResult {
     </div>
   `;
 }
-
-export const animation_styling = css`
-  .b-card {
-    font-size: 0.8em;
-    color: #fff;
-    margin-bottom: 10px;
-    max-width: 360px;
-    min-height: 375px;
-    border-radius: 10px;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-between;
-    align-items: center;
-    overflow: hidden;
-  }
-  .b-card__header {
-    width: 100%;
-    flex: 0 0 auto;
-    padding: 16px;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-  .b-card-header__room-name {
-    min-width: 30%;
-    margin-top: 0;
-    margin-right: 15px;
-    font-size: 1.8em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .b-thermal-comfort {
-    max-width: 70%;
-  }
-  .b-thermal-comfort_status {
-    margin: 0;
-    font-family: DIN2014, serif;
-    font-size: 1.8em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: right;
-  }
-  .b-bubble {
-    flex: 0 0 246px;
-    padding-top: 10px;
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr 153px 1fr;
-    grid-auto-rows: -webkit-min-content;
-    grid-auto-rows: min-content;
-    text-align: center;
-    align-items: center;
-    grid-column-gap: 5px;
-    grid-row-gap: 5px;
-    text-transform: uppercase;
-  }
-  .b-bubble__label-top {
-    grid-row-start: 1;
-    grid-column-start: 2;
-  }
-  .b-bubble__label-bottom {
-    grid-row-start: 3;
-    grid-column-start: 2;
-  }
-  .b-bubble__label-left {
-    grid-row-start: 2;
-    grid-column-start: 1;
-    text-align: right;
-  }
-  .b-bubble__label-right {
-    grid-row-start: 2;
-    grid-column-start: 3;
-  }
-  .b-bubble__graph {
-    grid-row-start: 2;
-    grid-column-start: 2;
-    position: relative;
-    overflow: hidden;
-  }
-  .b-bubble-graph__current_position,
-  .b-bubble__alert {
-    position: absolute;
-  }
-  .b-bubble__alert {
-    bottom: 10px;
-    left: 0;
-    right: 0;
-  }
-  .b-card__footer {
-    width: 100%;
-    flex: 0 0 51px;
-    padding-bottom: 16px;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-around;
-    align-items: flex-end;
-  }
-  .b-measurement__label {
-    margin-bottom: 3px;
-    text-transform: uppercase;
-    font-weight: 400;
-  }
-  .b-measurement__content,
-  .b-value-with-alert {
-    display: flex;
-    justify-content: center;
-  }
-  .b-value-with-alert {
-    align-items: center;
-    position: relative;
-  }
-  .b-value-with-alert__alert {
-    width: 12px;
-    height: 12px;
-    position: absolute;
-    right: 100%;
-    bottom: 5px;
-    margin-right: 4px;
-    fill: #fff;
-    opacity: 0.7;
-  }
-  .b-value-with-alert__value {
-    font-size: 1.5em;
-  }
-  .b-temperature {
-    font-family: DIN2014DEGREE, serif;
-    font-weight: 400;
-  }
-  .b-humidity {
-    font-family: DIN2014DEGREE, serif;
-    font-weight: 400;
-  }
-  .app-air-comfort-message {
-    display: block;
-    width: 100%;
-    background-color: #fff;
-  }
-  .message {
-    color: #485258;
-    font-size: 14px;
-  }
-  .message figure {
-    display: flex;
-  }
-  .stacked {
-    margin: 16px 0;
-    padding: 0 16px;
-  }
-  .text-center {
-    text-align: center;
-  }
-`;

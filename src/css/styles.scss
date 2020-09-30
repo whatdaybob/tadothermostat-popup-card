@@ -21,6 +21,15 @@
   transition-timing-function: ease-in-out;
 }
 
+@mixin slide-card($left) {
+  position: absolute;
+  left: $left;
+  transition-property: left;
+  transition-delay: 0s;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in-out;
+}
+
 @mixin toggle-vis-flex($flex_from, $flex_delay, $flex_dur) {
   flex: 0 0 $flex_from;
   transition-property: flex;
@@ -49,12 +58,10 @@
   max-width: 400px;
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
   overflow: hidden;
   color: white;
 }
+
 $temps: (
   5: linear-gradient(rgb(60, 150, 114), rgb(60, 134, 139)),
   6: linear-gradient(rgb(60, 153, 115), rgb(57, 139, 142)),
@@ -85,7 +92,7 @@ $temps: (
     background: $rule;
   }
 }
-// BTN PANEL
+
 .panel-btn {
   width: 2em;
   height: 2em;
@@ -93,6 +100,44 @@ $temps: (
   fill: hsla(0, 0%, 100%, 0.2);
 }
 .btn {
+  &__holder {
+    &.options {
+      @include toggle-vis-flex(100px, 0s, 0.5s);
+      @include inner-flex();
+      align-items: flex-start;
+      justify-content: flex-end;
+      flex-direction: row;
+      :host([temp_selection]) & {
+        @include toggle-vis-flex(0px, 0s, 0.5s);
+      }
+    }
+    &.selection {
+      @include toggle-vis-flex(0px, 0s, 0.5s);
+      @include inner-flex();
+      :host([temp_selection]) & {
+        @include toggle-vis-flex(75px, 0s, 0.5s);
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  &__airqual {
+    @include toggle-vis-visible(0s, 0.5s);
+    margin: 20px;
+    width: 28px;
+    height: 28px;
+    pointer-events: all;
+    svg {
+      pointer-events: none;
+      fill: rgb(53, 146, 150);
+    }
+    :host([temp_selection]) & {
+      @include toggle-vis-hidden(0.5s, 0s);
+      pointer-events: none;
+    }
+  }
+
   &__cancel {
     padding: 0 1.5em;
     border-radius: 1.25em;
@@ -178,12 +223,7 @@ input[type='range'] {
 }
 
 .track {
-  opacity: 0;
-  visibility: hidden;
-  transition-property: visibility, opacity;
-  transition-delay: 0.5s, 0s;
-  transition-duration: 0s, 0.5s;
-  transition-timing-function: ease-in-out;
+  @include toggle-vis-hidden(0.5s, 0s);
   position: absolute;
   left: 0;
   right: 0;
@@ -195,14 +235,12 @@ input[type='range'] {
   padding: 22px 0 0;
   box-sizing: content-box;
   :host([temp_selection]) & {
-    visibility: visible;
-    transition-delay: 0s, 0.5s;
-    transition-duration: 0s, 0.5s;
-    opacity: 1;
+    @include toggle-vis-visible(0s, 0.5s);
   }
 }
 
 .thermostat {
+  margin: auto;
   &:hover {
     transform: scale(1.03);
   }
@@ -211,38 +249,51 @@ input[type='range'] {
   }
   :host([temp_selection]) & {
     flex: 0 0 444px;
-    margin: 31px 0px 50px 0;
+    margin: 31px auto 50px auto;
   }
 }
 
-.tado-card {
-  &-top {
-    @include toggle-vis-flex(100px, 0s, 0.5s);
-    @include inner-flex();
-    :host([temp_selection]) & {
-      @include toggle-vis-flex(75px, 0s, 0.5s);
+.tado {
+  position: relative;
+  &-air {
+    @include slide-card(400px);
+    width: 400px;
+    height: 600px;
+    .airquality & {
+      @include slide-card(0px);
+    }
+  }
+  &-card {
+    @include slide-card(0px);
+    .airquality & {
+      @include slide-card(-400px);
+    }
+    &-top {
+      @include toggle-vis-flex(100px, 0s, 0.5s);
+      @include inner-flex();
+      :host([temp_selection]) & {
+        @include toggle-vis-flex(75px, 0s, 0.5s);
+      }
+    }
+    &-middle {
+      @include toggle-vis-flex(300px, 0s, 0.5s);
+      @include inner-flex();
+      box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
+      background-color: rgba(255, 255, 255, 0.1);
+      position: relative;
+      max-width: 300px;
+      border-radius: 75px;
+      :host([temp_selection]) & {
+        @include toggle-vis-flex(444px, 0s, 0.5s);
+      }
+    }
+    &-bottom {
+      @include toggle-vis-flex(200px, 0s, 0.5s);
+      @include inner-flex();
       flex-direction: row;
-      justify-content: space-between;
-    }
-  }
-  &-middle {
-    @include toggle-vis-flex(300px, 0s, 0.5s);
-    @include inner-flex();
-    box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
-    background-color: rgba(255, 255, 255, 0.1);
-    position: relative;
-    max-width: 300px;
-    border-radius: 75px;
-    :host([temp_selection]) & {
-      @include toggle-vis-flex(444px, 0s, 0.5s);
-    }
-  }
-  &-bottom {
-    @include toggle-vis-flex(200px, 0s, 0.5s);
-    @include inner-flex();
-    flex-direction: row;
-    :host([temp_selection]) & {
-      @include toggle-vis-flex(0px, 0s, 0.5s);
+      :host([temp_selection]) & {
+        @include toggle-vis-flex(0px, 0s, 0.5s);
+      }
     }
   }
 }
@@ -255,7 +306,7 @@ input[type='range'] {
     width: 100%;
     transition-property: flex, opacity;
     transition-delay: 0s;
-    transition-duration: 0.5s;
+    transition-duration: 1s;
     transition-timing-function: ease-in-out;
     overflow: hidden;
     :host([temp_selection]) & {
@@ -286,17 +337,13 @@ input[type='range'] {
     }
   }
   &_bottom {
+    @include toggle-vis-visible(0s, 0.5s);
     flex: 0 0 75px;
     width: 100%;
-    opacity: 1;
-    transition-property: flex, opacity;
-    transition-delay: 0s;
-    transition-duration: 1s;
-    transition-timing-function: ease-in-out;
     overflow: hidden;
     position: relative;
     :host([temp_selection]) & {
-      opacity: 0;
+      @include toggle-vis-hidden(0.5s, 0s);
       flex: 0 0 0px;
     }
     :host([temp_overlay]) & {
@@ -309,39 +356,22 @@ input[type='range'] {
 }
 
 .text {
+  pointer-events: none;
   &_maintemp {
-    pointer-events: none;
-    visibility: visible;
-    opacity: 1;
-    transition-property: visibility, opacity;
-    transition-delay: 0s, 0.5s;
-    transition-duration: 0s, 0.5s;
-    transition-timing-function: ease-in-out;
+    @include toggle-vis-visible(0s, 0.5s);
     :host([temp_selection]) & {
-      transition-property: visibility, opacity;
-      transition-delay: 1s, 0s;
-      visibility: hidden;
-      opacity: 0;
+      @include toggle-vis-hidden(0.5s, 0s);
     }
   }
   &_temperature {
+    @include toggle-vis-hidden(0.5s, 0s);
     font-size: 48px;
     align-self: center;
     text-align: center;
     text-transform: uppercase;
     font-weight: 700;
-    transition-property: visibility, opacity;
-    transition-delay: 0.5s, 0s;
-    visibility: hidden;
-    opacity: 0;
     :host([temp_selection]) & {
-      pointer-events: all;
-      visibility: visible;
-      opacity: 1;
-      transition-property: visibility, opacity;
-      transition-delay: 0s, 0.5s;
-      transition-duration: 0s, 0.5s;
-      transition-timing-function: ease-in-out;
+      @include toggle-vis-visible(0s, 0.5s);
     }
   }
 }
@@ -353,7 +383,7 @@ input[type='range'] {
   margin: 0px auto;
   transition-property: flex, margin;
   transition-delay: 0s;
-  transition-duration: 0.5s;
+  transition-duration: 1s;
   transition-timing-function: ease-in-out;
   & svg {
     & path {
@@ -387,13 +417,13 @@ input[type='range'] {
 }
 
 .overlay {
-  flex: 0 0 0%;
+  flex: 0 0 0px;
   background-color: #fff;
   color: #213953;
   opacity: 0;
   transition-property: bottom, opacity;
   transition-delay: 0s, 0s;
-  transition-duration: 250ms, 250ms;
+  transition-duration: 1s, 1s;
   transition-timing-function: ease-in-out;
   display: flex;
   flex-direction: column;
@@ -403,6 +433,7 @@ input[type='range'] {
   padding: 0 0 26px 0;
   bottom: -100px;
   :host([temp_overlay]) & {
+    flex: 0 0 100px;
     opacity: 1;
     transition-duration: 1s, 1s;
     bottom: 0px;
@@ -421,7 +452,7 @@ input[type='range'] {
   opacity: 1;
   transition-property: max-height, opacity;
   transition-delay: 0s, 0s;
-  transition-duration: 0.5s, 0.5s;
+  transition-duration: 1s, 1s;
   transition-timing-function: ease-in-out;
   &_sensor {
     display: flex;
@@ -444,5 +475,201 @@ input[type='range'] {
     opacity: 0;
     transition-delay: 0s, 0s;
     overflow: hidden;
+  }
+}
+
+$airquality: (
+  humid: linear-gradient(110deg, rgb(107, 160, 225), rgb(84, 99, 196)),
+  cold: linear-gradient(110deg, rgb(107, 176, 179), rgb(77, 150, 153)),
+  pleasant: linear-gradient(110deg, rgb(59, 206, 145), rgb(25, 184, 118)),
+);
+@each $class, $rule in $airquality {
+  .tado-air .airqual.#{$class} {
+    background: $rule;
+  }
+}
+.tado-air {
+  .airqual {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(110deg, rgb(107, 176, 179), rgb(77, 150, 153));
+    font-size: 0.8em;
+    color: #fff;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    &__header {
+      width: 100%;
+      flex: 0 0 auto;
+      padding: 16px;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    &-header__room-name {
+      min-width: 30%;
+      margin-top: 0;
+      margin-right: 15px;
+      font-size: 1.8em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    &__footer {
+      width: 100%;
+      flex: 0 0 51px;
+      padding-bottom: 16px;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-around;
+      align-items: flex-end;
+    }
+    .thermal-comfort {
+      max-width: 70%;
+      &_status {
+        margin: 0;
+        font-size: 1.8em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: right;
+      }
+    }
+  }
+  .measurement__label {
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .measurement__content,
+  .value-with-alert {
+    display: flex;
+    justify-content: center;
+  }
+  .value-with-alert {
+    align-items: center;
+    position: relative;
+  }
+  .value-with-alert__alert {
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    right: 100%;
+    bottom: 5px;
+    margin-right: 4px;
+    fill: #fff;
+    opacity: 0.7;
+  }
+  .value-with-alert__value {
+    font-size: 1.5em;
+  }
+  .temperature {
+    font-weight: 400;
+  }
+  .humidity {
+    font-weight: 400;
+  }
+  .app-air-comfort-message {
+    display: block;
+    width: 100%;
+    background-color: #fff;
+  }
+  .message {
+    color: #485258;
+    font-size: 14px;
+  }
+  .message figure {
+    display: flex;
+  }
+  .stacked {
+    margin: 16px 0;
+    padding: 0 16px;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .bubble {
+    flex: 0 0 246px;
+    padding-top: 10px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 250px 1fr;
+    grid-auto-rows: -webkit-min-content;
+    grid-auto-rows: min-content;
+    text-align: center;
+    align-items: center;
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+    text-transform: uppercase;
+    &__label {
+      &-top {
+        grid-row-start: 1;
+        grid-column-start: 2;
+      }
+      &-bottom {
+        grid-row-start: 3;
+        grid-column-start: 2;
+      }
+      &-left {
+        grid-row-start: 2;
+        grid-column-start: 1;
+        text-align: right;
+      }
+      &-right {
+        grid-row-start: 2;
+        grid-column-start: 3;
+      }
+    }
+    &__graph {
+      grid-row-start: 2;
+      grid-column-start: 2;
+      position: relative;
+      overflow: hidden;
+      &-current_position {
+        position: absolute;
+      }
+    }
+    &__alert {
+      position: absolute;
+      bottom: -40px;
+      width: 100%;
+    }
+  }
+  .alert {
+    display: inline-block;
+    margin: auto;
+    padding: 0 8px;
+    line-height: 1.5em;
+    font-size: 1em;
+    font-weight: 400;
+    text-transform: none;
+    &--humid {
+      background: #3849ac;
+    }
+  }
+  .btn {
+    cursor: pointer;
+    display: inline-block;
+    color: #000000;
+    font-size: 0.9em;
+    text-decoration: none;
+    text-align: left;
+    line-height: 2.5;
+    padding: 0 1.5em;
+    border-radius: 1.25em;
+    border: none;
+    transition: background-color 0.1s ease, box-shadow 0.15s ease;
+    &--more {
+      background-color: #ffffff;
+      min-width: 137px;
+      height: 34px;
+      line-height: 34px;
+      border-radius: 17px;
+      text-align: center;
+    }
   }
 }
