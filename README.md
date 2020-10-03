@@ -1,5 +1,6 @@
 # Tado Tadothermostat Popup Card by [@whatdaybob](https://www.github.com/whatdaybob)
 
+[![CodeFactor](https://www.codefactor.io/repository/github/whatdaybob/tadothermostat-popup-card/badge/master)](https://www.codefactor.io/repository/github/whatdaybob/tadothermostat-popup-card/overview/master)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
 
 A custom popup lovelace card for use with my other card, the [Tado Thermostat Card](https://github.com/whatdaybob/tadothermostat-card).
