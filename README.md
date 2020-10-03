@@ -42,7 +42,7 @@ resources:
 
 | Name      | Type   | Required     | Default | Description                                                    |
 | --------- | ------ | ------------ | ------- | -------------------------------------------------------------- |
-| `type`    | string | **Required** |         | `custom:tado-popup-card`                                       |
+| `type`    | string | **Required** |         | `custom:tadothermostat-popup-card`                                       |
 | `entity`  | string | **Required** |         | Entity of the tado climate integration (e.g `climate.hallway`) |
 | `heating` | string | **Required** |         | Heating sensor related to the climate entity                   |
 | `overlay` | string | **Required** |         | Overlay sensor related to the climate entity                   |
@@ -55,7 +55,7 @@ popup_cards:
   title: ""
   large: false
     card:
-      type: custom:tado-popup-card
+      type: custom:tadothermostat-popup-card
       entity: climate.master_bedroom
       heating: sensor.master_bedroom_heating
       overlay: sensor.master_bedroom_overlay
