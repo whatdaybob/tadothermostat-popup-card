@@ -1,5 +1,6 @@
 # Tado Tadothermostat Popup Card by [@whatdaybob](https://www.github.com/whatdaybob)
 
+![HACS Validate](https://github.com/whatdaybob/tadothermostat-popup-card/workflows/HACS%20Validate/badge.svg)
 [![CodeFactor](https://www.codefactor.io/repository/github/whatdaybob/tadothermostat-popup-card/badge/master)](https://www.codefactor.io/repository/github/whatdaybob/tadothermostat-popup-card/overview/master)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
 
