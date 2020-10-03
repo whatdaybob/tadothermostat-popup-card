@@ -102,7 +102,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
       if (hvac_action == 'off') {
         this.temp_class = 'temp-off';
       } else {
-        this.temp_class = 'temp-' + parseInt(temperature).toString();
+        this.temp_class = 'temp-' + parseInt(temperature, 10).toString();
       }
     } else {
       this.temp_class = 'disconnected';
@@ -196,7 +196,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
                     </div>
                     <div class="info_sensor">
                       <div class="info_sensor_label">Humidity</div>
-                      <div class="info_sensor_value">${parseInt(current_humidity)}%</div>
+                      <div class="info_sensor_value">${parseInt(current_humidity, 10)}%</div>
                     </div>
                   </div>
                 </div>
@@ -370,7 +370,7 @@ export class TadoPopupCard extends LitElement implements LovelaceCard {
   }
 
   _getHeatingState(heatingObj: HassEntity): string {
-    const heat_percent = parseInt(heatingObj.state);
+    const heat_percent = parseInt(heatingObj.state, 10);
     let heat_class = 'heating_off';
     if (heat_percent == 0) {
       return heat_class;
