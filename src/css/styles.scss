@@ -108,11 +108,11 @@ $temps: (
       justify-content: flex-end;
       flex-direction: row;
       :host([temp_selection]) & {
-        @include toggle-vis-flex(0px, 0s, 0.5s);
+        @include toggle-vis-flex(0, 0s, 0.5s);
       }
     }
     &.selection {
-      @include toggle-vis-flex(0px, 0s, 0.5s);
+      @include toggle-vis-flex(0, 0s, 0.5s);
       @include inner-flex();
       :host([temp_selection]) & {
         @include toggle-vis-flex(75px, 0s, 0.5s);
