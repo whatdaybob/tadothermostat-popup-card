@@ -249,7 +249,7 @@ input[type='range'] {
   }
   :host([temp_selection]) & {
     flex: 0 0 444px;
-    margin: 31px auto 50px auto;
+    margin: 31px auto 50px;
   }
 }
 
@@ -422,7 +422,7 @@ input[type='range'] {
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: 0 0 26px 0;
+  padding: 0 0 26px;
   bottom: -100px;
   :host([temp_overlay]) & {
     flex: 0 0 100px;
