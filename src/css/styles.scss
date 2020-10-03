@@ -47,7 +47,7 @@
 }
 // BASE
 :host *:focus {
-  outline: -webkit-focus-ring-color auto 0px;
+  outline: -webkit-focus-ring-color auto 0;
 }
 :host * {
   @include vendor-prefix('box-sizing', 'border-box');
@@ -147,7 +147,7 @@ $temps: (
     text-align: center;
     background-color: rgb(255, 255, 255);
     width: 40%;
-    margin: 0px auto;
+    margin: 0 auto;
   }
   &__back {
     pointer-events: none;
@@ -186,7 +186,7 @@ input[type='range'] {
   -ms-writing-mode: bt-lr;
   writing-mode: bt-lr;
   position: absolute;
-  top: 0px;
+  top: 0;
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: 1px solid #000000;
@@ -196,11 +196,11 @@ input[type='range'] {
     background: #ffffff;
     cursor: pointer;
     margin-top: -14px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+    box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d; /* Add cool effects to your sliders! */
     visibility: hidden;
   }
   &::-moz-range-thumb {
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
     border: 1px solid #000000;
     height: 36px;
     width: 16px;
@@ -210,7 +210,7 @@ input[type='range'] {
     visibility: hidden;
   }
   &::-ms-thumb {
-    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
     border: 1px solid #000000;
     height: 36px;
     height: 36px;
@@ -256,7 +256,7 @@ input[type='range'] {
 .tado {
   position: relative;
   &-card {
-    @include slide-card(0px);
+    @include slide-card(0);
     .airquality & {
       @include slide-card(-400px);
     }
@@ -270,7 +270,7 @@ input[type='range'] {
     &-middle {
       @include toggle-vis-flex(300px, 0s, 0.5s);
       @include inner-flex();
-      box-shadow: rgba(100, 100, 100, 0.2) 0px 0px 30px;
+      box-shadow: rgba(100, 100, 100, 0.2) 0 0 30px;
       background-color: rgba(255, 255, 255, 0.1);
       position: relative;
       max-width: 300px;
@@ -284,7 +284,7 @@ input[type='range'] {
       @include inner-flex();
       flex-direction: row;
       :host([temp_selection]) & {
-        @include toggle-vis-flex(0px, 0s, 0.5s);
+        @include toggle-vis-flex(0, 0s, 0.5s);
       }
     }
   }
@@ -303,7 +303,7 @@ input[type='range'] {
     overflow: hidden;
     :host([temp_selection]) & {
       opacity: 0;
-      flex: 0 0 0px;
+      flex: 0 0 0;
     }
     :host([temp_overlay]) & {
       flex: 0 0 50px;
@@ -336,7 +336,7 @@ input[type='range'] {
     position: relative;
     :host([temp_selection]) & {
       @include toggle-vis-hidden(0.5s, 0s);
-      flex: 0 0 0px;
+      flex: 0 0 0;
     }
     :host([temp_overlay]) & {
       flex: 0 0 150px;
@@ -372,7 +372,7 @@ input[type='range'] {
   pointer-events: none;
   flex: 0 0 100px;
   width: 24px;
-  margin: 0px auto;
+  margin: 0 auto;
   transition-property: flex, margin;
   transition-delay: 0s;
   transition-duration: 1s;
@@ -409,7 +409,7 @@ input[type='range'] {
 }
 
 .overlay {
-  flex: 0 0 0px;
+  flex: 0 0 0;
   background-color: #fff;
   color: #213953;
   opacity: 0;
@@ -428,7 +428,7 @@ input[type='range'] {
     flex: 0 0 100px;
     opacity: 1;
     transition-duration: 1s, 1s;
-    bottom: 0px;
+    bottom: 0;
   }
   &_text {
     text-align: center;
@@ -486,7 +486,7 @@ $airquality: (
   width: 400px;
   height: 600px;
   .airquality & {
-    @include slide-card(0px);
+    @include slide-card(0);
   }
 
   .airqual {
