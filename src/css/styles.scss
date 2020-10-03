@@ -255,14 +255,6 @@ input[type='range'] {
 
 .tado {
   position: relative;
-  &-air {
-    @include slide-card(400px);
-    width: 400px;
-    height: 600px;
-    .airquality & {
-      @include slide-card(0px);
-    }
-  }
   &-card {
     @include slide-card(0px);
     .airquality & {
@@ -488,7 +480,15 @@ $airquality: (
     background: $rule;
   }
 }
+
 .tado-air {
+  @include slide-card(400px);
+  width: 400px;
+  height: 600px;
+  .airquality & {
+    @include slide-card(0px);
+  }
+
   .airqual {
     height: 100%;
     width: 100%;
